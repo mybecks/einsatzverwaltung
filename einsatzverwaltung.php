@@ -15,6 +15,7 @@ License: GPL2
 // Aktuelles Jahr
 define ("CURRENT_YEAR" , date("Y"));
 define ('CATEGORY', 3);
+define ('MISSION_ID', 'mission_id');
 
 wp_enqueue_script('jquery-ui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js', array('jquery'), '1.8.6');
 
@@ -31,9 +32,7 @@ add_shortcode( 'einsatzverwaltung', 'my_einsatzverwaltung_handler' );
 
 add_action( 'admin_menu', 'einsatzverwaltung_menu');
 add_action( 'add_meta_boxes', 'einsatzverwaltung_add_custom_box' );
-// add_action( 'post_updated', 'einsatzverwaltung_save_postdata' );
 add_action( 'publish_post', 'einsatzverwaltung_save_postdata' );
-// add_action(	'edit_post', 'einsatzverwaltung_edit_postdata');
 
 function show_einsatzverwaltung_box() {
     if ( is_admin() ) {
@@ -66,17 +65,21 @@ function einsatzverwaltung_add_custom_box() {
 /* Prints the box content */
 function einsatzverwaltung_inner_custom_box( $post ) {
 	global $isEdited;
+
+	global $post;
   // Use nonce for verification
   wp_nonce_field( plugin_basename( __FILE__ ), 'einsatzverwaltung_noncename' );
-
+  
+  print($post->ID);
+  $meta_values = get_post_meta($post->ID, MISSION_ID, '');
+  print_r($meta_values);
+  
   if(isset($_GET['action'])){
   	if($_GET['action'] == "edit"){
   		print("Editieren von Einsätzen ist in dieser Maske nicht möglich");
   		return;
   	} 		
   }
-  	
-// blockEditUpdates(TRUE);
 
 
   // The actual fields for data entry
@@ -271,6 +274,9 @@ EOF;
 function einsatzverwaltung_save_postdata( $post_id ) {
 	global $wpdb;
 	global $isEdited;
+
+	print ($post_id);
+
   	// verify if this is an auto save routine. 
   	// If it is our form has not been submitted, so we dont want to do anything
   	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) 
@@ -368,17 +374,21 @@ function einsatzverwaltung_save_postdata( $post_id ) {
 				'fahrzeuge_id' => $vehicle
 			), array());
 		}
+
+		add_post_meta($post_id, MISSION_ID, $wpdb->insert_id);
 	}
 }
 
-// /**
-//  * Edit/update post
-//  **/
-// function einsatzverwaltung_edit_postdata( $post_id )
-// {
-// //	print_r($post_id);
-// 	echo "Update POST";
-// }
+/*
+ * retrieve post meta values and fill meta_box
+ */
+
+function einsatzverwaltung_edit($mission_id)
+{
+	//load mission by id
+
+	//fill fields with values
+}
 
 
 /*
@@ -398,7 +408,7 @@ function einsatzverwaltung_install(){
    	* 
    	* No Foreign Keys: http://wordpress.stackexchange.com/questions/52783/dbdelta-support-for-foreign-key
    	*/
-	$wpdb->show_errors;
+	// $wpdb->show_errors;
 
 	$sql_vehicles = "CREATE TABLE IF NOT EXISTS $table_name_vehicles 
 	(
