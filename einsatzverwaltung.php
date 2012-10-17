@@ -64,25 +64,20 @@ function einsatzverwaltung_add_custom_box() {
 
 /* Prints the box content */
 function einsatzverwaltung_inner_custom_box( $post ) {
-	global $isEdited;
-
 	global $post;
-  // Use nonce for verification
-  wp_nonce_field( plugin_basename( __FILE__ ), 'einsatzverwaltung_noncename' );
+  	// Use nonce for verification
+  	wp_nonce_field( plugin_basename( __FILE__ ), 'einsatzverwaltung_noncename' );
   
-  print($post->ID);
-  $meta_values = get_post_meta($post->ID, MISSION_ID, '');
-  print_r($meta_values);
+  	// print("Post ID: ".$post->ID. "<br />");
+  	$meta_values = get_post_meta($post->ID, MISSION_ID, '');
+  	print_r("Mission ID: ".$meta_values[0]."<br/>");
   
-  if(isset($_GET['action'])){
-  	if($_GET['action'] == "edit"){
-  		print("Editieren von Einsätzen ist in dieser Maske nicht möglich");
-  		return;
-  	} 		
-  }
+	$mission = einsatzveraltung_load_missions_by_id($meta_values[0]);
+
+	print("Mission City: ".$mission->einsatzort);
 
 
-  // The actual fields for data entry
+ // The actual fields for data entry
   
   
   $script = <<< EOF
@@ -124,6 +119,14 @@ function einsatzverwaltung_inner_custom_box( $post ) {
       
 </script>
 EOF;
+
+
+if(strlen($mission->art_alarmierung) != 0)
+{
+	print("do some JS manipulation");
+}
+
+
     echo $script;
 
   
@@ -176,7 +179,10 @@ EOF;
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
-	echo '			<input name="alarmstichwort_freitext" />';
+	// New DB Field freetext
+	// if($mission->alarmstichwort == "Freitext") || ($mission->alarmstichwort == "Sonstiger Brand"))
+	// echo '			<input name="alarmstichwort_freitext" value="'.$mission->freitext.'"/>';
+	echo '			<input name="alarmstichwort_freitext"/>';
 	echo '		</td>';
 	echo '	</tr>';
 	echo '	<tr>';
@@ -199,7 +205,7 @@ EOF;
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
-	echo '			<input id="einsatzort" name="einsatzort" />';
+	echo '			<input id="einsatzort" name="einsatzort" value="'.$mission->einsatzort.'"/>';
 	echo '		</td>';
 	echo '	</tr>';
 	echo '	<tr>';
@@ -209,7 +215,7 @@ EOF;
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';//todo: js calendar
-	echo '			<input id="alarm_date" name="alarmierung_datum" type="date"/>';
+	echo '			<input id="alarm_date" name="alarmierung_datum" type="date" value="'.$mission->alarmierung_date.'"/>';
 	echo '		</td>';
 	echo '	</tr>';
 	echo '	<tr>';
@@ -219,7 +225,7 @@ EOF;
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
-	echo '			<input name="alarmierung_zeit" type="time"/>';
+	echo '			<input name="alarmierung_zeit" type="time" value="'.$mission->alarmierung_time.'"/>';
 	echo '		</td>';
 	echo '	</tr>';
 	echo '	<tr>';
@@ -229,7 +235,7 @@ EOF;
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
-	echo '			<input id="alarm_end_date" name="rueckkehr_datum" type="date"/>';
+	echo '			<input id="alarm_end_date" name="rueckkehr_datum" type="date" value="'.$mission->rueckkehr_date.'"/>';
 	echo '		</td>';
 	echo '	</tr>';
 	echo '	<tr>';
@@ -239,7 +245,7 @@ EOF;
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
-	echo '			<input name="rueckkehr_zeit" type="time"/>';
+	echo '			<input name="rueckkehr_zeit" type="time" value="'.$mission->rueckkehr_time.'"/>';
 	echo '		</td>';
 	echo '	</tr>';
 	echo '	<tr>';
@@ -249,7 +255,7 @@ EOF;
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
-	echo '			<input name="link_zu_medien" />';
+	echo '			<input name="link_zu_medien" value="'.$mission->link_to_media.'"/>';
 	echo '		</td>';
 	echo '	</tr>';
 	echo '	<tr>';
@@ -320,7 +326,6 @@ function einsatzverwaltung_save_postdata( $post_id ) {
 	$fahrzeuge_lf16 = $_POST['fahrzeuge_lf16'];
 	$fahrzeuge_lf10 = $_POST['fahrzeuge_lf10'];
 	$fahrzeuge_sap11 = $_POST['fahrzeuge_sap11'];
-//  $postid = $post_id;
   	
 	$vehicles = array();
 	 	
@@ -346,10 +351,8 @@ function einsatzverwaltung_save_postdata( $post_id ) {
 
 	$table_name_missions = 				$wpdb->prefix . "einsaetze";
 	$table_name_missions_has_vehicles = $wpdb->prefix . "einsaetze_has_fahrzeuge";   	
-	
-	if($alarm_art != "") //Fix against storing null values during edit post in the db!
-	{
-		$wpdb->insert( 
+
+	$wpdb->insert( 
 		$table_name_missions, 
 		array( 
 			'art_alarmierung' => $alarm_art, 
@@ -362,34 +365,21 @@ function einsatzverwaltung_save_postdata( $post_id ) {
 			'rueckkehr_time' => $rueckkehr_zeit,
 			'link_to_media' => $link_zu_medien,
 			'wp_posts_ID' => $post_id
-		), array());
-		
-		$id = $wpdb->insert_id;
-		
-		foreach($vehicles as $vehicle){
-			$wpdb->insert( 
+			), array());
+
+	$id = $wpdb->insert_id;
+
+	foreach($vehicles as $vehicle){
+		$wpdb->insert( 
 			$table_name_missions_has_vehicles, 
 			array( 
 				'einsaetze_id' => $id, 
 				'fahrzeuge_id' => $vehicle
-			), array());
-		}
-
-		add_post_meta($post_id, MISSION_ID, $wpdb->insert_id);
+				), array());
 	}
+
+	add_post_meta($post_id, MISSION_ID, $id);
 }
-
-/*
- * retrieve post meta values and fill meta_box
- */
-
-function einsatzverwaltung_edit($mission_id)
-{
-	//load mission by id
-
-	//fill fields with values
-}
-
 
 /*
  * DB Setup
@@ -476,6 +466,33 @@ function einsatzverwaltung_install(){
  *End DB Setup
  */
 
+/*
+ * Begin DB Access
+ */
+
+function einsatzveraltung_load_missions_by_id($id)
+{
+	global $wpdb;
+	$table_name_missions = $wpdb->prefix . "einsaetze";
+
+	$query = "SELECT * FROM ". $table_name_missions ." WHERE id = ".$id;
+	$mission_details = $wpdb->get_row($query);
+	
+
+	return $mission_details;
+
+	// if ($mission_details != null) {
+	// 	// do something with the link 
+	// 	return $mission_details;
+	// } else {
+	// 	// no link found
+	// 	return "nothing found";
+	// }
+}
+
+/*
+ * Begin DB Access
+ */
 
 /*
  * Begin Admin Menu
