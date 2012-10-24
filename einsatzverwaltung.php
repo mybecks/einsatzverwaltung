@@ -18,6 +18,9 @@ define ('CATEGORY', 3);
 define ('MISSION_ID', 'mission_id');
 
 wp_enqueue_script('jquery-ui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js', array('jquery'), '1.8.6');
+// wp_enqueue_script('data_transfer');
+
+
 
 register_activation_hook(__FILE__,'einsatzverwaltung_install');
 
@@ -72,11 +75,55 @@ function einsatzverwaltung_inner_custom_box( $post ) {
   	$meta_values = get_post_meta($post->ID, MISSION_ID, '');  
 	$mission = einsatzverwaltung_load_missions_by_id($meta_values[0]);
 
+//Ugly Workaround
+if(strlen($mission->art_alarmierung) != 0)
+{
+	// wp_localize_script('data_transfer', 'js_alarm_art', $mission->art_alarmierung);
+	// http://wpquicktips.wordpress.com/2012/04/25/using-php-variables-in-javascript-with-wp_localize_script/
+	// http://www.ronakg.com/2011/05/passing-php-array-to-javascript-using-wp_localize_script/
+	// $("#alarm_art").val($mission->art_alarmierung);
+	print("Alarm Art: ".$mission->art_alarmierung."<br />");
+
+	if($mission->art_alarmierung == "Technischer Einsatz")
+	{
+		$selected = 'selected="selected"';
+	}
+	else
+	{
+		$selected = '';
+	}
+
+		if($mission->art_alarmierung == "Brandeinsatz")
+	{
+		$selectedA = 'selected="selected"';
+	}
+	else
+	{
+		$selectedA = '';
+	}
+
+		if($mission->art_alarmierung == "Sonstiger Einsatz")
+	{
+		$selectedB = 'selected="selected"';
+	}
+	else
+	{
+		$selectedB = '';
+	}
+
+}
+
+if(strlen($mission->alarmstichwort) != 0)
+{
+	print("Alarm Stichwort: ". $mission->alarmstichwort."<br />");
+}
+
+if(strlen($mission->alarm_art) != 0)
+{
+	print("Alarm: ".$mission->alarm_art);
+}
 
 
- // The actual fields for data entry
-  
-  
   $script = <<< EOF
 <script type='text/javascript'>
     jQuery(document).ready(function($) {
@@ -111,20 +158,15 @@ function einsatzverwaltung_inner_custom_box( $post ) {
 	    $( "#einsatzort" ).autocomplete({
 			source: availableTags
 		});
-         
+        
     });
       
 </script>
 EOF;
 
 
-if(strlen($mission->art_alarmierung) != 0)
-{
-	print("do some JS manipulation");
-}
 
     echo $script;
-
   
 	echo '<table border="1">';
 	echo '	<tr>';
@@ -134,7 +176,7 @@ if(strlen($mission->art_alarmierung) != 0)
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
-	echo '			<input id="mission_id" name="mission_id" value="'.$mission->id.'" disabled="disabled"/>';
+	echo '			<input id="mission_id" name="mission_id" value="'.$mission->id.'" readonly="true" size="4"/>';
 	echo '		</td>';
 	echo '	</tr>';
 	echo '	<tr>';
@@ -145,9 +187,9 @@ if(strlen($mission->art_alarmierung) != 0)
 	echo '		</td>';
 	echo '		<td>';
 	echo '			<select name="alarm_art">';
-	echo '  			<option>Brandeinsatz</option>';
-	echo '   			<option>Technischer Einsatz</option>';
-	echo '   			<option>Sonstiger Einsatz</option>';
+	echo '  			<option '.$selectedA.'>Brandeinsatz</option>';
+	echo '   			<option '.$selected.'>Technischer Einsatz</option>';
+	echo '   			<option '.$selectedB.'>Sonstiger Einsatz</option>';
 	echo '  		</select>';
 	echo '		</td>';
 	echo '	</tr>';
@@ -224,7 +266,7 @@ if(strlen($mission->art_alarmierung) != 0)
 						_e("Alarmierung (Datum)", 'einsatzverwaltung_textdomain' );
 	echo '			<label>';
 	echo '		</td>';
-	echo '		<td>';//todo: js calendar
+	echo '		<td>';
 	echo '			<input id="alarm_date" name="alarmierung_datum" type="date" value="'.$mission->alarmierung_date.'"/>';
 	echo '		</td>';
 	echo '	</tr>';
@@ -265,7 +307,7 @@ if(strlen($mission->art_alarmierung) != 0)
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
-	echo '			<input name="link_zu_medien" value="'.$mission->link_to_media.'"/>';
+	echo '			<input name="link_zu_medien" type="url" value="'.$mission->link_to_media.'" size="50"/>';
 	echo '		</td>';
 	echo '	</tr>';
 	echo '	<tr>';
@@ -275,10 +317,10 @@ if(strlen($mission->art_alarmierung) != 0)
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
-	echo '			<label for="fahrzeuge_elw"> <input name="fahrzeuge_elw" type="checkbox"/> ELW 1 </label> <br />';
-	echo '			<label for="fahrzeuge_dlk"> <input name="fahrzeuge_dlk" type="checkbox"/> DLK 23/12 </label> <br />';
-	echo '			<label for="fahrzeuge_lf16"> <input name="fahrzeuge_lf16" type="checkbox"/> LF 16 </label> <br />';
-	echo '			<label for="fahrzeuge_lf10"> <input name="fahrzeuge_lf10" type="checkbox"/> LF 10 </label> <br />';
+	echo '			<label for="fahrzeuge_elw"> <input name="fahrzeuge_elw" type="checkbox"/> ELW 1 </label>';
+	echo '			<label for="fahrzeuge_dlk"> <input name="fahrzeuge_dlk" type="checkbox"/> DLK 23/12 </label>';
+	echo '			<label for="fahrzeuge_lf16"> <input name="fahrzeuge_lf16" type="checkbox"/> LF 16 </label>';
+	echo '			<label for="fahrzeuge_lf10"> <input name="fahrzeuge_lf10" type="checkbox"/> LF 10 </label>';
 	echo '			<label for="fahrzeuge_sap11"> <input name="fahrzeuge_sap11" type="checkbox"/> SAP 11 </label>';
 	echo '		</td>';
 	echo '	</tr>';
@@ -289,6 +331,9 @@ if(strlen($mission->art_alarmierung) != 0)
 /* When the post is saved, saves our custom data */
 function einsatzverwaltung_save_postdata( $post_id ) {
 	global $wpdb;
+
+	$table_name_missions = 				$wpdb->prefix . "einsaetze";
+	$table_name_missions_has_vehicles = $wpdb->prefix . "einsaetze_has_fahrzeuge";
 
   	// verify if this is an auto save routine. 
   	// If it is our form has not been submitted, so we dont want to do anything
@@ -316,56 +361,56 @@ function einsatzverwaltung_save_postdata( $post_id ) {
   	// OK, we're authenticated: we need to find and save the data
 
 	$mission_id = $_POST['mission_id'];
+	// print("mission id: ".$mission_id);
+	// die();
+
+	$alarm_art = $_POST['alarm_art'];
+
+	if(($_POST['alarm_stichwort'] == "Freitext") || ($_POST['alarm_stichwort'] == "Sonstiger Brand"))
+		$freitext = $_POST['alarmstichwort_freitext'];
+	else
+		$freitext = "";
+
+	$alarm = $_POST['alarm'];
+	$einsatzort = $_POST['einsatzort'];
+	$alarm_stichwort = $_POST['alarm_stichwort'];
+	$alarmierung_datum = $_POST['alarmierung_datum'];
+	$alarmierung_zeit = $_POST['alarmierung_zeit'];
+	$rueckkehr_datum = $_POST['rueckkehr_datum'];
+	$rueckkehr_zeit = $_POST['rueckkehr_zeit'];
+	$link_zu_medien = $_POST['link_zu_medien'];
+	$fahrzeuge_elw = $_POST['fahrzeuge_elw'];
+	$fahrzeuge_dlk = $_POST['fahrzeuge_dlk'];
+	$fahrzeuge_lf16 = $_POST['fahrzeuge_lf16'];
+	$fahrzeuge_lf10 = $_POST['fahrzeuge_lf10'];
+	$fahrzeuge_sap11 = $_POST['fahrzeuge_sap11'];
+
+	$vehicles = array();
+
+	if(isset($fahrzeuge_elw)){
+		$vehicles[] = 1;
+	}
+
+	if(isset($fahrzeuge_dlk)){
+		$vehicles[] = 2;
+	}
+
+	if(isset($fahrzeuge_lf16)){
+		$vehicles[] = 3;
+	}
+
+	if(isset($fahrzeuge_lf10)){
+		$vehicles[] = 4;
+	}
+
+	if(isset($fahrzeuge_sap11)){
+		$vehicles[] = 5;
+	}
+
 
 	if(!empty($mission_id))
 	{
 		//Update
-		$table_name_missions = 				$wpdb->prefix . "einsaetze";
-		$table_name_missions_has_vehicles = $wpdb->prefix . "einsaetze_has_fahrzeuge";
-
-		$alarm_art = $_POST['alarm_art'];
-
-		if(($_POST['alarm_stichwort'] == "Freitext") || ($_POST['alarm_stichwort'] == "Sonstiger Brand"))
-			$freitext = $_POST['alarmstichwort_freitext'];
-		else
-			$freitext = "";
-
-		$alarm = $_POST['alarm'];
-		$einsatzort = $_POST['einsatzort'];
-		$alarm_stichwort = $_POST['alarm_stichwort'];
-		$alarmierung_datum = $_POST['alarmierung_datum'];
-		$alarmierung_zeit = $_POST['alarmierung_zeit'];
-		$rueckkehr_datum = $_POST['rueckkehr_datum'];
-		$rueckkehr_zeit = $_POST['rueckkehr_zeit'];
-		$link_zu_medien = $_POST['link_zu_medien'];
-		$fahrzeuge_elw = $_POST['fahrzeuge_elw'];
-		$fahrzeuge_dlk = $_POST['fahrzeuge_dlk'];
-		$fahrzeuge_lf16 = $_POST['fahrzeuge_lf16'];
-		$fahrzeuge_lf10 = $_POST['fahrzeuge_lf10'];
-		$fahrzeuge_sap11 = $_POST['fahrzeuge_sap11'];
-
-		$vehicles = array();
-
-		if(isset($fahrzeuge_elw)){
-			$vehicles[] = 1;
-		}
-
-		if(isset($fahrzeuge_dlk)){
-			$vehicles[] = 2;
-		}
-
-		if(isset($fahrzeuge_lf16)){
-			$vehicles[] = 3;
-		}
-
-		if(isset($fahrzeuge_lf10)){
-			$vehicles[] = 4;
-		}
-
-		if(isset($fahrzeuge_sap11)){
-			$vehicles[] = 5;
-		}
-
 		$wpdb->update( 
 			$table_name_missions, 
 			array( 
@@ -398,52 +443,6 @@ function einsatzverwaltung_save_postdata( $post_id ) {
 
 	}else{
 		//new mission entry
-		$alarm_art = $_POST['alarm_art'];
-
-		if(($_POST['alarm_stichwort'] == "Freitext") || ($_POST['alarm_stichwort'] == "Sonstiger Brand"))
-			$freitext = $_POST['alarmstichwort_freitext'];
-		else
-			$freitext = "";
-
-		$alarm = $_POST['alarm'];
-		$einsatzort = $_POST['einsatzort'];
-		$alarm_stichwort = $_POST['alarm_stichwort'];
-		$alarmierung_datum = $_POST['alarmierung_datum'];
-		$alarmierung_zeit = $_POST['alarmierung_zeit'];
-		$rueckkehr_datum = $_POST['rueckkehr_datum'];
-		$rueckkehr_zeit = $_POST['rueckkehr_zeit'];
-		$link_zu_medien = $_POST['link_zu_medien'];
-		$fahrzeuge_elw = $_POST['fahrzeuge_elw'];
-		$fahrzeuge_dlk = $_POST['fahrzeuge_dlk'];
-		$fahrzeuge_lf16 = $_POST['fahrzeuge_lf16'];
-		$fahrzeuge_lf10 = $_POST['fahrzeuge_lf10'];
-		$fahrzeuge_sap11 = $_POST['fahrzeuge_sap11'];
-
-		$vehicles = array();
-
-		if(isset($fahrzeuge_elw)){
-			$vehicles[] = 1;
-		}
-
-		if(isset($fahrzeuge_dlk)){
-			$vehicles[] = 2;
-		}
-
-		if(isset($fahrzeuge_lf16)){
-			$vehicles[] = 3;
-		}
-
-		if(isset($fahrzeuge_lf10)){
-			$vehicles[] = 4;
-		}
-
-		if(isset($fahrzeuge_sap11)){
-			$vehicles[] = 5;
-		}
-
-		$table_name_missions = 				$wpdb->prefix . "einsaetze";
-		$table_name_missions_has_vehicles = $wpdb->prefix . "einsaetze_has_fahrzeuge";   	
-
 		$wpdb->insert( 
 			$table_name_missions, 
 			array( 
