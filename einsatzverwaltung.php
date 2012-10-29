@@ -83,44 +83,25 @@ if(strlen($mission->art_alarmierung) != 0)
 	// http://www.ronakg.com/2011/05/passing-php-array-to-javascript-using-wp_localize_script/
 	// $("#alarm_art").val($mission->art_alarmierung);
 	print("Alarm Art: ".$mission->art_alarmierung."<br />");
-
-	if($mission->art_alarmierung == "Technischer Einsatz")
-	{
-		$selected = 'selected="selected"';
-	}
-	else
-	{
-		$selected = '';
-	}
-
-		if($mission->art_alarmierung == "Brandeinsatz")
-	{
-		$selectedA = 'selected="selected"';
-	}
-	else
-	{
-		$selectedA = '';
-	}
-
-		if($mission->art_alarmierung == "Sonstiger Einsatz")
-	{
-		$selectedB = 'selected="selected"';
-	}
-	else
-	{
-		$selectedB = '';
-	}
-
+	set_selector_for_dropdown_value("#alarm_art", $mission->art_alarmierung);
+	// $script = "
+	// <script type='text/javascript'>
+	//  jQuery(document).ready(function($) {
+	// 	$('#alarm_art').val('".$mission->art_alarmierung."');
+	// });
+	// </script>";
+	// echo $script;
 }
-
 if(strlen($mission->alarmstichwort) != 0)
 {
 	print("Alarm Stichwort: ". $mission->alarmstichwort."<br />");
+	set_selector_for_dropdown_value("#alarm_stichwort", $mission->alarmstichwort);
 }
 
 if(strlen($mission->alarm_art) != 0)
 {
 	print("Alarm: ".$mission->alarm_art);
+	set_selector_for_dropdown_value("#alarm", $mission->alarm_art);
 }
 
 
@@ -128,10 +109,9 @@ if(strlen($mission->alarm_art) != 0)
 <script type='text/javascript'>
     jQuery(document).ready(function($) {
         $('#row_freitext_alarmstichwort').hide();
-      
             
-            
-           $('select').change(function() {
+           // $('select').change(function() {
+        $('#alarm_stichwort').change(function() {
          if($('#sel_so_brand').is(':selected') || $('#sel_freitext').is(':selected')){
              $('#row_freitext_alarmstichwort').show();
 
@@ -143,7 +123,8 @@ if(strlen($mission->alarm_art) != 0)
          $('#alarm_date').change(function(){
          	 $('#alarm_end_date').val($(this).val());
          });
-         
+
+
 		var availableTags = [
 			"Langenbrücken",
 			"Mingolsheim",
@@ -186,10 +167,10 @@ EOF;
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
-	echo '			<select name="alarm_art">';
-	echo '  			<option '.$selectedA.'>Brandeinsatz</option>';
-	echo '   			<option '.$selected.'>Technischer Einsatz</option>';
-	echo '   			<option '.$selectedB.'>Sonstiger Einsatz</option>';
+	echo '			<select id="alarm_art" name="alarm_art">';
+	echo '  			<option>Brandeinsatz</option>';
+	echo '   			<option>Technischer Einsatz</option>';
+	echo '   			<option>Sonstiger Einsatz</option>';
 	echo '  		</select>';
 	echo '		</td>';
 	echo '	</tr>';
@@ -200,7 +181,7 @@ EOF;
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
-	echo '			<select name="alarm_stichwort">';
+	echo '			<select id="alarm_stichwort" name="alarm_stichwort">';
 	echo '   			<option>Brandmeldealarm</option>';
 	echo '   			<option>Verkehrsunfall</option>';
 	echo '   			<option>Ölspur</option>';
@@ -244,7 +225,7 @@ EOF;
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
-	echo '			<select name="alarm">';
+	echo '			<select id="alarm" name="alarm">';
 	echo '  			<option>Einsatzalarm</option>';
 	echo '   			<option>Keine Tätigkeit</option>';
 	echo '  		</select>';
@@ -361,8 +342,6 @@ function einsatzverwaltung_save_postdata( $post_id ) {
   	// OK, we're authenticated: we need to find and save the data
 
 	$mission_id = $_POST['mission_id'];
-	// print("mission id: ".$mission_id);
-	// die();
 
 	$alarm_art = $_POST['alarm_art'];
 
@@ -406,7 +385,6 @@ function einsatzverwaltung_save_postdata( $post_id ) {
 	if(isset($fahrzeuge_sap11)){
 		$vehicles[] = 5;
 	}
-
 
 	if(!empty($mission_id))
 	{
@@ -473,6 +451,17 @@ function einsatzverwaltung_save_postdata( $post_id ) {
 		add_post_meta($post_id, MISSION_ID, $id);
 	}
 }
+
+function set_selector_for_dropdown_value($id, $value){
+	$script = "
+	<script type='text/javascript'>
+	 jQuery(document).ready(function($) {
+		$('".$id."').val('".$value."');
+	});
+	</script>";
+	echo $script;
+}
+
 
 /*
  * DB Setup
@@ -585,8 +574,14 @@ function einsatzverwaltung_load_missions_by_id($id)
 }
 
 /*
- * Begin DB Access
+ * End DB Access
  */
+
+
+
+
+
+
 
 /*
  * Begin Admin Menu
@@ -665,8 +660,14 @@ function einsatzverwaltung_admin_options() {
  * End Admin Menu
  */
 
+
+
+
+
+
+
 /*
- * Display Missions
+ * Display Missions on Page
  */
 
 /*
