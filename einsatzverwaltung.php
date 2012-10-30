@@ -408,16 +408,33 @@ function einsatzverwaltung_save_postdata( $post_id ) {
 
 		//loop for all vehicles
 		//remove all vehicles bound to current mission! Problem old: 4 vehicles new: 3 vehicles - alogrythom below won't work
-		for($i=0; $i<count($vehicles); $i++)
-		{
-			$wpdb->update( 
-				$table_name_missions_has_vehicles, 
-				array( 
-					'fahrzeuge_id' => $vehicles[$i]				
-				), 
-				array( 'einsaetze_id' => $mission_id )
-			);
-		}
+		$query = "DELETE FROM ". $table_name_missions_has_vehicles ." WHERE einsaetze_id = ".$mission_id;
+
+		//fire delete query!
+
+		//insert new values:
+
+		// foreach($vehicles as $vehicle){
+		// 	$wpdb->insert( 
+		// 		$table_name_missions_has_vehicles, 
+		// 		array( 
+		// 			'einsaetze_id' => $id, 
+		// 			'fahrzeuge_id' => $vehicle
+		// 			), array());
+		// }
+
+
+		// for($i=0; $i<count($vehicles); $i++)
+		// {
+			//inser
+			// $wpdb->update( 
+			// 	$table_name_missions_has_vehicles, 
+			// 	array( 
+			// 		'fahrzeuge_id' => $vehicles[$i]				
+			// 	), 
+			// 	array( 'einsaetze_id' => $mission_id )
+			// );
+		// }
 
 	}else{
 		//new mission entry
