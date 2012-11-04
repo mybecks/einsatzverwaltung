@@ -75,6 +75,11 @@ function einsatzverwaltung_inner_custom_box( $post ) {
   	$meta_values = get_post_meta($post->ID, MISSION_ID, '');  
 	$mission = einsatzverwaltung_load_missions_by_id($meta_values[0]);
 
+	$vehicles = einsatzverwaltung_load_vehicles_by_mission_id($mission->id);
+
+	// 	print($vehicles[0]->fahrzeuge_id);
+	// die();
+
 //Ugly Workaround
 if(strlen($mission->art_alarmierung) != 0)
 {
@@ -82,7 +87,7 @@ if(strlen($mission->art_alarmierung) != 0)
 	// http://wpquicktips.wordpress.com/2012/04/25/using-php-variables-in-javascript-with-wp_localize_script/
 	// http://www.ronakg.com/2011/05/passing-php-array-to-javascript-using-wp_localize_script/
 	// $("#alarm_art").val($mission->art_alarmierung);
-	print("Alarm Art: ".$mission->art_alarmierung."<br />");
+	// print("Alarm Art: ".$mission->art_alarmierung."<br />");
 	set_selector_for_dropdown_value("#alarm_art", $mission->art_alarmierung);
 	// $script = "
 	// <script type='text/javascript'>
@@ -94,14 +99,29 @@ if(strlen($mission->art_alarmierung) != 0)
 }
 if(strlen($mission->alarmstichwort) != 0)
 {
-	print("Alarm Stichwort: ". $mission->alarmstichwort."<br />");
+	// print("Alarm Stichwort: ". $mission->alarmstichwort."<br />");
 	set_selector_for_dropdown_value("#alarm_stichwort", $mission->alarmstichwort);
 }
 
 if(strlen($mission->alarm_art) != 0)
 {
-	print("Alarm: ".$mission->alarm_art);
+	// print("Alarm: ".$mission->alarm_art);
 	set_selector_for_dropdown_value("#alarm", $mission->alarm_art);
+}
+
+if(count($vehicles) != 0)
+{
+	for ($i=0; $i < count($vehicles); $i++) {
+	 	// print($vehicles[$i]->description);
+
+	 	$name = rename_db_vehicle_name($vehicles[$i]->description);
+
+	 	// print($name);
+
+	 	set_selector_for_checkbox_value($name);
+	// 	die();
+	}
+	// die();
 }
 
 
@@ -298,7 +318,7 @@ EOF;
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
-	echo '			<label for="fahrzeuge_elw"> <input name="fahrzeuge_elw" type="checkbox"/> ELW 1 </label>';
+	echo '			<label for="fahrzeuge_elw"> <input name="fahrzeuge_elw1" type="checkbox"/> ELW 1 </label>';
 	echo '			<label for="fahrzeuge_dlk"> <input name="fahrzeuge_dlk" type="checkbox"/> DLK 23/12 </label>';
 	echo '			<label for="fahrzeuge_lf16"> <input name="fahrzeuge_lf16" type="checkbox"/> LF 16 </label>';
 	echo '			<label for="fahrzeuge_lf10"> <input name="fahrzeuge_lf10" type="checkbox"/> LF 10 </label>';
@@ -358,7 +378,7 @@ function einsatzverwaltung_save_postdata( $post_id ) {
 	$rueckkehr_datum = $_POST['rueckkehr_datum'];
 	$rueckkehr_zeit = $_POST['rueckkehr_zeit'];
 	$link_zu_medien = $_POST['link_zu_medien'];
-	$fahrzeuge_elw = $_POST['fahrzeuge_elw'];
+	$fahrzeuge_elw = $_POST['fahrzeuge_elw1'];
 	$fahrzeuge_dlk = $_POST['fahrzeuge_dlk'];
 	$fahrzeuge_lf16 = $_POST['fahrzeuge_lf16'];
 	$fahrzeuge_lf10 = $_POST['fahrzeuge_lf10'];
@@ -407,34 +427,21 @@ function einsatzverwaltung_save_postdata( $post_id ) {
 		);
 
 		//loop for all vehicles
-		//remove all vehicles bound to current mission! Problem old: 4 vehicles new: 3 vehicles - alogrythom below won't work
+		//remove all vehicles bound to current mission!
 		$query = "DELETE FROM ". $table_name_missions_has_vehicles ." WHERE einsaetze_id = ".$mission_id;
 
 		//fire delete query!
+		$delete = $wpdb->query($query);
 
 		//insert new values:
-
-		// foreach($vehicles as $vehicle){
-		// 	$wpdb->insert( 
-		// 		$table_name_missions_has_vehicles, 
-		// 		array( 
-		// 			'einsaetze_id' => $id, 
-		// 			'fahrzeuge_id' => $vehicle
-		// 			), array());
-		// }
-
-
-		// for($i=0; $i<count($vehicles); $i++)
-		// {
-			//inser
-			// $wpdb->update( 
-			// 	$table_name_missions_has_vehicles, 
-			// 	array( 
-			// 		'fahrzeuge_id' => $vehicles[$i]				
-			// 	), 
-			// 	array( 'einsaetze_id' => $mission_id )
-			// );
-		// }
+		foreach($vehicles as $vehicle){
+			$wpdb->insert( 
+				$table_name_missions_has_vehicles, 
+				array( 
+					'einsaetze_id' => $mission_id, 
+					'fahrzeuge_id' => $vehicle
+					), array());
+		}
 
 	}else{
 		//new mission entry
@@ -479,6 +486,29 @@ function set_selector_for_dropdown_value($id, $value){
 	echo $script;
 }
 
+function set_selector_for_checkbox_value($value){
+	// print($value);
+	// die();
+	$script = "
+	<script type='text/javascript'>
+	 jQuery(document).ready(function($) {
+		$('input[name=".$value."]').attr('checked', true);
+	});
+	</script>";
+	echo $script;
+}
+
+function rename_db_vehicle_name($name)
+{
+
+	if($name == "DLK 23/12")
+		$name = "dlk";
+
+	$cleaned_name = str_replace(' ','',$name);
+	$name = strtolower($cleaned_name);
+
+	return "fahrzeuge_".$name;
+}
 
 /*
  * DB Setup
@@ -580,14 +610,25 @@ function einsatzverwaltung_load_missions_by_id($id)
 	
 
 	return $mission_details;
+}
 
-	// if ($mission_details != null) {
-	// 	// do something with the link 
-	// 	return $mission_details;
-	// } else {
-	// 	// no link found
-	// 	return "nothing found";
-	// }
+function einsatzverwaltung_load_vehicles_by_mission_id($mission_id)
+{
+	global $wpdb;
+	$table_name_missions_has_vehicles = $wpdb->prefix . "einsaetze_has_fahrzeuge";
+	$table_name_vehicles = 				$wpdb->prefix . "fahrzeuge";
+
+	// $query = "SELECT fahrzeuge_id FROM ". $table_name_missions_has_vehicles ." WHERE einsaetze_id = ".$mission_id;
+
+// 	SELECT f.description FROM wordpress.wp_fahrzeuge as f, wordpress.wp_einsaetze_has_fahrzeuge as h
+//	WHERE f.id = h.fahrzeuge_id
+// 	AND h.einsaetze_id = 2;
+	
+	$query = "SELECT f.description FROM ". $table_name_vehicles ." as f, ". $table_name_missions_has_vehicles ." as h WHERE f.id = h.fahrzeuge_id AND h.einsaetze_id = ".$mission_id;
+
+	$vehicles = $wpdb->get_results($query);
+
+	return $vehicles;
 }
 
 /*
