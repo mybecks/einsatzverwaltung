@@ -3,7 +3,7 @@
 Plugin Name: Einsatzverwaltung 2.0
 Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
 Description: Einsatzverwaltung der FF Langenbruecken
-Version: 0.4 beta
+Version: 0.5 beta
 Author: Andre Becker
 Author URI: la.ffbs.de
 License: GPL2
@@ -20,23 +20,30 @@ define ('MISSION_ID', 'mission_id');
 wp_enqueue_script('jquery-ui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js', array('jquery'), '1.8.6');
 // wp_enqueue_script('data_transfer');
 
-
-
 register_activation_hook(__FILE__,'einsatzverwaltung_install');
 
+/**
+ * Display Missions using [einsatzverwaltung] shortcode
+ * 
+ * @author Andre Becker
+ **/
 function my_einsatzverwaltung_handler( $atts, $content=null, $code="" ) {
 	
 	//code 4 displaying 
-	
-   //print("Hello World");
-   getMissions();
+   display_missions();
 }
+
 add_shortcode( 'einsatzverwaltung', 'my_einsatzverwaltung_handler' );
 
 add_action( 'admin_menu', 'einsatzverwaltung_menu');
 add_action( 'add_meta_boxes', 'einsatzverwaltung_add_custom_box' );
 add_action( 'publish_post', 'einsatzverwaltung_save_postdata' );
 
+/**
+ * 
+ * 
+ * @author Andre Becker
+ **/
 function show_einsatzverwaltung_box() {
     if ( is_admin() ) {
         $script = <<< EOF
@@ -55,7 +62,11 @@ EOF;
 }
 add_action( 'admin_footer', 'show_einsatzverwaltung_box');
 
-
+/**
+ * 
+ * 
+ * @author Andre Becker
+ **/
 function einsatzverwaltung_add_custom_box() {
     add_meta_box( 
         'einsatzverwaltung_sectionid',
@@ -65,67 +76,51 @@ function einsatzverwaltung_add_custom_box() {
     );
 }
 
+/**
+ * 
+ * 
+ * @author Andre Becker
+ **/
 /* Prints the box content */
 function einsatzverwaltung_inner_custom_box( $post ) {
 	global $post;
   	// Use nonce for verification
   	wp_nonce_field( plugin_basename( __FILE__ ), 'einsatzverwaltung_noncename' );
   
-  	// print("Post ID: ".$post->ID. "<br />");
   	$meta_values = get_post_meta($post->ID, MISSION_ID, '');  
 	$mission = einsatzverwaltung_load_missions_by_id($meta_values[0]);
 
 	$vehicles = einsatzverwaltung_load_vehicles_by_mission_id($mission->id);
 
-	// 	print($vehicles[0]->fahrzeuge_id);
-	// die();
-
-//Ugly Workaround
-if(strlen($mission->art_alarmierung) != 0)
-{
-	// wp_localize_script('data_transfer', 'js_alarm_art', $mission->art_alarmierung);
-	// http://wpquicktips.wordpress.com/2012/04/25/using-php-variables-in-javascript-with-wp_localize_script/
-	// http://www.ronakg.com/2011/05/passing-php-array-to-javascript-using-wp_localize_script/
-	// $("#alarm_art").val($mission->art_alarmierung);
-	// print("Alarm Art: ".$mission->art_alarmierung."<br />");
-	set_selector_for_dropdown_value("#alarm_art", $mission->art_alarmierung);
-	// $script = "
-	// <script type='text/javascript'>
-	//  jQuery(document).ready(function($) {
-	// 	$('#alarm_art').val('".$mission->art_alarmierung."');
-	// });
-	// </script>";
-	// echo $script;
-}
-if(strlen($mission->alarmstichwort) != 0)
-{
-	// print("Alarm Stichwort: ". $mission->alarmstichwort."<br />");
-	set_selector_for_dropdown_value("#alarm_stichwort", $mission->alarmstichwort);
-}
-
-if(strlen($mission->alarm_art) != 0)
-{
-	// print("Alarm: ".$mission->alarm_art);
-	set_selector_for_dropdown_value("#alarm", $mission->alarm_art);
-}
-
-if(count($vehicles) != 0)
-{
-	for ($i=0; $i < count($vehicles); $i++) {
-	 	// print($vehicles[$i]->description);
-
-	 	$name = rename_db_vehicle_name($vehicles[$i]->description);
-
-	 	// print($name);
-
-	 	set_selector_for_checkbox_value($name);
-	// 	die();
+	//Workaround
+	if(strlen($mission->art_alarmierung) != 0)
+	{
+		// wp_localize_script('data_transfer', 'js_alarm_art', $mission->art_alarmierung);
+		// http://wpquicktips.wordpress.com/2012/04/25/using-php-variables-in-javascript-with-wp_localize_script/
+		// http://www.ronakg.com/2011/05/passing-php-array-to-javascript-using-wp_localize_script/
+		set_selector_for_dropdown_value("#alarm_art", $mission->art_alarmierung);
 	}
-	// die();
-}
+	if(strlen($mission->alarmstichwort) != 0)
+	{
+		set_selector_for_dropdown_value("#alarm_stichwort", $mission->alarmstichwort);
+	}
+
+	if(strlen($mission->alarm_art) != 0)
+	{
+		set_selector_for_dropdown_value("#alarm", $mission->alarm_art);
+	}
+
+	if(count($vehicles) != 0)
+	{
+		for ($i=0; $i < count($vehicles); $i++) 
+		{
+		 	$name = rename_db_vehicle_name($vehicles[$i]->description);
+		 	set_selector_for_checkbox_value($name);
+		}
+	}
 
 
-  $script = <<< EOF
+  	$script = <<< EOF
 <script type='text/javascript'>
     jQuery(document).ready(function($) {
         $('#row_freitext_alarmstichwort').hide();
@@ -329,6 +324,11 @@ EOF;
   
 }
 
+/**
+ * 
+ * 
+ * @author Andre Becker
+ **/
 /* When the post is saved, saves our custom data */
 function einsatzverwaltung_save_postdata( $post_id ) {
 	global $wpdb;
@@ -476,6 +476,11 @@ function einsatzverwaltung_save_postdata( $post_id ) {
 	}
 }
 
+/**
+ * 
+ * 
+ * @author Andre Becker
+ **/
 function set_selector_for_dropdown_value($id, $value){
 	$script = "
 	<script type='text/javascript'>
@@ -486,9 +491,12 @@ function set_selector_for_dropdown_value($id, $value){
 	echo $script;
 }
 
+/**
+ * 
+ * 
+ * @author Andre Becker
+ **/
 function set_selector_for_checkbox_value($value){
-	// print($value);
-	// die();
 	$script = "
 	<script type='text/javascript'>
 	 jQuery(document).ready(function($) {
@@ -498,6 +506,11 @@ function set_selector_for_checkbox_value($value){
 	echo $script;
 }
 
+/**
+ * 
+ * 
+ * @author Andre Becker
+ **/
 function rename_db_vehicle_name($name)
 {
 
@@ -510,9 +523,19 @@ function rename_db_vehicle_name($name)
 	return "fahrzeuge_".$name;
 }
 
+
+
+
 /*
  * DB Setup
  */
+
+
+/**
+ * Create tables during plugin installation
+ * 
+ * @author Andre Becker
+ **/
 function einsatzverwaltung_install(){
 	global $wpdb;
 	
@@ -522,12 +545,12 @@ function einsatzverwaltung_install(){
    	$table_name_wp_posts =				$wpdb->prefix . "posts";
 	
    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+   
    /*
    	* SQL Create Tables
    	* 
    	* No Foreign Keys: http://wordpress.stackexchange.com/questions/52783/dbdelta-support-for-foreign-key
    	*/
-	// $wpdb->show_errors;
 
 	$sql_vehicles = "CREATE TABLE IF NOT EXISTS $table_name_vehicles 
 	(
@@ -596,10 +619,22 @@ function einsatzverwaltung_install(){
  *End DB Setup
  */
 
+
+
+
+
+
 /*
  * Begin DB Access
  */
 
+/**
+ * Load missions by mission_id
+ *
+ * @param $id
+ * @return array()
+ * @author Andre Becker
+ **/
 function einsatzverwaltung_load_missions_by_id($id)
 {
 	global $wpdb;
@@ -612,6 +647,13 @@ function einsatzverwaltung_load_missions_by_id($id)
 	return $mission_details;
 }
 
+/**
+ * Load vehicles bound to mission
+ *
+ * @param $mission_id
+ * @return array()
+ * @author Andre Becker
+ **/
 function einsatzverwaltung_load_vehicles_by_mission_id($mission_id)
 {
 	global $wpdb;
@@ -646,7 +688,11 @@ function einsatzverwaltung_load_vehicles_by_mission_id($mission_id)
  */
 
 //http://codex.wordpress.org/Adding_Administration_Menus
-
+/**
+ * Initializing Admin Menu
+ * 
+ * @author Andre Becker
+ **/
 function einsatzverwaltung_menu() {
 	// http://codex.wordpress.org/Function_Reference/add_menu_page
 
@@ -657,6 +703,11 @@ function einsatzverwaltung_menu() {
 }
 
 // should be a seperate file!
+/**
+ *
+ * 
+ * @author Andre Becker
+ **/
 function einsatzverwaltung_admin_options() {
 
 	global $wpdb;
@@ -728,10 +779,12 @@ function einsatzverwaltung_admin_options() {
  * Display Missions on Page
  */
 
-/*
-* Einsätze nach Jahr anzeigen
-*/
-function getMissions() {
+/**
+ * Einsätze nach Jahr anzeigen
+ *
+ * @author Andre Becker
+ **/
+function display_missions() {
 	//echo get_permalink();
 	$selected_year = $_POST['einsatzjahr'];
 	$permalink = get_permalink();
@@ -769,53 +822,52 @@ function getMissions() {
  * @author Andre Becker
  **/
 function printMissionsByYear($arr_months){
-	
 	// Pfade
-$arrow_up_path = get_bloginfo("template_url")."/images/mini-nav-top.gif";
-// Ausgabe der Einsätze im aktuellen Jahr
-foreach($arr_months as $key => $value) {
-	$german_month = getGermanMonth($key);
-	echo "<br /> <div>
-	<a name='$german_month'></a>
-	<table class='mission_month' summary='Einsatzliste im Monat $german_month' border='0'>
-	<caption>$german_month&nbsp;<a href='#Übersicht'><img src='$arrow_up_path' class='overview'/></a></caption>
-<thead>
-<tr>
-	<th>Datum</th>
-	<th>Uhrzeit</th>
-	<th>Art der Alarmierung</th>
-	<th>Alarmstichwort</th>
-	<th>Einsatzort</th>
-	<th>Bericht</th>
-</tr>
-</thead>";
-	$count = count($arr_months[$key]);
+	$arrow_up_path = get_bloginfo("template_url")."/images/mini-nav-top.gif";
+	// Ausgabe der Einsätze im aktuellen Jahr
+	foreach($arr_months as $key => $value) {
+		$german_month = getGermanMonth($key);
+		echo "<br /> <div>
+		<a name='$german_month'></a>
+		<table class='mission_month' summary='Einsatzliste im Monat $german_month' border='0'>
+			<caption>$german_month&nbsp;<a href='#Übersicht'><img src='$arrow_up_path' class='overview'/></a></caption>
+			<thead>
+				<tr>
+					<th>Datum</th>
+					<th>Uhrzeit</th>
+					<th>Alarm Art</th>
+					<th>Alarmstichwort</th>
+					<th>Einsatzort</th>
+					<th>Bericht</th>
+				</tr>
+			</thead>";
+		$count = count($arr_months[$key]);
 
-	// Sortieren nach dem Datum, umgekehrt, und der Uhrzeit, umgekehrt
-//	uasort($arr_months[$key], 'compare_datetime');
-	
-	foreach($arr_months[$key] as $key => $value) {
+		// Sortieren nach dem Datum, umgekehrt, und der Uhrzeit, umgekehrt
+	//	uasort($arr_months[$key], 'compare_datetime');
+		
+		foreach($arr_months[$key] as $key => $value) {
+			echo "
+				<tbody>	
+				<tr>
+					<td width='5%'>$value[4]</td>
+					<td width='5%'>$value[5]</td>
+					<td width='30%'>$value[0]</td>
+					<td width='40%'>$value[1]</td>
+					<td width='15%'>$value[3]</td>
+					<td width='5%'><a href=\"".$value[10]."\">$value[9]</a></td>
+				</tr>
+				</tbody>";
+		}
 		echo "
-	<tbody>	
-	<tr>
-		<td width='5%'>$value[4]</td>
-		<td width='5%'>$value[5]</td>
-		<td width='30%'>$value[0]</td>
-		<td width='40%'>$value[1]</td>
-		<td width='15%'>$value[3]</td>
-		<td width='5%'><a href=\"".$value[10]."\">$value[9]</a></td>
-	</tr>
-	</tbody>";
-	}
-	echo "
-<tfoot>
-	<tr>
-		<td colspan='6'>Anzahl der Eins&auml;tze im Monat: <b>$count</b></td>
-	</tr>
-</foot>
-</table>
-</div>";
-	}
+			<tfoot>
+				<tr>
+					<td colspan='6'>Anzahl der Eins&auml;tze im Monat: <b>$count</b></td>
+				</tr>
+			</foot>
+			</table>
+			</div>";
+		}
 }
 
 
@@ -871,9 +923,11 @@ function getGermanMonth($english_month_2number) {
 	return $german_months[$english_month_2number];
 }
 
-/*
-* Einsätze nach Jahr sammeln
-*/
+/**
+ * Einsätze nach Jahr sammeln
+ * 
+ * @author Andre Becker
+ **/
 function getMissionsByYear($year) {
 	global $wpdb;
 	$table_name_missions = $wpdb->prefix . "einsaetze";
@@ -981,7 +1035,11 @@ function getMissionsByYear($year) {
 	return $arr_months;
 }
 
-
+/**
+ *
+ * 
+ * @author Florian Wallburg
+ **/
 function printMissionsMonthOverview($arr_months){
 	// START Attributes
 	$mission_year = $_POST['einsatzjahr'];
@@ -1058,14 +1116,19 @@ function printMissionsMonthOverview($arr_months){
 
 
 
+
+
+
+
 /*
  * Begin Postinfo
  */
 
-//function list_mission_details() {	
-//	postinfo();	
-//}
-
+/**
+ *
+ * 
+ * @author Florian Wallburg
+ **/
 function postinfo_head() {
 	
 	global $post;
@@ -1088,62 +1151,50 @@ EOF;
 }
 add_action('wp_head', 'postinfo_head');
 
-/*
-* Ausgabe der Detailinformationen zu einem Einsatz
-*/
+
+/**
+ * Ausgabe der Detailinformationen zu einem Einsatz
+ * 
+ * @author Florian Wallburg
+ **/
 function postinfo() {
 	global $post;
-	global $wpdb;
-//$category = get_the_category( $post->ID ); 
-//echo $category[0]->cat_ID;
-
-
-	//filter, dass nur für kategorie einsätze angezeigt wird!
-//	if($category[0]->cat_ID == CATEGORY){
 		
 	echo '<p class="open-post-info" id="'. $post->post_name .'">Details</p>';
 	echo '<div class="post-info post-info-'. $post->post_name .'">';
 	echo '<ul>';
-	echo '<li class="alarm">';
-	echo "<b>Alarm:</b> ".$alarm;
-	echo '</li>';
-	echo '<li class="alarmstichwort">';
-	echo "<b>Alarmstichwort:</b> ".$alarmstichwort;
-	echo '</li>';
-	echo '<li class="art_der_alarmierung">';
-	echo "<b>Art der Alarmierung:</b> ".$art_der_alarmierung;
-	echo '</li>';
-	echo '<li class="alarmierung">';
-	echo "<b>Alarmierung:</b> ".$alarmierung_datum." ".$alarmierung_uhrzeit;
-	echo '</li>';
-	echo '<li class="rueckkehr">';
-	echo "<b>R&uuml;ckkehr:</b> ".$rueckkehr_datum." ".$rueckkehr_uhrzeit;
-	echo '</li>';
-	echo '<li class="einsatzort">';
-	echo "<b>Einsatzort:</b> ".$einsatzort;
-	echo '</li>';
-	echo '<li class="eingesetzte_fahrzeuge">';
-	echo "<b>Eingesetzte Fahrzeuge:</b> ".$eingesetzte_fahrzeuge;
-	echo '</li>';
-	echo '<li class="link">';
+	echo 	'<li class="alarm">';
+	echo 		"<b>Alarm:</b> ".$alarm;
+	echo 	'</li>';
+	echo 	'<li class="alarmstichwort">';
+	echo 		"<b>Alarmstichwort:</b> ".$alarmstichwort;
+	echo 	'</li>';
+	echo 	'<li class="art_der_alarmierung">';
+	echo 		"<b>Art der Alarmierung:</b> ".$art_der_alarmierung;
+	echo 	'</li>';
+	echo 	'<li class="alarmierung">';
+	echo 		"<b>Alarmierung:</b> ".$alarmierung_datum." ".$alarmierung_uhrzeit;
+	echo 	'</li>';
+	echo 	'<li class="rueckkehr">';
+	echo 		"<b>R&uuml;ckkehr:</b> ".$rueckkehr_datum." ".$rueckkehr_uhrzeit;
+	echo 	'</li>';
+	echo 	'<li class="einsatzort">';
+	echo 		"<b>Einsatzort:</b> ".$einsatzort;
+	echo 	'</li>';
+	echo 	'<li class="eingesetzte_fahrzeuge">';
+	echo 		"<b>Eingesetzte Fahrzeuge:</b> ".$eingesetzte_fahrzeuge;
+	echo 	'</li>';
+	echo 	'<li class="link">';
 	if($link == "Nicht verf&uuml;gbar"){
 		echo "<b>Quelle:</b> ".$link;
 	}
 	else {
 		echo "<b>Quelle:</b> <a href='$link' target='_blank'>".$link."</a>";
 	}
-	echo '</li>';
+	echo 	'</li>';
 	echo '</ul>';
 	echo '</div>';
-	
-		echo '<br />';
+	echo '<br />';
 	echo $post->post_content;
-//	}else{
-//		echo $post->post_content;
-//	}
-	
-
 }
-//add_filter('the_content', 'postinfo');
-
 ?>
