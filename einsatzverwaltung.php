@@ -17,11 +17,8 @@ define ("CURRENT_YEAR" , date("Y"));
 define ('CATEGORY', 3);
 define ('MISSION_ID', 'mission_id');
 
-// old one
-// wp_enqueue_script('jquery-ui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js', array('jquery'), '1.8.6');
 wp_enqueue_script('jquery-ui-autocomplete', '', array('jquery-ui-widget', 'jquery-ui-position'), '1.8.6');
 
-// wp_enqueue_script('data_transfer');
 
 register_activation_hook(__FILE__,'einsatzverwaltung_install');
 
@@ -51,12 +48,10 @@ function my_einsatzverwaltung_handler( $atts, $content=null, $code="" ) {
 
 add_shortcode( 'einsatzverwaltung', 'my_einsatzverwaltung_handler' );
 
-add_action( 'admin_menu', 'einsatzverwaltung_admin_menu');
 add_action( 'add_meta_boxes', 'einsatzverwaltung_add_custom_box' );
 add_action( 'publish_post', 'einsatzverwaltung_save_postdata' );
-
-
 add_action( 'admin_init', 'einsatzverwaltung_admin_init' );
+
    
 /**
  * Display Mission Details Box
@@ -114,7 +109,6 @@ function einsatzverwaltung_inner_custom_box( $post ) {
 	//Workaround
 	if(strlen($mission->art_alarmierung) != 0)
 	{
-		// wp_localize_script('data_transfer', 'js_alarm_art', $mission->art_alarmierung);
 		// http://wpquicktips.wordpress.com/2012/04/25/using-php-variables-in-javascript-with-wp_localize_script/
 		// http://www.ronakg.com/2011/05/passing-php-array-to-javascript-using-wp_localize_script/
 		set_selector_for_dropdown_value("#alarm_art", $mission->art_alarmierung);
@@ -678,12 +672,6 @@ function einsatzverwaltung_load_vehicles_by_mission_id($mission_id)
 	global $wpdb;
 	$table_name_missions_has_vehicles = $wpdb->prefix . "einsaetze_has_fahrzeuge";
 	$table_name_vehicles = 				$wpdb->prefix . "fahrzeuge";
-
-	// $query = "SELECT fahrzeuge_id FROM ". $table_name_missions_has_vehicles ." WHERE einsaetze_id = ".$mission_id;
-
-// 	SELECT f.description FROM wordpress.wp_fahrzeuge as f, wordpress.wp_einsaetze_has_fahrzeuge as h
-//	WHERE f.id = h.fahrzeuge_id
-// 	AND h.einsaetze_id = 2;
 	
 	$query = "SELECT f.description FROM ". $table_name_vehicles ." as f, ". $table_name_missions_has_vehicles ." as h WHERE f.id = h.fahrzeuge_id AND h.einsaetze_id = ".$mission_id;
 
@@ -714,6 +702,9 @@ function einsatzverwaltung_load_vehicles_by_mission_id($mission_id)
 function einsatzverwaltung_admin_init() {
     /* Register our stylesheet. */
     wp_register_style( 'adminStylesheet', plugins_url('css/admin.css', __FILE__) );
+
+// http://wp.tutsplus.com/tutorials/theme-development/create-a-settings-page-for-your-wordpress-theme/
+    
 }
    
 /**
@@ -729,18 +720,65 @@ function einsatzverwaltung_admin_styles() {
 }
 
 //http://codex.wordpress.org/Adding_Administration_Menus
+// http://wp.tutsplus.com/tutorials/theme-development/create-a-settings-page-for-your-wordpress-theme/
 /**
  * Creating Admin Menu
  * 
  * @author Andre Becker
  **/
 function einsatzverwaltung_admin_menu() {
+
+	if (!current_user_can('manage_options')) {  
+    wp_die('You do not have sufficient permissions to access this page.');  
+	}	  
 	// http://codex.wordpress.org/Function_Reference/add_menu_page
 
 	// add_options_page('Einsatzverwaltungs Options', 'Einsatzverwaltung', 'manage_options', 'einsatzverwaltung', 'einsatzverwaltung_admin_options');
-	$page = add_menu_page( 'Einsatzverwaltung', 'Einsatzverwaltung', 'administrator', __FILE__, 'einsatzverwaltung_admin_options', '', '76' );
+	// $page = add_menu_page( 'Einsatzverwaltung', 'Einsatzverwaltung', 'administrator', __FILE__, 'einsatzverwaltung_admin_options', '', '76' );
+    
+    add_menu_page('Einsatzverwaltung', 'Mission Control', 'manage_options', 'einsatzverwaltung-admin', 'einsatzverwaltung_admin_options', plugin_dir_url( __FILE__ ).'img/blaulicht_state_hover.png');  
+    add_submenu_page('einsatzverwaltung-admin','Vehicles', 'Fahrzeuge', 'manage_options', 'einsatzverwaltung-admin', 'einsatzverwaltung_admin_handle_vehicles');
+    add_submenu_page('einsatzverwaltung-admin','Settings', 'Einstellungen', 'manage_options', 'einsatzverwaltung-admin-handle-options', 'einsatzverwaltung_admin_handle_options');  
+
 	// add_submenu_page( __FILE__, '', 'Manage Categories','administrator', __FILE__.'_categories_settings', 'my_custom_submenu_test_callback');
 	add_action( 'admin_print_styles-' . $page, 'einsatzverwaltung_admin_styles' );
+}
+add_action( 'admin_menu', 'einsatzverwaltung_admin_menu' );
+
+function einsatzverwaltung_admin_handle_options() {
+?>
+
+<div class="wrap">  
+        <?php screen_icon('options-general'); ?> <h2>Einstellungen</h2>  
+        <form method="POST" action="">  
+            <table class="form-table">  
+                <tr valign="top">  
+                    <th scope="row">  
+                        <label for="num_elements">  
+                            Mapping der Kategorie:  
+                        </label>  
+                    </th>  
+                    <td>  
+                        <input type="text" name="num_elements" size="25" />  
+                    </td>  
+                </tr>  
+            </table>  
+           <!--  <?php $posts = get_posts(); ?>  
+<li class="front-page-element" id="front-page-element-placeholder">  
+    <label for="element-page-id">Featured post:</label>  
+    <select name="element-page-id">  
+        <?php foreach ($posts as $post) : ?>  
+            <option value="<?php echo $post-<ID; ?>">  
+                <?php echo $post-<post_title; ?>  
+            </option>  
+        <?php endforeach; ?>  
+    </select>  
+    <a href="#">Remove</a>  
+</li> -->
+        </form>  
+    </div>  
+
+<?php
 }
 
 // should be a seperate file!
@@ -799,6 +837,10 @@ function einsatzverwaltung_admin_options() {
 
 	//logic for adding new vehicle
 	//refresh admin
+}
+
+function einsatzverwaltung_admin_handle_vehicles(){
+	echo "VFehicles";	
 }
 
 /*
