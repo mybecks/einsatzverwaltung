@@ -755,7 +755,7 @@ function einsatzverwaltung_admin_handle_options() {
                 <tr valign="top">  
                     <th scope="row">  
                         <label for="num_elements">  
-                            Mapping der Kategorie:  
+                            Mapping der Kategorien:  
                         </label>  
                     </th>  
                     <td>  
@@ -763,18 +763,6 @@ function einsatzverwaltung_admin_handle_options() {
                     </td>  
                 </tr>  
             </table>  
-           <!--  <?php $posts = get_posts(); ?>  
-<li class="front-page-element" id="front-page-element-placeholder">  
-    <label for="element-page-id">Featured post:</label>  
-    <select name="element-page-id">  
-        <?php foreach ($posts as $post) : ?>  
-            <option value="<?php echo $post-<ID; ?>">  
-                <?php echo $post-<post_title; ?>  
-            </option>  
-        <?php endforeach; ?>  
-    </select>  
-    <a href="#">Remove</a>  
-</li> -->
         </form>  
     </div>  
 
