@@ -17,10 +17,24 @@ define ("CURRENT_YEAR" , date("Y"));
 define ('CATEGORY', 3);
 define ('MISSION_ID', 'mission_id');
 
+//throws firebug error on mission page! TODO: Investigate
 wp_enqueue_script('jquery-ui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js', array('jquery'), '1.8.6');
 // wp_enqueue_script('data_transfer');
 
 register_activation_hook(__FILE__,'einsatzverwaltung_install');
+
+add_action( 'wp_enqueue_scripts', 'einsatzverwaltung_add_stylesheet' );
+
+/**
+ * Add Custom Stylesheet for Plugin
+ * 
+ * @author Andre Becker
+ **/
+function einsatzverwaltung_add_stylesheet() {
+        // Respects SSL, Style.css is relative to the current file
+        wp_register_style( 'einsatzverwaltung-style', plugins_url('css/styles.css', __FILE__) );
+        wp_enqueue_style( 'einsatzverwaltung-style' );
+}
 
 /**
  * Display Missions using [einsatzverwaltung] shortcode
@@ -35,12 +49,15 @@ function my_einsatzverwaltung_handler( $atts, $content=null, $code="" ) {
 
 add_shortcode( 'einsatzverwaltung', 'my_einsatzverwaltung_handler' );
 
-add_action( 'admin_menu', 'einsatzverwaltung_menu');
+add_action( 'admin_menu', 'einsatzverwaltung_admin_menu');
 add_action( 'add_meta_boxes', 'einsatzverwaltung_add_custom_box' );
 add_action( 'publish_post', 'einsatzverwaltung_save_postdata' );
 
+
+add_action( 'admin_init', 'einsatzverwaltung_admin_init' );
+   
 /**
- * 
+ * Display Mission Details Box
  * 
  * @author Andre Becker
  **/
@@ -63,7 +80,7 @@ EOF;
 add_action( 'admin_footer', 'show_einsatzverwaltung_box');
 
 /**
- * 
+ * Add Custom Box to Category
  * 
  * @author Andre Becker
  **/
@@ -77,7 +94,7 @@ function einsatzverwaltung_add_custom_box() {
 }
 
 /**
- * 
+ * Display Mission Details Input Form 
  * 
  * @author Andre Becker
  **/
@@ -325,7 +342,7 @@ EOF;
 }
 
 /**
- * 
+ * Save and Edit Mission Details
  * 
  * @author Andre Becker
  **/
@@ -532,7 +549,7 @@ function rename_db_vehicle_name($name)
 
 
 /**
- * Create tables during plugin installation
+ * Create Tables on Plugin Installation
  * 
  * @author Andre Becker
  **/
@@ -687,24 +704,46 @@ function einsatzverwaltung_load_vehicles_by_mission_id($mission_id)
  * Begin Admin Menu
  */
 
-//http://codex.wordpress.org/Adding_Administration_Menus
 /**
  * Initializing Admin Menu
  * 
  * @author Andre Becker
  **/
-function einsatzverwaltung_menu() {
+function einsatzverwaltung_admin_init() {
+    /* Register our stylesheet. */
+    wp_register_style( 'adminStylesheet', plugins_url('css/admin.css', __FILE__) );
+}
+   
+/**
+ * Setting Admin Menu Style
+ * 
+ * @author Andre Becker
+ **/   
+function einsatzverwaltung_admin_styles() {
+    /*
+     * It will be called only on your plugin admin page, enqueue our stylesheet here
+     */
+    wp_enqueue_style( 'adminStylesheet' );
+}
+
+//http://codex.wordpress.org/Adding_Administration_Menus
+/**
+ * Creating Admin Menu
+ * 
+ * @author Andre Becker
+ **/
+function einsatzverwaltung_admin_menu() {
 	// http://codex.wordpress.org/Function_Reference/add_menu_page
 
 	// add_options_page('Einsatzverwaltungs Options', 'Einsatzverwaltung', 'manage_options', 'einsatzverwaltung', 'einsatzverwaltung_admin_options');
-	add_menu_page( 'Einsatzverwaltung', 'Einsatzverwaltung', 'administrator', __FILE__, 'einsatzverwaltung_admin_options', '', '76' );
+	$page = add_menu_page( 'Einsatzverwaltung', 'Einsatzverwaltung', 'administrator', __FILE__, 'einsatzverwaltung_admin_options', '', '76' );
 	// add_submenu_page( __FILE__, '', 'Manage Categories','administrator', __FILE__.'_categories_settings', 'my_custom_submenu_test_callback');
-
+	add_action( 'admin_print_styles-' . $page, 'einsatzverwaltung_admin_styles' );
 }
 
 // should be a seperate file!
 /**
- *
+ * Dispalying Admin Menu
  * 
  * @author Andre Becker
  **/
@@ -760,11 +799,6 @@ function einsatzverwaltung_admin_options() {
 	//refresh admin
 }
 
-// function my_custom_submenu_test_callback(){
-// 	echo '
-// 		Hello Sub Menu Page
-// 		';
-// }
 /*
  * End Admin Menu
  */
@@ -788,7 +822,7 @@ function display_missions() {
 	//echo get_permalink();
 	$selected_year = $_POST['einsatzjahr'];
 	$permalink = get_permalink();
-	$years = getMissionYears();
+	$years = get_mission_years();
 	
 	echo "<div>";
 	echo "<form action=\"$permalink\" method=\"post\">";
@@ -875,21 +909,16 @@ function printMissionsByYear($arr_months){
  * Returns array with all mission years
  *
  * @return array() 
- * @author Florian Wallburg
+ * @author Andre Becker
  **/
-function getMissionYears() {
-//	global $post;
+function get_mission_years() {
 	global $wpdb;
 	$array = array();
 	$table_name_missions = $wpdb->prefix . "einsaetze";
 	
-	$years = $wpdb->get_results( 
-	"
-	SELECT YEAR(alarmierung_date) AS Year 
-	FROM $table_name_missions
-	GROUP BY Year
-	"
-	);
+	$query = "SELECT YEAR(alarmierung_date) AS Year FROM ".$table_name_missions." GROUP BY Year DESC";
+
+	$years = $wpdb->get_results($query);
 		
 	foreach($years as $year){
 		if($year->Year != 1970)
