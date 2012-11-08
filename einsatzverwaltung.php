@@ -17,8 +17,10 @@ define ("CURRENT_YEAR" , date("Y"));
 define ('CATEGORY', 3);
 define ('MISSION_ID', 'mission_id');
 
-//throws firebug error on mission page! TODO: Investigate
-wp_enqueue_script('jquery-ui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js', array('jquery'), '1.8.6');
+// old one
+// wp_enqueue_script('jquery-ui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js', array('jquery'), '1.8.6');
+wp_enqueue_script('jquery-ui-autocomplete', '', array('jquery-ui-widget', 'jquery-ui-position'), '1.8.6');
+
 // wp_enqueue_script('data_transfer');
 
 register_activation_hook(__FILE__,'einsatzverwaltung_install');
