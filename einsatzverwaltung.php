@@ -14,7 +14,7 @@ License: GPL2
 
 // Aktuelles Jahr
 define ("CURRENT_YEAR" , date("Y"));
-define ('CATEGORY', get_option("theme_name_num_elements")); 
+define ('CATEGORY', get_option("einsatzverwaltung_settings_option_category_id")); 
 define ('MISSION_ID', 'mission_id');
 
 wp_enqueue_script('jquery-ui-autocomplete', '', array('jquery-ui-widget', 'jquery-ui-position'), '1.8.6');
@@ -60,17 +60,16 @@ add_action( 'admin_menu', 'einsatzverwaltung_admin_menu' );
  **/
 function show_einsatzverwaltung_box() {
     if ( is_admin() ) {
-        $script = <<< EOF
-<script type='text/javascript'>
-    jQuery(document).ready(function($) {
-        $('#einsatzverwaltung_sectionid').hide();
-        $('#in-category-3').is(':checked') ? $("#einsatzverwaltung_sectionid").show() : $("#einsatzverwaltung_sectionid").hide();
-        $('#in-category-3').click(function() {
-            $("#einsatzverwaltung_sectionid").toggle(this.checked);
-        });
-    });
-</script>
-EOF;
+        $script = "
+			<script type='text/javascript'>
+			    jQuery(document).ready(function($) {
+			        $('#einsatzverwaltung_sectionid').hide();
+			        $('#in-category-".CATEGORY."').is(':checked') ? $('#einsatzverwaltung_sectionid').show() : $('#einsatzverwaltung_sectionid').hide();
+			        $('#in-category-".CATEGORY."').click(function() {
+			            $('#einsatzverwaltung_sectionid').toggle(this.checked);
+			        });
+			    });
+			</script>";
         echo $script;
     }
 }
@@ -739,13 +738,20 @@ function einsatzverwaltung_admin_menu() {
 	add_action( 'admin_print_styles-' . $page, 'einsatzverwaltung_admin_styles' );
 }
 
+// should be a seperate file!
+
+/**
+ * Handle Category Selection
+ * 
+ * @author Andre Becker
+ **/
 function einsatzverwaltung_admin_handle_options() 
 {
 	if (!current_user_can('administrator')) {  
     	wp_die('You do not have sufficient permissions to access this page.');  
 	}	
 
-	$num_elements = get_option("theme_name_num_elements");
+	$category_id = get_option("einsatzverwaltung_settings_option_category_id");
 ?>
 <div class="wrap">  
     <?php screen_icon('options-general'); ?> <h2>Einstellungen</h2>  
@@ -753,12 +759,12 @@ function einsatzverwaltung_admin_handle_options()
     	<table class="form-table">  
             <tr valign="top">  
                 <th scope="row">  
-                    <label for="num_elements">  
+                    <label for="category_id">  
                         Mapping der Kategorien:  
                     </label>  
                 </th>  
                 <td> 
-                    <input type="text" name="num_elements" size="25" value="<?php echo $num_elements;?>" />  
+                    <input type="text" name="category_id" size="25" value="<?php echo $category_id;?>" />  
                 </td>  
             </tr>  
             </table>
@@ -773,31 +779,19 @@ function einsatzverwaltung_admin_handle_options()
 
 if (isset($_POST["update_settings"])) {  
     // Do the saving  
-    $num_elements = esc_attr($_POST["num_elements"]);  
-	update_option("theme_name_num_elements", $num_elements);
+    $category_id = esc_attr($_POST["category_id"]);  
+	update_option("einsatzverwaltung_settings_option_category_id", $category_id);
 ?>  
     <div id="message" class="updated">Settings saved</div>
 <?php  
-	update_num_elements_value($num_elements);
+	update_category_id_value($category_id);
 }  
 
 
 }
 
-function update_num_elements_value($value){
-	$script = "
-	<script type='text/javascript'>
-	 jQuery(document).ready(function($) {
-		$('input[name=num_elements]').val('".$value."');
-	});
-	</script>";
-	echo $script;
-}
-
-
-// should be a seperate file!
 /**
- * Dispalying Admin Menu
+ * Dispalying Admin Menu for Managing Vehicles
  * 
  * @author Andre Becker
  **/
@@ -805,7 +799,8 @@ function einsatzverwaltung_admin_options() {
 
 	global $wpdb;
 
-	$table_name_vehicles = 				$wpdb->prefix . "fahrzeuge";
+	$table_name_vehicles = $wpdb->prefix . "fahrzeuge";
+
 	if (!current_user_can('manage_options'))  {
 		wp_die( __('You do not have sufficient permissions to access this page.') );
 	}
@@ -853,6 +848,20 @@ function einsatzverwaltung_admin_options() {
 	//refresh admin
 }
 
+/**
+ * Updates the category input field with the new value
+ * 
+ * @author Andre Becker
+ **/
+function update_category_id_value($value){
+	$script = "
+	<script type='text/javascript'>
+	 jQuery(document).ready(function($) {
+		$('input[name=category_id]').val('".$value."');
+	});
+	</script>";
+	echo $script;
+}
 /*
  * End Admin Menu
  */
