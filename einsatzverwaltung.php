@@ -14,7 +14,7 @@ License: GPL2
 
 // Aktuelles Jahr
 define ("CURRENT_YEAR" , date("Y"));
-define ('CATEGORY', 3);
+define ('CATEGORY', get_option("theme_name_num_elements")); 
 define ('MISSION_ID', 'mission_id');
 
 wp_enqueue_script('jquery-ui-autocomplete', '', array('jquery-ui-widget', 'jquery-ui-position'), '1.8.6');
@@ -51,7 +51,7 @@ add_shortcode( 'einsatzverwaltung', 'my_einsatzverwaltung_handler' );
 add_action( 'add_meta_boxes', 'einsatzverwaltung_add_custom_box' );
 add_action( 'publish_post', 'einsatzverwaltung_save_postdata' );
 add_action( 'admin_init', 'einsatzverwaltung_admin_init' );
-
+add_action( 'admin_menu', 'einsatzverwaltung_admin_menu' );
    
 /**
  * Display Mission Details Box
@@ -729,45 +729,71 @@ function einsatzverwaltung_admin_styles() {
 function einsatzverwaltung_admin_menu() {
 
 	if (!current_user_can('manage_options')) {  
-    wp_die('You do not have sufficient permissions to access this page.');  
+    	wp_die('You do not have sufficient permissions to access this page.');  
 	}	  
-	// http://codex.wordpress.org/Function_Reference/add_menu_page
-
-	// add_options_page('Einsatzverwaltungs Options', 'Einsatzverwaltung', 'manage_options', 'einsatzverwaltung', 'einsatzverwaltung_admin_options');
-	// $page = add_menu_page( 'Einsatzverwaltung', 'Einsatzverwaltung', 'administrator', __FILE__, 'einsatzverwaltung_admin_options', '', '76' );
     
     add_menu_page('Einsatzverwaltung', 'Mission Control', 'manage_options', 'einsatzverwaltung-admin', 'einsatzverwaltung_admin_options', plugin_dir_url( __FILE__ ).'img/blaulicht_state_hover.png');  
     add_submenu_page('einsatzverwaltung-admin','Vehicles', 'Fahrzeuge', 'manage_options', 'einsatzverwaltung-admin', 'einsatzverwaltung_admin_handle_vehicles');
     add_submenu_page('einsatzverwaltung-admin','Settings', 'Einstellungen', 'manage_options', 'einsatzverwaltung-admin-handle-options', 'einsatzverwaltung_admin_handle_options');  
 
-	// add_submenu_page( __FILE__, '', 'Manage Categories','administrator', __FILE__.'_categories_settings', 'my_custom_submenu_test_callback');
 	add_action( 'admin_print_styles-' . $page, 'einsatzverwaltung_admin_styles' );
 }
-add_action( 'admin_menu', 'einsatzverwaltung_admin_menu' );
 
-function einsatzverwaltung_admin_handle_options() {
+function einsatzverwaltung_admin_handle_options() 
+{
+	if (!current_user_can('administrator')) {  
+    	wp_die('You do not have sufficient permissions to access this page.');  
+	}	
+
+	$num_elements = get_option("theme_name_num_elements");
 ?>
-
 <div class="wrap">  
-        <?php screen_icon('options-general'); ?> <h2>Einstellungen</h2>  
-        <form method="POST" action="">  
-            <table class="form-table">  
-                <tr valign="top">  
-                    <th scope="row">  
-                        <label for="num_elements">  
-                            Mapping der Kategorien:  
-                        </label>  
-                    </th>  
-                    <td>  
-                        <input type="text" name="num_elements" size="25" />  
-                    </td>  
-                </tr>  
-            </table>  
-        </form>  
+    <?php screen_icon('options-general'); ?> <h2>Einstellungen</h2>  
+    <form method="POST" action="">  
+    	<table class="form-table">  
+            <tr valign="top">  
+                <th scope="row">  
+                    <label for="num_elements">  
+                        Mapping der Kategorien:  
+                    </label>  
+                </th>  
+                <td> 
+                    <input type="text" name="num_elements" size="25" value="<?php echo $num_elements;?>" />  
+                </td>  
+            </tr>  
+            </table>
+        <input type="hidden" name="update_settings" value="Y" /> 
+        <p>  
+    		<input type="submit" value="Save settings" class="button-primary"/>  
+		</p>    
+   	 </form>          
     </div>  
 
 <?php
+
+if (isset($_POST["update_settings"])) {  
+    // Do the saving  
+    $num_elements = esc_attr($_POST["num_elements"]);  
+	update_option("theme_name_num_elements", $num_elements);
+?>  
+    <div id="message" class="updated">Settings saved</div>
+<?php  
+	update_num_elements_value($num_elements);
+}  
+
+
 }
+
+function update_num_elements_value($value){
+	$script = "
+	<script type='text/javascript'>
+	 jQuery(document).ready(function($) {
+		$('input[name=num_elements]').val('".$value."');
+	});
+	</script>";
+	echo $script;
+}
+
 
 // should be a seperate file!
 /**
@@ -825,10 +851,6 @@ function einsatzverwaltung_admin_options() {
 
 	//logic for adding new vehicle
 	//refresh admin
-}
-
-function einsatzverwaltung_admin_handle_vehicles(){
-	echo "VFehicles";	
 }
 
 /*
