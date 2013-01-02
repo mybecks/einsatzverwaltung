@@ -920,7 +920,8 @@ function display_missions() {
  **/
 function printMissionsByYear($arr_months){
 	// Pfade
-	$arrow_up_path = get_bloginfo("template_url")."/images/mini-nav-top.gif";
+	$arrow_up_path = plugin_dir_url( __FILE__ )."img/mini-nav-top.gif";
+
 	// Ausgabe der Einsätze im aktuellen Jahr
 	foreach($arr_months as $key => $value) {
 		$german_month = getGermanMonth($key);
