@@ -728,14 +728,13 @@ function einsatzverwaltung_admin_styles() {
 function einsatzverwaltung_admin_menu() {
 
 	if (!current_user_can('manage_options')) {  
-    	wp_die('You do not have sufficient permissions to access this page.');  
-	}	  
-    
-    add_menu_page('Einsatzverwaltung', 'Mission Control', 'manage_options', 'einsatzverwaltung-admin', 'einsatzverwaltung_admin_options', plugin_dir_url( __FILE__ ).'img/blaulicht_state_hover.png');  
-    add_submenu_page('einsatzverwaltung-admin','Vehicles', 'Fahrzeuge', 'manage_options', 'einsatzverwaltung-admin', 'einsatzverwaltung_admin_handle_vehicles');
-    add_submenu_page('einsatzverwaltung-admin','Settings', 'Einstellungen', 'manage_options', 'einsatzverwaltung-admin-handle-options', 'einsatzverwaltung_admin_handle_options');  
+    	//wp_die('You do not have sufficient permissions to access this page.'); 
+    	add_menu_page('Einsatzverwaltung', 'Mission Control', 'manage_options', 'einsatzverwaltung-admin', 'einsatzverwaltung_admin_options', plugin_dir_url( __FILE__ ).'img/blaulicht_state_hover.png');  
+    	add_submenu_page('einsatzverwaltung-admin','Vehicles', 'Fahrzeuge', 'manage_options', 'einsatzverwaltung-admin', 'einsatzverwaltung_admin_handle_vehicles');
+    	add_submenu_page('einsatzverwaltung-admin','Settings', 'Einstellungen', 'manage_options', 'einsatzverwaltung-admin-handle-options', 'einsatzverwaltung_admin_handle_options');  
 
-	add_action( 'admin_print_styles-' . $page, 'einsatzverwaltung_admin_styles' );
+		add_action( 'admin_print_styles-' . $page, 'einsatzverwaltung_admin_styles' ); 
+	}    
 }
 
 // should be a seperate file!
