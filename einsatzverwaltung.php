@@ -727,14 +727,24 @@ function einsatzverwaltung_admin_styles() {
  **/
 function einsatzverwaltung_admin_menu() {
 
-	if (!current_user_can('manage_options')) {  
-    	//wp_die('You do not have sufficient permissions to access this page.'); 
-    	add_menu_page('Einsatzverwaltung', 'Mission Control', 'manage_options', 'einsatzverwaltung-admin', 'einsatzverwaltung_admin_options', plugin_dir_url( __FILE__ ).'img/blaulicht_state_hover.png');  
-    	add_submenu_page('einsatzverwaltung-admin','Vehicles', 'Fahrzeuge', 'manage_options', 'einsatzverwaltung-admin', 'einsatzverwaltung_admin_handle_vehicles');
-    	add_submenu_page('einsatzverwaltung-admin','Settings', 'Einstellungen', 'manage_options', 'einsatzverwaltung-admin-handle-options', 'einsatzverwaltung_admin_handle_options');  
+	add_menu_page('Einsatzverwaltung', 'Mission Control', 'read', 'einsatzverwaltung-admin', 'einsatzverwaltung_admin_howto', plugin_dir_url( __FILE__ ).'img/blaulicht_state_hover.png');
+	
+	
 
-		add_action( 'admin_print_styles-' . $page, 'einsatzverwaltung_admin_styles' ); 
-	}    
+	
+
+	add_submenu_page('einsatzverwaltung-admin','How-To', 'How-To', 'read', 'einsatzverwaltung-admin', 'einsatzverwaltung_admin_howto');
+	
+	if (current_user_can('edit_pages')) {  
+    	add_submenu_page('einsatzverwaltung-admin','Vehicles', 'Fahrzeuge', 'edit_pages', 'einsatzverwaltung-admin-vehicles', 'einsatzverwaltung_admin_handle_vehicles');    	
+	}
+
+	if (current_user_can('manage_options')) {  
+    	//wp_die('You do not have sufficient permissions to access this page.');   
+    	add_submenu_page('einsatzverwaltung-admin','Settings', 'Einstellungen', 'manage_options', 'einsatzverwaltung-admin-handle-options', 'einsatzverwaltung_admin_handle_options');  
+	}
+
+	add_action( 'admin_print_styles-' . $page, 'einsatzverwaltung_admin_styles' );     
 }
 
 // should be a seperate file!
@@ -746,11 +756,12 @@ function einsatzverwaltung_admin_menu() {
  **/
 function einsatzverwaltung_admin_handle_options() 
 {
-	if (!current_user_can('administrator')) {  
-    	wp_die('You do not have sufficient permissions to access this page.');  
-	}	
+	// if (current_user_can('administrator')) {  
+    	//wp_die('You do not have sufficient permissions to access this page.');  
+    	$category_id = get_option("einsatzverwaltung_settings_option_category_id");
+	// }	
 
-	$category_id = get_option("einsatzverwaltung_settings_option_category_id");
+	
 ?>
 <div class="wrap">  
     <?php screen_icon('options-general'); ?> <h2>Einstellungen</h2>  
@@ -789,20 +800,32 @@ if (isset($_POST["update_settings"])) {
 
 }
 
+
+function einsatzverwaltung_admin_howto(){
+	?>
+	<div class="wrap"> 
+	<?php screen_icon('edit-pages'); ?><h2>HowTo</h2> 
+	</div>
+	<?php
+}
+
+
+
+
 /**
  * Dispalying Admin Menu for Managing Vehicles
  * 
  * @author Andre Becker
  **/
-function einsatzverwaltung_admin_options() {
+function einsatzverwaltung_admin_handle_vehicles() {
 
 	global $wpdb;
 
 	$table_name_vehicles = $wpdb->prefix . "fahrzeuge";
 
-	if (!current_user_can('manage_options'))  {
-		wp_die( __('You do not have sufficient permissions to access this page.') );
-	}
+	// if (!current_user_can('manage_options'))  {
+	// 	wp_die( __('You do not have sufficient permissions to access this page.') );
+	// }
 	echo '<div class="wrap">';
 	echo '<p>List with vehicles and add-edit-buttons</p>';
 	echo '<p>Show table with all vehicles with edit/delete/update mechanism</p>';
