@@ -59,7 +59,7 @@ add_action( 'admin_menu', 'einsatzverwaltung_admin_menu' );
  * @author Andre Becker
  **/
 function show_einsatzverwaltung_box() {
-    if ( is_admin() ) {
+    if ( current_user_can( 'publish_posts' ) ) {
         $script = "
 			<script type='text/javascript'>
 			    jQuery(document).ready(function($) {
@@ -370,6 +370,12 @@ function einsatzverwaltung_save_postdata( $post_id ) {
     	if ( !current_user_can( 'edit_post', $post_id ) )
         	return;
   	}
+
+  	$cat_id = get_the_category($post_id);
+
+  	//Check if mission category
+	if( CATEGORY != $cat_id[0]->cat_ID )
+		return;
 
   	// OK, we're authenticated: we need to find and save the data
 
