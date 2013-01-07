@@ -930,10 +930,10 @@ function display_missions() {
 	echo "</form></tr></table></div>";
 
 	if(!isset($selected_year)) {
-		$missions = getMissionsByYear(CURRENT_YEAR);
+		$missions = get_missions_by_year(CURRENT_YEAR);
 	}	
 	else {
-		$missions = getMissionsByYear($selected_year);
+		$missions = get_missions_by_year($selected_year);
 	}
 	printMissionsMonthOverview($missions);
 	printMissionsByYear($missions);
@@ -1049,7 +1049,7 @@ function getGermanMonth($english_month_2number) {
  * 
  * @author Andre Becker
  **/
-function getMissionsByYear($year) {
+function get_missions_by_year($year) {
 	global $wpdb;
 	$table_name_missions = $wpdb->prefix . "einsaetze";
 	
@@ -1058,6 +1058,7 @@ function getMissionsByYear($year) {
 	"
 	SELECT id, art_alarmierung, alarmstichwort, alarm_art, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media, wp_posts_ID, MONTH(alarmierung_date) as Month 
 	FROM $table_name_missions
+	WHERE YEAR(alarmierung_date) = $year
 	ORDER BY alarmierung_date DESC, alarmierung_time
 	"
 	);
