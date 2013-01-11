@@ -935,7 +935,7 @@ function display_missions() {
 	else {
 		$missions = get_missions_by_year($selected_year);
 	}
-	printMissionsMonthOverview($missions);
+	print_missions_month_overview($missions);
 	printMissionsByYear($missions);
 }
 
@@ -1162,7 +1162,7 @@ function get_missions_by_year($year) {
  * 
  * @author Florian Wallburg
  **/
-function printMissionsMonthOverview($arr_months){
+function print_missions_month_overview($arr_months){
 	// START Attributes
 	$mission_year = $_POST['einsatzjahr'];
 	if($mission_year == '')
@@ -1180,7 +1180,8 @@ function printMissionsMonthOverview($arr_months){
 	
 	echo '<a name="Übersicht"></a>';
 	echo '<div><table class="mission_month_overview" summary="Übersicht über die Anzahl der Einsätze im Jahr '.$mission_year.'"><caption>Monatsübersicht für '.$mission_year.'</caption><tbody>';
-	echo '<thead><tr><th>Monat</th><th>Einsätze</th><th>BE/TE/S</th><th>% Keine T&auml;tigkeit</th><th>Übersicht</th></tr></thead>';
+	// echo '<thead><tr><th>Monat</th><th>Einsätze</th><th>BE/TE/S</th><th>% Keine T&auml;tigkeit</th><th>Übersicht</th></tr></thead>';
+	echo '<thead><tr><th>Monat</th><th>Einsätze</th><th>BE/TE/S</th><th>Übersicht</th></tr></thead>';
 	
 	foreach($arr_months as $key => $value) {
 		// START Amount of missions in the month
@@ -1201,12 +1202,12 @@ function printMissionsMonthOverview($arr_months){
 			
 			
 			//
-			if($mission_value[2] == "Einsatzalarm")
-				$count_real_missions++;
-			elseif($mission_value[2] == "Keine Tätigkeit")
-				$count_false_alarms++;
-			else
-				$count_mistakes++;
+			// if($mission_value[2] == "Einsatzalarm")
+			// 	$count_real_missions++;
+			// elseif($mission_value[2] == "Keine Tätigkeit")
+			// 	$count_false_alarms++;
+			// else
+			// 	$count_mistakes++;
 			
 			//
 			if($mission_value[0] == "Brandeinsatz") {
@@ -1220,17 +1221,18 @@ function printMissionsMonthOverview($arr_months){
 			}
 		}
 		// ceil() runded auf, floor() rundet ab
-		$ratio = ceil(($count_false_alarms/$count_missions_in_month)*100);
-		if($ratio>20)
-			$ratio = '<font color=red>'.$ratio.'%</font>';
-		else
-			$ratio = '<font color=green>'.$ratio.'%</font>';
+		// $ratio = ceil(($count_false_alarms/$count_missions_in_month)*100);
+		// if($ratio>20)
+		// 	$ratio = '<font color=red>'.$ratio.'%</font>';
+		// else
+		// 	$ratio = '<font color=green>'.$ratio.'%</font>';
 		// END
 		
 		
 		// OUTPUT
 		$german_month = getGermanMonth($key);
-		echo '<tr><td>'.$german_month.'</td><td>'.$count_missions_in_month.'</td><td>'.$count_brandeinsatz.'/'.$count_technischereinsatz.'/'.$count_sonstiges.'</td><td>'.$ratio.'</td><td><a href="#'.$german_month.'">Link</a></td></tr>';
+		// echo '<tr><td>'.$german_month.'</td><td>'.$count_missions_in_month.'</td><td>'.$count_brandeinsatz.'/'.$count_technischereinsatz.'/'.$count_sonstiges.'</td><td>'.$ratio.'</td><td><a href="#'.$german_month.'">Link</a></td></tr>';
+		echo '<tr><td>'.$german_month.'</td><td>'.$count_missions_in_month.'</td><td>'.$count_brandeinsatz.'/'.$count_technischereinsatz.'/'.$count_sonstiges.'</td><td><a href="#'.$german_month.'">Link</a></td></tr>';
 	}
 	
 	echo '</tbody><tfoot><tr><td colspan="5">Anzahl der Einsätze im Jahr: <b>'.$mission_year_count.'</b></td></tr></tfoot></table></div>';
