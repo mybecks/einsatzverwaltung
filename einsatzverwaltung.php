@@ -50,6 +50,7 @@ add_shortcode( 'einsatzverwaltung', 'my_einsatzverwaltung_handler' );
 
 add_action( 'add_meta_boxes', 'einsatzverwaltung_add_custom_box' );
 add_action( 'publish_post', 'einsatzverwaltung_save_postdata' );
+add_action(	'trash_post', 'einsatzverwaltung_trash_mission' );
 add_action( 'admin_init', 'einsatzverwaltung_admin_init' );
 add_action( 'admin_menu', 'einsatzverwaltung_admin_menu' );
    
@@ -541,7 +542,24 @@ function rename_db_vehicle_name($name)
 	return "fahrzeuge_".$name;
 }
 
+/**
+ * Delete mission data of current post
+ * 
+ * @return boolean
+ * @author Andre Becker
+ **/
+function einsatzverwaltung_trash_mission($post_id) {
+  // global $wpdb;
 
+	if( current_user_can( 'delete_posts' ) )
+		$i = 0;
+  // wp_die("Post ID: ".$pid);
+
+  // if ($wpdb->get_var($wpdb->prepare('SELECT post_id FROM codex_postmeta WHERE post_id = %d', $pid))) {
+  //   return $wpdb->query($wpdb->prepare('DELETE FROM codex_postmeta WHERE post_id = %d', $pid));
+  // }
+  // return true;
+}
 
 
 /*
@@ -910,7 +928,7 @@ function update_category_id_value($value){
  * @author Andre Becker
  **/
 function display_missions() {
-	//echo get_permalink();
+
 	$selected_year = $_POST['einsatzjahr'];
 	$permalink = get_permalink();
 	$years = get_mission_years();
@@ -1158,7 +1176,7 @@ function get_missions_by_year($year) {
 }
 
 /**
- *
+ * Print overview of missions grouped by month
  * 
  * @author Florian Wallburg
  **/
@@ -1256,22 +1274,24 @@ function print_missions_month_overview($arr_months){
 function postinfo_head() {
 	
 	global $post;
-	
 	$script = <<< EOF
 <script type='text/javascript'>
     jQuery(document).ready(function($){
-	$('.post-info').hide();
-	$('.open-post-info').click(function() {
-		var id = $(this).attr('id');
-        $('.post-info-' + id).slideToggle("medium", function() {
-            $(this).prev().toggleClass("toggled");
-        }); 
-		return false;
-	});
-});       
+		$('.post-info').hide();
+		$('.open-post-info').click(function() {
+			var id = $(this).attr('id');
+        	
+        	$('.post-info-' + id).slideToggle("medium", function() {
+            	$(this).prev().toggleClass("toggled");
+        	}); 
+			
+			return false;
+		});
+	});       
 </script>
 EOF;
-        echo $script;
+    echo $script;
+    // postinfo();
 }
 add_action('wp_head', 'postinfo_head');
 
@@ -1283,7 +1303,7 @@ add_action('wp_head', 'postinfo_head');
  **/
 function postinfo() {
 	global $post;
-		
+		// wp_die("postinfo");
 	echo '<p class="open-post-info" id="'. $post->post_name .'">Details</p>';
 	echo '<div class="post-info post-info-'. $post->post_name .'">';
 	echo '<ul>';
@@ -1318,7 +1338,7 @@ function postinfo() {
 	echo 	'</li>';
 	echo '</ul>';
 	echo '</div>';
-	echo '<br />';
-	echo $post->post_content;
+	// echo '<br />';
+	// echo $post->post_content;
 }
 ?>
