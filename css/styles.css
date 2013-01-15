@@ -1,1 +1,43 @@
 /*@import url("reset.css");*/
+
+
+.open-post-info {
+	/*border: 1px solid red;*/
+
+	/*cursor: pointer;*/
+	/*font-size: 130%;*/
+	font-weight: bold;
+	margin-bottom: 0.5em;
+	/*padding-top: 5px;*/
+	padding-left: 15px;
+	/*height: 25px;*/
+	background: url('../img/arrows.png') no-repeat 0 0;
+}
+
+.toggled {
+	background: transparent url('../img/arrows.png') no-repeat 0 -14px;
+}
+
+.post-info {
+	padding: 6px 4px 4px;
+	border: 1px solid #ccc;
+	background: #eee url('../img/postmetabg.png') no-repeat right center;
+	font: 11px;
+	text-align: left;
+	margin-bottom: 1em;
+}
+
+.post-info ul {
+	margin-left: 5px;
+	padding-left: 0;
+	margin-right: 130px;
+	width: 425px;
+}
+
+.post-info li {
+	list-style: none;
+	min-height: 16px;
+	margin-bottom: 5px;
+	padding-left: 22px;
+	vertical-align: middle;
+}

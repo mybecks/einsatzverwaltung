@@ -22,8 +22,6 @@ wp_enqueue_script('jquery-ui-autocomplete', '', array('jquery-ui-widget', 'jquer
 
 register_activation_hook(__FILE__,'einsatzverwaltung_install');
 
-add_action( 'wp_enqueue_scripts', 'einsatzverwaltung_add_stylesheet' );
-
 /**
  * Add Custom Stylesheet for Plugin
  * 
@@ -31,9 +29,12 @@ add_action( 'wp_enqueue_scripts', 'einsatzverwaltung_add_stylesheet' );
  **/
 function einsatzverwaltung_add_stylesheet() {
         // Respects SSL, Style.css is relative to the current file
-        wp_register_style( 'einsatzverwaltung-style', plugins_url('css/styles.css', __FILE__) );
+	// $url = plugins_url( '/css/styles.css', __FILE__ );
+	// wp_die("url: ".$url);
+        wp_register_style( 'einsatzverwaltung-style', plugins_url( '/css/styles.css', __FILE__ ) );
         wp_enqueue_style( 'einsatzverwaltung-style' );
 }
+add_action( 'wp_enqueue_scripts', 'einsatzverwaltung_add_stylesheet' );
 
 /**
  * Display Missions using [einsatzverwaltung] shortcode
@@ -102,7 +103,7 @@ function einsatzverwaltung_inner_custom_box( $post ) {
   	wp_nonce_field( plugin_basename( __FILE__ ), 'einsatzverwaltung_noncename' );
   
   	$meta_values = get_post_meta($post->ID, MISSION_ID, '');  
-	$mission = einsatzverwaltung_load_missions_by_id($meta_values[0]);
+	$mission = einsatzverwaltung_load_mission_by_id($meta_values[0]);
 
 	$vehicles = einsatzverwaltung_load_vehicles_by_mission_id($mission->id);
 
@@ -671,7 +672,7 @@ function einsatzverwaltung_install(){
  * @return array()
  * @author Andre Becker
  **/
-function einsatzverwaltung_load_missions_by_id($id)
+function einsatzverwaltung_load_mission_by_id($id)
 {
 	global $wpdb;
 	$table_name_missions = $wpdb->prefix . "einsaetze";
@@ -701,6 +702,18 @@ function einsatzverwaltung_load_vehicles_by_mission_id($mission_id)
 	$vehicles = $wpdb->get_results($query);
 
 	return $vehicles;
+}
+
+function einsatzverwaltung_load_mission_by_post_id($id)
+{
+	global $wpdb;
+	$table_name_missions = $wpdb->prefix . "einsaetze";
+
+	$query = "SELECT * FROM ". $table_name_missions ." WHERE wp_posts_ID = ".$id;
+	$mission_details = $wpdb->get_row($query);
+	
+
+	return $mission_details;
 }
 
 /*
@@ -1267,16 +1280,25 @@ function print_missions_month_overview($arr_months){
  */
 
 /**
- *
+ * Add JavaScript for postinfo to the footer
  * 
  * @author Florian Wallburg
  **/
 function postinfo_head() {
-	
 	global $post;
+
+	$cat_id = get_the_category($post->ID);
+
+  	//Check if mission category
+	if( CATEGORY != $cat_id[0]->cat_ID )
+		return;
+
 	$script = <<< EOF
 <script type='text/javascript'>
     jQuery(document).ready(function($){
+    	$('.post-info').prependTo('.entry-content');
+		$('.open-post-info').prependTo('.entry-content');
+
 		$('.post-info').hide();
 		$('.open-post-info').click(function() {
 			var id = $(this).attr('id');
@@ -1286,14 +1308,15 @@ function postinfo_head() {
         	}); 
 			
 			return false;
-		});
+		});	
 	});       
 </script>
 EOF;
     echo $script;
-    // postinfo();
+    postinfo();
 }
-add_action('wp_head', 'postinfo_head');
+
+add_action('wp_footer', 'postinfo_head');
 
 
 /**
@@ -1303,42 +1326,39 @@ add_action('wp_head', 'postinfo_head');
  **/
 function postinfo() {
 	global $post;
-		// wp_die("postinfo");
+
+	$mission = einsatzverwaltung_load_mission_by_post_id($post->ID);
+
 	echo '<p class="open-post-info" id="'. $post->post_name .'">Details</p>';
 	echo '<div class="post-info post-info-'. $post->post_name .'">';
 	echo '<ul>';
-	echo 	'<li class="alarm">';
-	echo 		"<b>Alarm:</b> ".$alarm;
-	echo 	'</li>';
 	echo 	'<li class="alarmstichwort">';
-	echo 		"<b>Alarmstichwort:</b> ".$alarmstichwort;
+	echo 		"<b>Alarmstichwort:</b> ".$mission->alarmstichwort;
 	echo 	'</li>';
 	echo 	'<li class="art_der_alarmierung">';
-	echo 		"<b>Art der Alarmierung:</b> ".$art_der_alarmierung;
+	echo 		"<b>Art der Alarmierung:</b> ".$mission->art_alarmierung;
 	echo 	'</li>';
 	echo 	'<li class="alarmierung">';
-	echo 		"<b>Alarmierung:</b> ".$alarmierung_datum." ".$alarmierung_uhrzeit;
+	echo 		"<b>Alarmierung:</b> ".strftime("%d.%m.%Y", strtotime($mission->alarmierung_date))." ".strftime("%H:%M", strtotime($mission->alarmierung_time));
 	echo 	'</li>';
 	echo 	'<li class="rueckkehr">';
-	echo 		"<b>R&uuml;ckkehr:</b> ".$rueckkehr_datum." ".$rueckkehr_uhrzeit;
+	echo 		"<b>R&uuml;ckkehr:</b> ".strftime("%d.%m.%Y", strtotime($mission->rueckkehr_date))." ".strftime("%H:%M", strtotime($mission->rueckkehr_time));
 	echo 	'</li>';
 	echo 	'<li class="einsatzort">';
-	echo 		"<b>Einsatzort:</b> ".$einsatzort;
+	echo 		"<b>Einsatzort:</b> ".$mission->einsatzort;
 	echo 	'</li>';
 	echo 	'<li class="eingesetzte_fahrzeuge">';
 	echo 		"<b>Eingesetzte Fahrzeuge:</b> ".$eingesetzte_fahrzeuge;
 	echo 	'</li>';
 	echo 	'<li class="link">';
-	if($link == "Nicht verf&uuml;gbar"){
-		echo "<b>Quelle:</b> ".$link;
+	if(empty($mission->link_to_media)){
+		echo "<b>Quelle:</b> "."Nicht verf&uuml;gbar";
 	}
 	else {
-		echo "<b>Quelle:</b> <a href='$link' target='_blank'>".$link."</a>";
+		echo "<b>Quelle:</b> <a href='$link' target='_blank'>".$mission->link_to_media."</a>";
 	}
 	echo 	'</li>';
 	echo '</ul>';
 	echo '</div>';
-	// echo '<br />';
-	// echo $post->post_content;
 }
 ?>
