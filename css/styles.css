@@ -2,15 +2,9 @@
 
 
 .open-post-info {
-	/*border: 1px solid red;*/
-
-	/*cursor: pointer;*/
-	/*font-size: 130%;*/
 	font-weight: bold;
 	margin-bottom: 0.5em;
-	/*padding-top: 5px;*/
 	padding-left: 15px;
-	/*height: 25px;*/
 	background: url('../img/arrows.png') no-repeat 0 0;
 }
 
