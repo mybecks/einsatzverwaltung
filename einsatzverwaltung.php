@@ -105,8 +105,8 @@ function einsatzverwaltung_inner_custom_box( $post ) {
   	$meta_values = get_post_meta($post->ID, MISSION_ID, '');  
 	$mission = einsatzverwaltung_load_mission_by_id($meta_values[0]);
 
-	$vehicles = einsatzverwaltung_load_vehicles_by_mission_id($mission->id);
-
+	$vehicles_by_mission = einsatzverwaltung_load_vehicles_by_mission_id($mission->id);
+	$vehicles = einsatzverwaltung_load_vehicles();
 	//Workaround
 	if(strlen($mission->art_alarmierung) != 0)
 	{
@@ -124,11 +124,11 @@ function einsatzverwaltung_inner_custom_box( $post ) {
 		set_selector_for_dropdown_value("#alarm", $mission->alarm_art);
 	}
 
-	if(count($vehicles) != 0)
+	if(count($vehicles_by_mission) != 0)
 	{
-		for ($i=0; $i < count($vehicles); $i++) 
+		for ($i=0; $i < count($vehicles_by_mission); $i++) 
 		{
-		 	$name = rename_db_vehicle_name($vehicles[$i]->description);
+		 	$name = rename_db_vehicle_name($vehicles_by_mission[$i]->description);
 		 	set_selector_for_checkbox_value($name);
 		}
 	}
@@ -163,7 +163,8 @@ function einsatzverwaltung_inner_custom_box( $post ) {
 			"Bruchsal",
 			"Wiesental",
 			"Waghäusel",
-			"Kirrlach"];
+			"Kirrlach",
+			"Odenheim"];
 	        
 	    $( "#einsatzort" ).autocomplete({
 			source: availableTags
@@ -327,11 +328,18 @@ EOF;
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
-	echo '			<label for="fahrzeuge_elw"> <input name="fahrzeuge_elw1" type="checkbox"/> ELW 1 </label>';
-	echo '			<label for="fahrzeuge_dlk"> <input name="fahrzeuge_dlk" type="checkbox"/> DLK 23/12 </label>';
-	echo '			<label for="fahrzeuge_lf16"> <input name="fahrzeuge_lf16" type="checkbox"/> LF 16 </label>';
-	echo '			<label for="fahrzeuge_lf10"> <input name="fahrzeuge_lf10" type="checkbox"/> LF 10 </label>';
-	echo '			<label for="fahrzeuge_sap11"> <input name="fahrzeuge_sap11" type="checkbox"/> SAP 11 </label>';
+	if(count($vehicles) > 0)
+	{
+		for($i=0; $i<count($vehicles); $i++)
+		{
+			$name = rename_db_vehicle_name($vehicles[$i]->description);
+			echo '			<label for="'.$name.'"> <input name="'.$name.'" type="checkbox"/> '.$vehicles[$i]->description.' </label>';
+		}	
+	}else {
+		echo '<p>';
+			_e("Keine Fahrzeuge in der Datenbank gefunden!", 'einsatzverwaltung_textdomain' );
+		echo '</p>';
+	}
 	echo '		</td>';
 	echo '	</tr>';
 	echo '</table>';
@@ -398,32 +406,15 @@ function einsatzverwaltung_save_postdata( $post_id ) {
 	$rueckkehr_datum = $_POST['rueckkehr_datum'];
 	$rueckkehr_zeit = $_POST['rueckkehr_zeit'];
 	$link_zu_medien = $_POST['link_zu_medien'];
-	$fahrzeuge_elw = $_POST['fahrzeuge_elw1'];
-	$fahrzeuge_dlk = $_POST['fahrzeuge_dlk'];
-	$fahrzeuge_lf16 = $_POST['fahrzeuge_lf16'];
-	$fahrzeuge_lf10 = $_POST['fahrzeuge_lf10'];
-	$fahrzeuge_sap11 = $_POST['fahrzeuge_sap11'];
 
+	$db_vehicles = einsatzverwaltung_load_vehicles();
 	$vehicles = array();
 
-	if(isset($fahrzeuge_elw)){
-		$vehicles[] = 1;
-	}
+	for($i=0; $i<count($db_vehicles); $i++){
+		$name = rename_db_vehicle_name($db_vehicles[$i]->description);
 
-	if(isset($fahrzeuge_dlk)){
-		$vehicles[] = 2;
-	}
-
-	if(isset($fahrzeuge_lf16)){
-		$vehicles[] = 3;
-	}
-
-	if(isset($fahrzeuge_lf10)){
-		$vehicles[] = 4;
-	}
-
-	if(isset($fahrzeuge_sap11)){
-		$vehicles[] = 5;
+		if(isset($_POST[$name]))
+			$vehicles[] = $db_vehicles[$i]->id;
 	}
 
 	if(!empty($mission_id))
@@ -433,7 +424,7 @@ function einsatzverwaltung_save_postdata( $post_id ) {
 			$table_name_missions, 
 			array( 
 				'art_alarmierung' => $alarm_art,
-				'alarmstichwort' => $alarm_stichwort,	// integer (number) 
+				'alarmstichwort' => $alarm_stichwort,
 				'alarm_art' => $alarm,
 				'einsatzort' => $einsatzort,
 				'alarmierung_date' => $alarmierung_datum,
@@ -664,6 +655,24 @@ function einsatzverwaltung_install(){
 /*
  * Begin DB Access
  */
+
+/**
+ * Load all vehicles
+ *
+ * @return array()
+ * @author Andre Becker
+ **/
+function einsatzverwaltung_load_vehicles()
+{
+	global $wpdb;
+	$table_name_vehicles =	$wpdb->prefix . "fahrzeuge";
+	
+	$query = "SELECT id, description FROM ". $table_name_vehicles;
+	$vehicles = $wpdb->get_results($query);
+
+
+	return $vehicles;
+}
 
 /**
  * Load missions by mission_id
@@ -1328,6 +1337,14 @@ function postinfo() {
 	global $post;
 
 	$mission = einsatzverwaltung_load_mission_by_post_id($post->ID);
+	$vehicles = einsatzverwaltung_load_vehicles_by_mission_id($mission->id);
+
+	$used_vehicles = "";
+
+	for($i=0; $i<count($vehicles); $i++)
+	{
+		$used_vehicles .= $vehicles[$i]->description." ";
+	}
 
 	echo '<p class="open-post-info" id="'. $post->post_name .'">Details</p>';
 	echo '<div class="post-info post-info-'. $post->post_name .'">';
@@ -1348,7 +1365,7 @@ function postinfo() {
 	echo 		"<b>Einsatzort:</b> ".$mission->einsatzort;
 	echo 	'</li>';
 	echo 	'<li class="eingesetzte_fahrzeuge">';
-	echo 		"<b>Eingesetzte Fahrzeuge:</b> ".$eingesetzte_fahrzeuge;
+	echo 		"<b>Eingesetzte Fahrzeuge:</b> ".$used_vehicles;
 	echo 	'</li>';
 	echo 	'<li class="link">';
 	if(empty($mission->link_to_media)){
@@ -1361,4 +1378,8 @@ function postinfo() {
 	echo '</ul>';
 	echo '</div>';
 }
+/*
+ * End Postinfo
+ */
+
 ?>
