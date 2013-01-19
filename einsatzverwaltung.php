@@ -802,51 +802,64 @@ function einsatzverwaltung_admin_menu() {
  **/
 function einsatzverwaltung_admin_handle_options() 
 {
-	// if (current_user_can('administrator')) {  
-    	//wp_die('You do not have sufficient permissions to access this page.');  
-    	$category_id = get_option("einsatzverwaltung_settings_option_category_id");
-	// }	
-
+   	$category_id = get_option("einsatzverwaltung_settings_option_category_id");
 	
-?>
-<div class="wrap">  
-    <?php screen_icon('options-general'); ?> <h2>Einstellungen</h2>  
-    <form method="POST" action="">  
-    	<table class="form-table">  
-            <tr valign="top">  
-                <th scope="row">  
-                    <label for="category_id">  
-                        Mapping der Kategorien:  
-                    </label>  
-                </th>  
-                <td> 
-                    <input type="text" name="category_id" size="25" value="<?php echo $category_id;?>" />  
-                </td>  
-            </tr>  
-            </table>
-        <input type="hidden" name="update_settings" value="Y" /> 
-        <p>  
-    		<input type="submit" value="Save settings" class="button-primary"/>  
-		</p>    
-   	 </form>          
-    </div>  
+	?>
+	<div class="wrap">  
+	    <?php screen_icon('options-general'); ?> <h2>Einstellungen</h2>  
+	    <form method="POST" action="">  
+	    	<table class="form-table">  
+	            <tr valign="top">  
+	                <th scope="row">  
+	                    <label for="category_id">  
+	                        Mapping der Kategorien:  
+	                    </label>  
+	                </th>  
+	                <td> 
+	                    <input type="text" name="category_id" size="25" value="<?php echo $category_id;?>" />  
+	                </td>  
+	            </tr>  
+	            </table>
+	        <input type="hidden" name="update_settings" value="Y" /> 
+	        <p>  
+	    		<input type="submit" value="Save settings" class="button-primary"/>  
+			</p>    
+	   	 </form>          
+	</div>  
 
-<?php
+	<?php
 
-if (isset($_POST["update_settings"])) {  
-    // Do the saving  
-    $category_id = esc_attr($_POST["category_id"]);  
-	update_option("einsatzverwaltung_settings_option_category_id", $category_id);
-?>  
-    <div id="message" class="updated">Settings saved</div>
-<?php  
-	update_category_id_value($category_id);
-}  
-
-
+	if (isset($_POST["update_settings"])) {  
+	    // Do the saving  
+	    $category_id = esc_attr($_POST["category_id"]);  
+		update_option("einsatzverwaltung_settings_option_category_id", $category_id);
+	?>  
+	    <div id="message" class="updated">Settings saved</div>
+	<?php  
+		update_category_id_value($category_id);
+	}  
 }
 
+/**
+ * Updates the category input field with the new value
+ * 
+ * @author Andre Becker
+ **/
+function update_category_id_value($value){
+	$script = "
+	<script type='text/javascript'>
+	 jQuery(document).ready(function($) {
+		$('input[name=category_id]').val('".$value."');
+	});
+	</script>";
+	echo $script;
+}
 
+/**
+ * HowTo for adding new missions
+ * 
+ * @author Andre Becker
+ **/
 function einsatzverwaltung_admin_howto(){
 	?>
 	<div class="wrap"> 
@@ -854,9 +867,6 @@ function einsatzverwaltung_admin_howto(){
 	</div>
 	<?php
 }
-
-
-
 
 /**
  * Dispalying Admin Menu for Managing Vehicles
@@ -868,14 +878,13 @@ function einsatzverwaltung_admin_handle_vehicles() {
 	global $wpdb;
 
 	$table_name_vehicles = $wpdb->prefix . "fahrzeuge";
+	?>
+	
+	<div class="wrap">  
+	    <?php screen_icon('edit-pages'); ?> <h2>Fahrzeugverwaltung</h2>  
+	</div>
 
-	// if (!current_user_can('manage_options'))  {
-	// 	wp_die( __('You do not have sufficient permissions to access this page.') );
-	// }
-	echo '<div class="wrap">';
-	echo '<p>List with vehicles and add-edit-buttons</p>';
-	echo '<p>Show table with all vehicles with edit/delete/update mechanism</p>';
-	echo '</div>';
+	<?php
 
 	$query = "SELECT id, description FROM ".$table_name_vehicles;
 
@@ -906,30 +915,41 @@ function einsatzverwaltung_admin_handle_vehicles() {
 	echo '</table>';
 	echo '<br />';
 	//Form
-	echo '<label for="new_vehicle">';
-			_e("Neues Fahrzeug hinzufügen", 'einsatzverwaltung_textdomain' );
-	echo '<label>';
-	echo '<input id="new_vehicle" name="add_new_vehicle"/>';
-	echo '<input type="submit" value="add">';
 
-	//logic for adding new vehicle
-	//refresh admin
+
+	?>
+	<form method="POST" action="">
+		<label for="new_vehicle">
+		<?php _e("Neues Fahrzeug hinzufügen", 'einsatzverwaltung_textdomain' ); ?>
+		<label>
+		<input id="new_vehicle" name="add_new_vehicle" />
+		<input type="hidden" name="insert_vehicle" value="Y" /> 
+		<input type="submit" value="add" class="button-primary">
+	</form>
+	
+	<?php
+
+
+	if(isset($_POST['insert_vehicle']))
+	{
+		$wpdb->insert( 
+			$table_name_vehicles, 
+			array( 
+				'description' => $_POST['add_new_vehicle'] 
+			), 
+			array( 
+				'%s'
+			) 
+		);
+
+		?>
+		<div id="message" class="updated">Added new vehicle</div>
+		<?php
+	}
+	
+	
 }
 
-/**
- * Updates the category input field with the new value
- * 
- * @author Andre Becker
- **/
-function update_category_id_value($value){
-	$script = "
-	<script type='text/javascript'>
-	 jQuery(document).ready(function($) {
-		$('input[name=category_id]').val('".$value."');
-	});
-	</script>";
-	echo $script;
-}
 /*
  * End Admin Menu
  */
