@@ -917,6 +917,8 @@ function einsatzverwaltung_admin_handle_vehicles() {
 	//Form
 
 
+	// AJAX loading: http://return-true.com/2010/01/using-ajax-in-your-wordpress-theme-admin/
+
 	?>
 	<form method="POST" action="">
 		<label for="new_vehicle">
