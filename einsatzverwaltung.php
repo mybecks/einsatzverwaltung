@@ -1013,7 +1013,7 @@ function printMissionsByYear($arr_months){
 		echo "<br /> <div>
 		<a name='$german_month'></a>
 		<table class='mission_month' summary='Einsatzliste im Monat $german_month' border='0'>
-			<caption>$german_month&nbsp;<a href='#Übersicht'><img src='$arrow_up_path' class='overview'/></a></caption>
+			<caption class='mission_month_header'>$german_month&nbsp;<a href='#Übersicht'><img src='$arrow_up_path' class='overview'/></a></caption>
 			<thead>
 				<tr>
 					<th>Datum</th>
@@ -1034,9 +1034,9 @@ function printMissionsByYear($arr_months){
 				<tbody>	
 				<tr>
 					<td width='5%'>$value[4]</td>
-					<td width='5%'>$value[5]</td>
-					<td width='30%'>$value[0]</td>
-					<td width='40%'>$value[1]</td>
+					<td width='10%'>$value[5]</td>
+					<td width='25%'>$value[0]</td>
+					<td width='35%'>$value[1]</td>
 					<td width='15%'>$value[3]</td>
 					<td width='5%'><a href=\"".$value[10]."\">$value[9]</a></td>
 				</tr>

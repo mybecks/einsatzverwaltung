@@ -35,3 +35,12 @@
 	padding-left: 22px;
 	vertical-align: middle;
 }
+
+.mission_month{
+	font-size: 10pt;
+	/*table-layout: fixed;*/
+}
+
+.mission_month_header{
+	font-size: 12pt;
+}
