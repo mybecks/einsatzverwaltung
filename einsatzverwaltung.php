@@ -294,7 +294,7 @@ EOF;
 	echo '	<tr>';
 	echo '		<td>';
 	echo '			<label for="rueckkehr_datum">';
-						_e("Rückkehr (Datum)", 'einsatzverwaltung_textdomain' );
+						_e("R&uuml;ckkehr (Datum)", 'einsatzverwaltung_textdomain' );
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
@@ -304,7 +304,7 @@ EOF;
 	echo '	<tr>';
 	echo '		<td>';
 	echo '			<label for="rueckkehr_zeit">';
-						_e("Rückkehr (Uhrzeit)", 'einsatzverwaltung_textdomain' );
+						_e("R&uuml;ckkehr (Uhrzeit)", 'einsatzverwaltung_textdomain' );
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
@@ -314,7 +314,7 @@ EOF;
 	echo '	<tr>';
 	echo '		<td>';
 	echo '			<label for="link_zu_medien">';
-						_e("Link zu weiterführenden Medien", 'einsatzverwaltung_textdomain' );
+						_e("Link zu weiterf&uuml;hrenden Medien", 'einsatzverwaltung_textdomain' );
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
@@ -745,10 +745,7 @@ function einsatzverwaltung_load_mission_by_post_id($id)
  * @author Andre Becker
  **/
 function einsatzverwaltung_admin_init() {
-    /* Register our stylesheet. */
-    wp_register_style( 'adminStylesheet', plugins_url('css/admin.css', __FILE__) );
-
-// http://wp.tutsplus.com/tutorials/theme-development/create-a-settings-page-for-your-wordpress-theme/
+    
     
 }
    
@@ -761,8 +758,11 @@ function einsatzverwaltung_admin_styles() {
     /*
      * It will be called only on your plugin admin page, enqueue our stylesheet here
      */
+    /* Register our stylesheet. */
+    wp_register_style( 'adminStylesheet', plugins_url('css/admin.css', __FILE__) );
     wp_enqueue_style( 'adminStylesheet' );
 }
+add_action( 'admin_print_styles', 'einsatzverwaltung_admin_styles' );
 
 //http://codex.wordpress.org/Adding_Administration_Menus
 // http://wp.tutsplus.com/tutorials/theme-development/create-a-settings-page-for-your-wordpress-theme/
@@ -775,10 +775,6 @@ function einsatzverwaltung_admin_menu() {
 
 	add_menu_page('Einsatzverwaltung', 'Mission Control', 'read', 'einsatzverwaltung-admin', 'einsatzverwaltung_admin_howto', plugin_dir_url( __FILE__ ).'img/blaulicht_state_hover.png');
 	
-	
-
-	
-
 	add_submenu_page('einsatzverwaltung-admin','How-To', 'How-To', 'read', 'einsatzverwaltung-admin', 'einsatzverwaltung_admin_howto');
 	
 	if (current_user_can('edit_pages')) {  
@@ -790,7 +786,7 @@ function einsatzverwaltung_admin_menu() {
     	add_submenu_page('einsatzverwaltung-admin','Settings', 'Einstellungen', 'manage_options', 'einsatzverwaltung-admin-handle-options', 'einsatzverwaltung_admin_handle_options');  
 	}
 
-	add_action( 'admin_print_styles-' . $page, 'einsatzverwaltung_admin_styles' );     
+	// add_action( 'admin_print_styles-' . $page, 'einsatzverwaltung_admin_styles' );     
 }
 
 // should be a seperate file!
@@ -874,7 +870,8 @@ function einsatzverwaltung_admin_howto(){
  * @author Andre Becker
  **/
 function einsatzverwaltung_admin_handle_vehicles() {
-
+	// AJAX loading: http://return-true.com/2010/01/using-ajax-in-your-wordpress-theme-admin/
+	// http://codex.wordpress.org/AJAX_in_Plugins
 	global $wpdb;
 
 	$table_name_vehicles = $wpdb->prefix . "fahrzeuge";
@@ -882,24 +879,21 @@ function einsatzverwaltung_admin_handle_vehicles() {
 	
 	<div class="wrap">  
 	    <?php screen_icon('edit-pages'); ?> <h2>Fahrzeugverwaltung</h2>  
-	</div>
-
+	
 	<?php
 
 	$query = "SELECT id, description FROM ".$table_name_vehicles;
 
 	$vehicles = $wpdb->get_results($query);
-
-	echo '<table border="1">';
-	echo '	<tr>';
-	echo '		<th>';
-	echo '			ID';
-	echo '		</th>';
-	echo '		<th>';
-	echo '			Beschreibung';
-	echo '		</th>';
-	echo '	</tr>';
-
+	?>
+	<table class="tab-vehicle" border="1">
+		<tr>
+			<th>ID</th>
+			<th>Beschreibung</th>
+			<th>Edit</th>
+			<th>Delete</th>
+		</tr>
+	<?php
 	foreach ( $vehicles as $vehicle ) 
 	{
 		echo '	<tr>';
@@ -909,26 +903,27 @@ function einsatzverwaltung_admin_handle_vehicles() {
 		echo '		<td>';
 		echo 			$vehicle->description;
 		echo '		</td>';
+		echo '		<td>';
+		echo '			<img class="tab-images" src='.plugin_dir_url( __FILE__ ).'img/admin_edit.png />';
+		echo '		</td>';
+		echo '		<td>';
+		echo '			<img class="tab-images" src='.plugin_dir_url( __FILE__ ).'img/admin_delete.png />';
+		echo '		</td>';
 		echo '	</tr>';
 	}
 
-	echo '</table>';
-	echo '<br />';
-	//Form
-
-
-	// AJAX loading: http://return-true.com/2010/01/using-ajax-in-your-wordpress-theme-admin/
-
 	?>
+	</table>
+	<br />
 	<form method="POST" action="">
 		<label for="new_vehicle">
-		<?php _e("Neues Fahrzeug hinzufügen", 'einsatzverwaltung_textdomain' ); ?>
+		<?php _e("Neues Fahrzeug hinzuf&uuml;gen", 'einsatzverwaltung_textdomain' ); ?>
 		<label>
 		<input id="new_vehicle" name="add_new_vehicle" />
 		<input type="hidden" name="insert_vehicle" value="Y" /> 
 		<input type="submit" value="add" class="button-primary">
 	</form>
-	
+	</div>
 	<?php
 
 

@@ -1,0 +1,75 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Einsatzverwaltung\n"
+"POT-Creation-Date: 2013-01-21 09:47+0100\n"
+"PO-Revision-Date: 2013-01-21 09:49+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: German\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-KeywordsList: _e;__\n"
+"X-Poedit-Basepath: ./\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../einsatzverwaltung.php:88
+msgid "Einsatzverwaltung"
+msgstr "Einsatzverwaltung"
+
+#: ../einsatzverwaltung.php:186
+msgid "Einsatz Nr."
+msgstr "Einsatz Nr."
+
+#: ../einsatzverwaltung.php:196
+msgid "Art der Alarmierung"
+msgstr "Art der Alarmierung"
+
+#: ../einsatzverwaltung.php:210
+msgid "Alarmstichwort"
+msgstr "Alarmstichwort (Freitext)"
+
+#: ../einsatzverwaltung.php:237
+msgid "Alarmstichwort (Freitext)"
+msgstr "Alarmstichwort (Freitext)"
+
+#: ../einsatzverwaltung.php:254
+msgid "Alarm"
+msgstr "Alarm"
+
+#: ../einsatzverwaltung.php:267
+msgid "Einsatzort"
+msgstr "Einsatzort"
+
+#: ../einsatzverwaltung.php:277
+msgid "Alarmierung (Datum)"
+msgstr "Alarmierung (Datum)"
+
+#: ../einsatzverwaltung.php:287
+msgid "Alarmierung (Uhrzeit)"
+msgstr "Alarmierung (Uhrzeit)"
+
+#: ../einsatzverwaltung.php:297
+msgid "R&uuml;ckkehr (Datum)"
+msgstr "Rückkehr (Datum)"
+
+#: ../einsatzverwaltung.php:307
+msgid "R&uuml;ckkehr (Uhrzeit)"
+msgstr "Rückkehr (Uhrzeit)"
+
+#: ../einsatzverwaltung.php:317
+msgid "Link zu weiterf&uuml;hrenden Medien"
+msgstr "Link zu weiterführenden Medien"
+
+#: ../einsatzverwaltung.php:327
+msgid "Eingesetzte Fahrzeuge"
+msgstr "Eingesetzte Fahrzeuge"
+
+#: ../einsatzverwaltung.php:340
+msgid "Keine Fahrzeuge in der Datenbank gefunden!"
+msgstr "Keine Fahrzeuge in der Datenbank gefunden!"
+
+#: ../einsatzverwaltung.php:926
+msgid "Neues Fahrzeug hinzuf&uuml;gen"
+msgstr "Neues Fahrzeug hinzufügen"
