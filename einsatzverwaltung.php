@@ -1148,7 +1148,7 @@ function get_missions_by_year($year) {
 			}
 		
 
-			if('Freitext' == $mission->alarmstichwort){
+			if('Freitext' == $mission->alarmstichwort || 'Sonstiger Brand' == $mission->alarmstichwort){
 				$alarmstichwort = $mission->freitext; 
 			}else{
 				$alarmstichwort = $mission->alarmstichwort;
@@ -1369,11 +1369,21 @@ function postinfo() {
 		$used_vehicles .= $vehicles[$i]->description." ";
 	}
 
+	if(($mission->alarmstichwort == "Freitext") || ($mission->alarmstichwort == "Sonstiger Brand"))
+	{
+		$alarmstichwort = $mission->freitext;
+	}
+	else
+	{
+		$alarmstichwort = $mission->alarmstichwort;
+	}
+
+
 	echo '<p class="open-post-info" id="'. $post->post_name .'">Details</p>';
 	echo '<div class="post-info post-info-'. $post->post_name .'">';
 	echo '<ul>';
 	echo 	'<li class="alarmstichwort">';
-	echo 		"<b>Alarmstichwort:</b> ".$mission->alarmstichwort;
+	echo 		"<b>Alarmstichwort:</b> ".$alarmstichwort;
 	echo 	'</li>';
 	echo 	'<li class="art_der_alarmierung">';
 	echo 		"<b>Art der Alarmierung:</b> ".$mission->art_alarmierung;
