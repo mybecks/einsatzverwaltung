@@ -1113,7 +1113,7 @@ function get_missions_by_year($year) {
 	$arr_months = array();	
 	$missions = $wpdb->get_results( 
 	"
-	SELECT id, art_alarmierung, alarmstichwort, alarm_art, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media, wp_posts_ID, MONTH(alarmierung_date) as Month 
+	SELECT id, art_alarmierung, alarmstichwort, alarm_art, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media, wp_posts_ID, MONTH(alarmierung_date) as Month, freitext 
 	FROM $table_name_missions
 	WHERE YEAR(alarmierung_date) = $year
 	ORDER BY alarmierung_date DESC, alarmierung_time
@@ -1146,14 +1146,20 @@ function get_missions_by_year($year) {
 			else{
 				$description = "Kurzinfo";
 			}
-	
-	
-			if(strlen($mission->alarmstichwort) > 22) {
-				// Shortening the string to 22 characters
-				$alarmstichwort = substr($mission->alarmstichwort,0,22)."…";
-			}
-			else
+		
+
+			if('Freitext' == $mission->alarmstichwort){
+				$alarmstichwort = $mission->freitext; 
+			}else{
 				$alarmstichwort = $mission->alarmstichwort;
+			}
+	
+			if(strlen($alarmstichwort) > 22) {
+				// Shortening the string to 22 characters
+				$alarmstichwort = substr($alarmstichwort,0,22)."…";
+			}
+
+
 
 
 
