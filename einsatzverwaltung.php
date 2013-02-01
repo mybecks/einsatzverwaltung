@@ -1116,7 +1116,7 @@ function get_missions_by_year($year) {
 	SELECT id, art_alarmierung, alarmstichwort, alarm_art, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media, wp_posts_ID, MONTH(alarmierung_date) as Month, freitext 
 	FROM $table_name_missions
 	WHERE YEAR(alarmierung_date) = $year
-	ORDER BY alarmierung_date DESC, alarmierung_time
+	ORDER BY alarmierung_date DESC, alarmierung_time DESC
 	"
 	);
 	
