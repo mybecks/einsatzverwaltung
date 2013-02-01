@@ -12,6 +12,9 @@ License: GPL2
 //global $db_version;
 //$db_version = "1.0";
 
+include "einsatzverwaltung_admin.php";
+include "einsatzverwaltung_widget.php";
+
 // Aktuelles Jahr
 define ("CURRENT_YEAR" , date("Y"));
 define ('CATEGORY', get_option("einsatzverwaltung_settings_option_category_id")); 
@@ -54,6 +57,7 @@ add_action( 'publish_post', 'einsatzverwaltung_save_postdata' );
 add_action(	'trash_post', 'einsatzverwaltung_trash_mission' );
 add_action( 'admin_init', 'einsatzverwaltung_admin_init' );
 add_action( 'admin_menu', 'einsatzverwaltung_admin_menu' );
+add_action( 'widgets_init', 'einsatzverwaltung_widget_init' );
    
 /**
  * Display Mission Details Box
