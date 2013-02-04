@@ -8,7 +8,11 @@
 class Einsatzverwaltung_Widget extends WP_Widget {
 
 	public function __construct() {
-		// widget actual processes
+		parent::__construct(
+	 		'einsatzverwaltung_widget', // Base ID
+			'Einsatzverwaltung', // Name
+			array( 'description' => __( 'Anzahl Einsätze im Jahr', 'text_domain' ), ) // Args
+		);
 	}
 
  	public function form( $instance ) {
