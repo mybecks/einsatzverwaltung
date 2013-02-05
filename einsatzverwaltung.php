@@ -107,11 +107,14 @@ function einsatzverwaltung_inner_custom_box( $post ) {
   	wp_nonce_field( plugin_basename( __FILE__ ), 'einsatzverwaltung_noncename' );
   
   	$meta_values = get_post_meta($post->ID, MISSION_ID, '');  
-	$mission = einsatzverwaltung_load_mission_by_id($meta_values[0]);
+  	$meta_values = array_filter($meta_values);
+  	
+  	if(!empty($meta_values)){
+  		$mission = einsatzverwaltung_load_mission_by_id($meta_values[0]);
+		$vehicles_by_mission = einsatzverwaltung_load_vehicles_by_mission_id($mission->id);
+		$vehicles = einsatzverwaltung_load_vehicles();
+  	}
 
-	$vehicles_by_mission = einsatzverwaltung_load_vehicles_by_mission_id($mission->id);
-	$vehicles = einsatzverwaltung_load_vehicles();
-	//Workaround
 	if(strlen($mission->art_alarmierung) != 0)
 	{
 		// http://wpquicktips.wordpress.com/2012/04/25/using-php-variables-in-javascript-with-wp_localize_script/
@@ -1191,4 +1194,12 @@ function postinfo() {
  * End Postinfo
  */
 
+/*
+ * Utility functions
+ */
+function is_array_empty($a){
+	foreach($a as $elm)
+	if(!empty($elm)) return false;
+	return true;
+}
 ?>
