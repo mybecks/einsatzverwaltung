@@ -234,6 +234,7 @@ EOF;
 	echo '   			<option>Drehleitereinsatz</option>';
 	echo '   			<option>Sicherheitsdienst</option>';
 	echo '   			<option>Feuerschein</option>';
+	echo '   			<option>Unterstützung Rettungsdienst</option>';
 	echo '  			<option id="sel_freitext">Freitext</option>';
 	echo '  		</select>';
 	echo '		</td>';
@@ -529,8 +530,7 @@ function set_selector_for_checkbox_value($value){
  * 
  * @author Andre Becker
  **/
-function rename_db_vehicle_name($name)
-{
+function rename_db_vehicle_name($name){
 
 	if($name == "DLK 23/12")
 		$name = "dlk";
@@ -789,8 +789,10 @@ function printMissionsByYear($arr_months){
 	// Ausgabe der Einsätze im aktuellen Jahr
 	foreach($arr_months as $key => $value) {
 		$german_month = getGermanMonth($key);
+		
 		echo "<br /> <div>
 		<a name='$german_month'></a>
+
 		<table class='mission_month' summary='Einsatzliste im Monat $german_month' border='0'>
 			<caption class='mission_month_header'>$german_month&nbsp;<a href='#Übersicht'><img src='$arrow_up_path' class='overview'/></a></caption>
 			<thead>
@@ -813,10 +815,10 @@ function printMissionsByYear($arr_months){
 				<tbody>	
 				<tr>
 					<td width='5%'>$value[4]</td>
-					<td width='10%'>$value[5]</td>
-					<td width='25%'>$value[0]</td>
+					<td width='10%' style='text-align:center'>$value[5]</td>
+					<td width='25%' style='white-space:nowrap;'>$value[0]</td>
 					<td width='35%'>$value[1]</td>
-					<td width='15%'>$value[3]</td>
+					<td width='15%' style='white-space:nowrap;'>$value[3]</td>
 					<td width='5%'><a href=\"".$value[10]."\">$value[9]</a></td>
 				</tr>
 				</tbody>";
