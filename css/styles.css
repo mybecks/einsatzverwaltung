@@ -36,11 +36,51 @@
 	vertical-align: middle;
 }
 
-.mission_month{
+.mission-month{
 	font-size: 10pt;
 	/*table-layout: fixed;*/
 }
 
-.mission_month_header{
+.mission-month-header{
 	font-size: 12pt;
+}
+
+.th-mission-time{
+	text-align: left;
+}
+
+.th-mission-infos{
+	text-align: left;
+}
+
+.td-mission-date{
+	width: 35px; /*5%;*/
+	/*background-color: yellow;*/
+}
+
+.td-mission-time{
+	width: 35px; /*10%*/
+	text-align: center;
+	/*background-color: green;*/
+}
+
+.td-mission-type{
+	width: 155px; /*25%*/
+	text-align: left;
+	/*background-color: blue;*/
+}
+
+.td-mission-text{
+	width: 180px; /*35%;*/
+	/*background-color: purple;*/
+	/*overflow: scroll;*/
+}
+
+.td-mission-location{
+	width: 125px; /*15%*/
+}
+
+.td-mission-infos{
+	width: 60px;/*5%*/;
+	text-align: left;
 }

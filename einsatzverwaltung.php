@@ -793,16 +793,16 @@ function printMissionsByYear($arr_months){
 		echo "<br /> <div>
 		<a name='$german_month'></a>
 
-		<table class='mission_month' summary='Einsatzliste im Monat $german_month' border='0'>
-			<caption class='mission_month_header'>$german_month&nbsp;<a href='#Übersicht'><img src='$arrow_up_path' class='overview'/></a></caption>
+		<table class='mission-month' summary='Einsatzliste im Monat $german_month' border='0'>
+			<caption class='mission-month-header'>$german_month&nbsp;<a href='#Übersicht'><img src='$arrow_up_path' class='overview'/></a></caption>
 			<thead>
 				<tr>
 					<th>Datum</th>
-					<th>Uhrzeit</th>
+					<th class='th-mission-time'>Zeit</th>
 					<th>Alarm Art</th>
 					<th>Alarmstichwort</th>
 					<th>Einsatzort</th>
-					<th>Bericht</th>
+					<th class='th-mission-infos'>Bericht</th>
 				</tr>
 			</thead>";
 		$count = count($arr_months[$key]);
@@ -814,12 +814,12 @@ function printMissionsByYear($arr_months){
 			echo "
 				<tbody>	
 				<tr>
-					<td width='5%'>$value[4]</td>
-					<td width='10%' style='text-align:center'>$value[5]</td>
-					<td width='25%' style='white-space:nowrap;'>$value[0]</td>
-					<td width='35%'>$value[1]</td>
-					<td width='15%' style='white-space:nowrap;'>$value[3]</td>
-					<td width='5%'><a href=\"".$value[10]."\">$value[9]</a></td>
+					<td class='td-mission-date'>$value[4]</td>
+					<td class='td-mission-time'>$value[5]</td>
+					<td class='td-mission-type'>$value[0]</td>
+					<td class='td-mission-text'>$value[1]</td>
+					<td class='td-mission-location'>$value[3]</td>
+					<td class='td-mission-infos'><a href=\"".$value[10]."\">$value[9]</a></td>
 				</tr>
 				</tbody>";
 		}
