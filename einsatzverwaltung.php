@@ -20,8 +20,8 @@ define ("CURRENT_YEAR" , date("Y"));
 define ('CATEGORY', get_option("einsatzverwaltung_settings_option_category_id")); 
 define ('MISSION_ID', 'mission_id');
 
-wp_enqueue_script('jquery-ui-autocomplete', '', array('jquery-ui-widget', 'jquery-ui-position'), '1.8.6');
-
+wp_enqueue_script( 'jquery-ui-autocomplete', '', array('jquery-ui-widget', 'jquery-ui-position'), '1.8.6' );
+wp_enqueue_script( 'einsatzverwaltung-responsive-table-script', plugins_url( '/js/responsive-tables.js', __FILE__ ));
 
 register_activation_hook(__FILE__,'einsatzverwaltung_install');
 
@@ -36,9 +36,19 @@ function einsatzverwaltung_add_stylesheet() {
 	// wp_die("url: ".$url);
         wp_register_style( 'einsatzverwaltung-style', plugins_url( '/css/styles.css', __FILE__ ) );
         wp_enqueue_style( 'einsatzverwaltung-style' );
+
+        wp_register_style( 'einsatzverwaltung-responsive-table-style', plugins_url( '/css/responsive-tables.css', __FILE__ ) );
+        wp_enqueue_style( 'einsatzverwaltung-responsive-table-style' );
+
 }
 add_action( 'wp_enqueue_scripts', 'einsatzverwaltung_add_stylesheet' );
 
+
+// function einsatzverwaltung_add_script(){
+// 	wp_register_script( 'einsatzverwaltung-responsive-table-script', plugins_url( '/js/responsive-tables.js', __FILE__ ) );
+// 	wp_enqueue_scripts( 'einsatzverwaltung-responsive-table-script' );
+// }
+// add_action( 'wp_enqueue_scripts', 'einsatzverwaltung_add_script' );
 /**
  * Display Missions using [einsatzverwaltung] shortcode
  * 
@@ -793,9 +803,7 @@ function printMissionsByYear($arr_months){
 		echo "<br /> <div>
 		<a name='$german_month'></a>
 
-
-		// http://www.zurb.com/playground/responsive-tables
-		<table class='mission-month' summary='Einsatzliste im Monat $german_month' border='0'>
+		<table class='responsive mission-month' summary='Einsatzliste im Monat $german_month' border='0'>
 			<caption class='mission-month-header'>$german_month&nbsp;<a href='#Übersicht'><img src='$arrow_up_path' class='overview'/></a></caption>
 			<thead>
 				<tr>
