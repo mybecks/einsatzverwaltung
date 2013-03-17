@@ -803,7 +803,7 @@ function printMissionsByYear($arr_months){
 		echo "<br /> <div>
 		<a name='$german_month'></a>
 
-		<table class='responsive mission-month' summary='Einsatzliste im Monat $german_month' border='0'>
+		<table class='mission-month' summary='Einsatzliste im Monat $german_month' border='0'>
 			<caption class='mission-month-header'>$german_month&nbsp;<a href='#Übersicht'><img src='$arrow_up_path' class='overview'/></a></caption>
 			<thead>
 				<tr>
