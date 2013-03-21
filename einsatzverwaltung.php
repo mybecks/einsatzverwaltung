@@ -121,9 +121,13 @@ function einsatzverwaltung_inner_custom_box( $post ) {
   	
   	if(!empty($meta_values)){
   		$mission = einsatzverwaltung_load_mission_by_id($meta_values[0]);
-		$vehicles_by_mission = einsatzverwaltung_load_vehicles_by_mission_id($mission->id);
+  		$vehicles_by_mission = einsatzverwaltung_load_vehicles_by_mission_id($mission->id);
 		$vehicles = einsatzverwaltung_load_vehicles();
+  	}else{
+  		$vehicles = einsatzverwaltung_load_vehicles();
   	}
+
+  	
 
 	if(strlen($mission->art_alarmierung) != 0)
 	{
