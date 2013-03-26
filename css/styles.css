@@ -6,6 +6,7 @@
 	margin-bottom: 0.5em;
 	padding-left: 15px;
 	background: url('../img/arrows.png') no-repeat 0 0;
+	cursor: pointer;
 }
 
 .toggled {

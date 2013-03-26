@@ -110,7 +110,6 @@ function einsatzverwaltung_add_custom_box() {
  * 
  * @author Andre Becker
  **/
-/* Prints the box content */
 function einsatzverwaltung_inner_custom_box( $post ) {
 	global $post;
   	// Use nonce for verification
@@ -126,8 +125,6 @@ function einsatzverwaltung_inner_custom_box( $post ) {
   	}else{
   		$vehicles = einsatzverwaltung_load_vehicles();
   	}
-
-  	
 
 	if(strlen($mission->art_alarmierung) != 0)
 	{
@@ -702,7 +699,7 @@ function einsatzverwaltung_load_vehicles()
  * @return array()
  * @author Andre Becker
  **/
-function einsatzverwaltung_load_mission_by_id($id)
+function einsatzverwaltung_load_mission_by_id( $id )
 {
 	global $wpdb;
 	$table_name_missions = $wpdb->prefix . "einsaetze";
@@ -721,7 +718,7 @@ function einsatzverwaltung_load_mission_by_id($id)
  * @return array()
  * @author Andre Becker
  **/
-function einsatzverwaltung_load_vehicles_by_mission_id($mission_id)
+function einsatzverwaltung_load_vehicles_by_mission_id( $mission_id )
 {
 	global $wpdb;
 	$table_name_missions_has_vehicles = $wpdb->prefix . "einsaetze_has_fahrzeuge";
@@ -734,7 +731,14 @@ function einsatzverwaltung_load_vehicles_by_mission_id($mission_id)
 	return $vehicles;
 }
 
-function einsatzverwaltung_load_mission_by_post_id($id)
+/**
+ * Load missions bound to post id
+ *
+ * @param post id
+ * @return single mission
+ * @author Andre Becker
+ **/
+function einsatzverwaltung_load_mission_by_post_id( $id )
 {
 	global $wpdb;
 	$table_name_missions = $wpdb->prefix . "einsaetze";
@@ -802,7 +806,7 @@ function print_missions_by_year($arr_months){
 
 	// Ausgabe der Einsätze im aktuellen Jahr
 	foreach($arr_months as $key => $value) {
-		$german_month = getGermanMonth($key);
+		$german_month = get_german_month($key);
 		
 		echo "<br /> <div>
 		<a name='$german_month'></a>
@@ -825,14 +829,8 @@ function print_missions_by_year($arr_months){
 				</tr>
 			</tfoot>";
 		$count = count($arr_months[$key]);
-
-		// Sortieren nach dem Datum, umgekehrt, und der Uhrzeit, umgekehrt
-	//	uasort($arr_months[$key], 'compare_datetime');
-		
+	
 		foreach($arr_months[$key] as $key => $value) {
-
-			
-
 			echo "
 				<tbody>	
 				<tr class='row'>
@@ -886,7 +884,7 @@ function get_mission_years() {
  * @return array() 
  * @author Florian Wallburg
  **/
-function getGermanMonth($english_month_2number) {
+function get_german_month($english_month_2number) {
 	$german_months = array(1=>"Januar",
 		2=>"Februar",
 		3=>"M&auml;rz",
@@ -907,26 +905,31 @@ function getGermanMonth($english_month_2number) {
 /**
  * Einsätze nach Jahr sammeln
  * 
+ * @return array() 
  * @author Andre Becker
  **/
 function get_missions_by_year($year) {
 	global $wpdb;
 	$table_name_missions = $wpdb->prefix . "einsaetze";
 	
-	$arr_months = array();	
-	$missions = $wpdb->get_results( 
-	"
-	SELECT id, art_alarmierung, alarmstichwort, alarm_art, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media, wp_posts_ID, MONTH(alarmierung_date) as Month, freitext 
-	FROM $table_name_missions
-	WHERE YEAR(alarmierung_date) = $year
-	ORDER BY alarmierung_date DESC, alarmierung_time DESC
-	"
-	);
-	
-//	print_r($missions);
-	
-	foreach($missions as $mission){
+	$arr_months = array();
+
+	$query = "SELECT id, art_alarmierung, alarmstichwort, alarm_art, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media, wp_posts_ID, MONTH(alarmierung_date) AS Month, freitext ".
+			 "FROM ".$table_name_missions.
+			 " WHERE YEAR(alarmierung_date) = ".$year.
+			 " ORDER BY alarmierung_date DESC, alarmierung_time DESC";
+
+	// $missions = $wpdb->get_results( 
+	// "
+	// SELECT id, art_alarmierung, alarmstichwort, alarm_art, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media, wp_posts_ID, MONTH(alarmierung_date) as Month, freitext 
+	// FROM $table_name_missions
+	// WHERE YEAR(alarmierung_date) = $year
+	// ORDER BY alarmierung_date DESC, alarmierung_time DESC
+	// "
+	// );
+	$missions = $wpdb->get_results($query);
 		
+	foreach($missions as $mission){
 
 		if(!is_array($arr_months[$mission->Month])) {
 			$arr_months[$mission->Month] = array();
@@ -935,97 +938,63 @@ function get_missions_by_year($year) {
 		foreach($arr_months as $key => $value) {
 					
 			
-		if($key == $mission->Month) {
-			$tmp_arr = $arr_months[$key];
+			if($key == $mission->Month) {
+				$tmp_arr = $arr_months[$key];
+				
+				$arr_content = array();
+				
+				$post = wp_get_single_post( $mission->wp_posts_ID);
+				
+				
+				if(strlen($post->post_content)!=0) {
+					$description = "Bericht";
+				}
+				else{
+					$description = "Kurzinfo";
+				}
 			
-			$arr_content = array();
-			
-			$post = wp_get_single_post( $mission->wp_posts_ID);
-			
-			
-			if(strlen($post->post_content)!=0) {
-				$description = "Bericht";
-			}
-			else{
-				$description = "Kurzinfo";
-			}
+
+				if('Freitext' == $mission->alarmstichwort || 'Sonstiger Brand' == $mission->alarmstichwort){
+					$alarmstichwort = $mission->freitext; 
+				}else{
+					$alarmstichwort = $mission->alarmstichwort;
+				}
 		
-
-			if('Freitext' == $mission->alarmstichwort || 'Sonstiger Brand' == $mission->alarmstichwort){
-				$alarmstichwort = $mission->freitext; 
-			}else{
-				$alarmstichwort = $mission->alarmstichwort;
-			}
-	
-			// if(strlen($alarmstichwort) > 22) {
-			// 	// Shortening the string to 22 characters
-			// 	$alarmstichwort = substr($alarmstichwort,0,22)."…";
-			// }
+				// if(strlen($alarmstichwort) > 22) {
+				// 	// Shortening the string to 22 characters
+				// 	$alarmstichwort = substr($alarmstichwort,0,22)."…";
+				// }
 
 
-			if(strpos($mission->art_alarmierung,'Brandeinsatz') !== false){
-				$alarm_short = 'BE';
-			}else if(strpos($mission->art_alarmierung,'Technischer Einsatz') !== false){
-				$alarm_short = 'TE';
-			}else{
-				$alarm_short = 'SE';
-			}
+				if(strpos($mission->art_alarmierung,'Brandeinsatz') !== false){
+					$alarm_short = 'BE';
+				}else if(strpos($mission->art_alarmierung,'Technischer Einsatz') !== false){
+					$alarm_short = 'TE';
+				}else{
+					$alarm_short = 'SE';
+				}
 
-
-
-//			echo "<br />";
-//			echo "<br />";
-//			print_r($postle);
-//			echo "<br />";
-//			echo "############<br />";
-//			echo"$postle->post_content";
-//			echo "<br />";
-//			echo "<br />";
-	
-			$arr_content[0] = $alarm_short;
-			$arr_content[1] = $alarmstichwort;
-			$arr_content[2] = $mission->alarm_art;
-			$arr_content[3] = $mission->einsatzort;
-			$arr_content[4] = strftime("%d.%m.%Y", strtotime($mission->alarmierung_date));
-			$arr_content[5] = strftime("%H:%M", strtotime($mission->alarmierung_time));
-			$arr_content[6] = $mission->rueckkehr_date;
-			$arr_content[7] = $mission->rueckkehr_time;
-			$arr_content[8] = $mission->link_to_media;
-			$arr_content[9] = $description;
-			$arr_content[10] = get_permalink($mission->wp_posts_ID);
-			
-//			
-//			
-//			$arr_content[5] = $description;
-			
-//			$arr_content[7] = $custom_fields['Alarm'][0];
-			
-			array_push($tmp_arr,$arr_content);
-			
-			$arr_months[$key] = $tmp_arr;
+				$arr_content[0] = $alarm_short;
+				$arr_content[1] = $alarmstichwort;
+				$arr_content[2] = $mission->alarm_art;
+				$arr_content[3] = $mission->einsatzort;
+				$arr_content[4] = strftime("%d.%m.%Y", strtotime($mission->alarmierung_date));
+				$arr_content[5] = strftime("%H:%M", strtotime($mission->alarmierung_time));
+				$arr_content[6] = $mission->rueckkehr_date;
+				$arr_content[7] = $mission->rueckkehr_time;
+				$arr_content[8] = $mission->link_to_media;
+				$arr_content[9] = $description;
+				$arr_content[10] = get_permalink($mission->wp_posts_ID);
+						
+				array_push($tmp_arr,$arr_content);
+				
+				$arr_months[$key] = $tmp_arr;
 			}
 		}
-		
-		
 	}
-		
-//	$monthsUnique = array_unique($tmpArr);
-//	
-//	foreach($monthsUnique as $var){
-//		echo $var;
-//	}
-//	
-//	$arr_months[$monthUnique] = array();
-	
-	
-//	print_r($arr_months);	
-	
-	
-	
+
 	// Umgekehrte Sortierung der Monate (12,11,10,...,1)
 	krsort($arr_months);
-//	getArtDerAlarmierung($arr_months);
-//	wp_reset_query();
 	
 	return $arr_months;
 }
@@ -1033,7 +1002,7 @@ function get_missions_by_year($year) {
 /**
  * Print overview of missions grouped by month
  * 
- * @author Florian Wallburg
+ * @author Florian Wallburg, Andre Becker
  **/
 function print_missions_month_overview($arr_months){
 	// START Attributes
@@ -1048,15 +1017,13 @@ function print_missions_month_overview($arr_months){
 			$mission_year_count++;
 		}
 	}
-	// END
 	
 	
-	echo '<a name="Übersicht"></a>';
-	echo '<div>
+	echo '<a name="Übersicht"></a>
+		<div>
 			<table class="mission-month-overview" summary="Übersicht über die Anzahl der Einsätze im Jahr '.$mission_year.'">
-			<caption>Monatsübersicht für '.$mission_year.'</caption>';
-	// echo '<thead><tr><th>Monat</th><th>Einsätze</th><th>BE/TE/S</th><th>% Keine T&auml;tigkeit</th><th>Übersicht</th></tr></thead>';
-	echo '	<thead>
+			<caption>Monatsübersicht für '.$mission_year.'</caption>
+			<thead>
 				<tr>
 					<th class="th-mission">Monat</th>
 					<th class="th-mission-center">Einsätze</th>
@@ -1077,11 +1044,8 @@ function print_missions_month_overview($arr_months){
 		// END
 		
 		// START Ratio of false alarms and real missions
-		$count_real_missions = 0;
-		$count_false_alarms = 0;
-		$count_mistakes =0;
-		$count_brandeinsatz =0;
-		$count_technischereinsatz =0;
+		$count_brandeinsatz = 0;
+		$count_technischereinsatz = 0;
 		$count_sonstiges = 0;
 		
 		foreach($value as $mission_key => $mission_value) {
@@ -1099,7 +1063,7 @@ function print_missions_month_overview($arr_months){
 		}	
 		
 		// OUTPUT
-		$german_month = getGermanMonth($key);
+		$german_month = get_german_month($key);
 		echo '
 			<tr>
 				<td>'.$german_month.'</td>
@@ -1226,12 +1190,4 @@ function postinfo() {
  * End Postinfo
  */
 
-/*
- * Utility functions
- */
-function is_array_empty($a){
-	foreach($a as $elm)
-	if(!empty($elm)) return false;
-	return true;
-}
 ?>
