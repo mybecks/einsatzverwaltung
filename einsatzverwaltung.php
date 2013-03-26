@@ -786,7 +786,7 @@ function display_missions() {
 		$missions = get_missions_by_year($selected_year);
 	}
 	print_missions_month_overview($missions);
-	printMissionsByYear($missions);
+	print_missions_by_year($missions);
 }
 
 
@@ -796,7 +796,7 @@ function display_missions() {
  * @return array() 
  * @author Andre Becker
  **/
-function printMissionsByYear($arr_months){
+function print_missions_by_year($arr_months){
 	// Pfade
 	$arrow_up_path = plugin_dir_url( __FILE__ )."img/mini-nav-top.gif";
 
@@ -811,39 +811,47 @@ function printMissionsByYear($arr_months){
 			<caption class='mission-month-header'>$german_month&nbsp;<a href='#Übersicht'><img src='$arrow_up_path' class='overview'/></a></caption>
 			<thead>
 				<tr>
-					<th>Datum</th>
-					<th class='th-mission-time'>Zeit</th>
-					<th>Alarm Art</th>
-					<th>Alarmstichwort</th>
-					<th>Einsatzort</th>
-					<th class='th-mission-infos'>Bericht</th>
+					<th scope='col' class='th-mission'>Datum</th>
+					<th scope='col' class='th-mission'>Zeit</th>
+					<th scope='col' class='th-mission'>Art</th>
+					<th scope='col' class='th-mission'>Alarmstichwort</th>
+					<th scope='col' class='th-mission'>Einsatzort</th>
+					<th scope='col' class='th-mission'>Bericht</th>
 				</tr>
-			</thead>";
+			</thead>
+			<tfoot>
+				<tr>
+					<td colspan='6'>Anzahl der Eins&auml;tze im Monat: <b>$count</b></td>
+				</tr>
+			</tfoot>";
 		$count = count($arr_months[$key]);
 
 		// Sortieren nach dem Datum, umgekehrt, und der Uhrzeit, umgekehrt
 	//	uasort($arr_months[$key], 'compare_datetime');
 		
 		foreach($arr_months[$key] as $key => $value) {
+
+			
+
 			echo "
 				<tbody>	
-				<tr>
-					<td class='td-mission-date'>$value[4]</td>
-					<td class='td-mission-time'>$value[5]</td>
-					<td class='td-mission-type'>$value[0]</td>
-					<td class='td-mission-text'>$value[1]</td>
-					<td class='td-mission-location'>$value[3]</td>
-					<td class='td-mission-infos'><a href=\"".$value[10]."\">$value[9]</a></td>
+				<tr class='row'>
+					<td>$value[4]</td>
+					<td>$value[5]</td>
+					<td class='td-text-center'>$value[0]</td>
+					<td>$value[1]</td>
+					<td>$value[3]</td>
+					<td><a href=\"".$value[10]."\">$value[9]</a></td>
 				</tr>
 				</tbody>";
 		}
 		echo "
-			<tfoot>
-				<tr>
-					<td colspan='6'>Anzahl der Eins&auml;tze im Monat: <b>$count</b></td>
-				</tr>
-			</foot>
 			</table>
+			<div class='footer-legend'>
+				BE - Brandeinsatz &#x95
+				TE - Technischer Einsatz &#x95
+				SE - Sonstiger Einsatz
+			</div>
 			</div>";
 		}
 }
@@ -949,12 +957,19 @@ function get_missions_by_year($year) {
 				$alarmstichwort = $mission->alarmstichwort;
 			}
 	
-			if(strlen($alarmstichwort) > 22) {
-				// Shortening the string to 22 characters
-				$alarmstichwort = substr($alarmstichwort,0,22)."…";
+			// if(strlen($alarmstichwort) > 22) {
+			// 	// Shortening the string to 22 characters
+			// 	$alarmstichwort = substr($alarmstichwort,0,22)."…";
+			// }
+
+
+			if(strpos($mission->art_alarmierung,'Brandeinsatz') !== false){
+				$alarm_short = 'BE';
+			}else if(strpos($mission->art_alarmierung,'Technischer Einsatz') !== false){
+				$alarm_short = 'TE';
+			}else{
+				$alarm_short = 'SE';
 			}
-
-
 
 
 
@@ -967,7 +982,7 @@ function get_missions_by_year($year) {
 //			echo "<br />";
 //			echo "<br />";
 	
-			$arr_content[0] = $mission->art_alarmierung;
+			$arr_content[0] = $alarm_short;
 			$arr_content[1] = $alarmstichwort;
 			$arr_content[2] = $mission->alarm_art;
 			$arr_content[3] = $mission->einsatzort;
@@ -1037,9 +1052,24 @@ function print_missions_month_overview($arr_months){
 	
 	
 	echo '<a name="Übersicht"></a>';
-	echo '<div><table class="mission_month_overview" summary="Übersicht über die Anzahl der Einsätze im Jahr '.$mission_year.'"><caption>Monatsübersicht für '.$mission_year.'</caption><tbody>';
+	echo '<div>
+			<table class="mission-month-overview" summary="Übersicht über die Anzahl der Einsätze im Jahr '.$mission_year.'">
+			<caption>Monatsübersicht für '.$mission_year.'</caption>';
 	// echo '<thead><tr><th>Monat</th><th>Einsätze</th><th>BE/TE/S</th><th>% Keine T&auml;tigkeit</th><th>Übersicht</th></tr></thead>';
-	echo '<thead><tr><th>Monat</th><th>Einsätze</th><th>BE/TE/S</th><th>Übersicht</th></tr></thead>';
+	echo '	<thead>
+				<tr>
+					<th class="th-mission">Monat</th>
+					<th class="th-mission-center">Einsätze</th>
+					<th class="th-mission-center">BE/TE/SE</th>
+					<th class="th-mission-center">Übersicht</th>
+				</tr>
+			</thead>
+			<tfoot>
+				<tr>
+					<td colspan="5">Anzahl der Einsätze im Jahr: <b>'.$mission_year_count.'</b></td>
+				</tr>
+			</tfoot>
+			<tbody>';
 	
 	foreach($arr_months as $key => $value) {
 		// START Amount of missions in the month
@@ -1056,44 +1086,30 @@ function print_missions_month_overview($arr_months){
 		
 		foreach($value as $mission_key => $mission_value) {
 			
-//			print_r($mission_value);
-			
-			
-			//
-			// if($mission_value[2] == "Einsatzalarm")
-			// 	$count_real_missions++;
-			// elseif($mission_value[2] == "Keine Tätigkeit")
-			// 	$count_false_alarms++;
-			// else
-			// 	$count_mistakes++;
-			
-			//
-			if($mission_value[0] == "Brandeinsatz") {
+
+			if(strpos($mission_value[0],'BE') !== false) {
 				$count_brandeinsatz++;
 			}
-			elseif($mission_value[0] == "Technischer Einsatz") {
+			elseif(strpos($mission_value[0],'TE') !== false) {
 				$count_technischereinsatz++;
 			}
-			elseif($mission_value[0] == "Sonstiger Einsatz") {
+			else {
 				$count_sonstiges++;
 			}
-		}
-		// ceil() runded auf, floor() rundet ab
-		// $ratio = ceil(($count_false_alarms/$count_missions_in_month)*100);
-		// if($ratio>20)
-		// 	$ratio = '<font color=red>'.$ratio.'%</font>';
-		// else
-		// 	$ratio = '<font color=green>'.$ratio.'%</font>';
-		// END
-		
+		}	
 		
 		// OUTPUT
 		$german_month = getGermanMonth($key);
-		// echo '<tr><td>'.$german_month.'</td><td>'.$count_missions_in_month.'</td><td>'.$count_brandeinsatz.'/'.$count_technischereinsatz.'/'.$count_sonstiges.'</td><td>'.$ratio.'</td><td><a href="#'.$german_month.'">Link</a></td></tr>';
-		echo '<tr><td>'.$german_month.'</td><td>'.$count_missions_in_month.'</td><td>'.$count_brandeinsatz.'/'.$count_technischereinsatz.'/'.$count_sonstiges.'</td><td><a href="#'.$german_month.'">Link</a></td></tr>';
+		echo '
+			<tr>
+				<td>'.$german_month.'</td>
+				<td class="td-text-center">'.$count_missions_in_month.'</td>
+				<td class="td-text-center">'.$count_brandeinsatz.'/'.$count_technischereinsatz.'/'.$count_sonstiges.'</td>
+				<td class="td-text-center"><a href="#'.$german_month.'">Link</a></td>
+			</tr>';
 	}
 	
-	echo '</tbody><tfoot><tr><td colspan="5">Anzahl der Einsätze im Jahr: <b>'.$mission_year_count.'</b></td></tr></tfoot></table></div>';
+	echo '</tbody></table></div>';
 }
 
 

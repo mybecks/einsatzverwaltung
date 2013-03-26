@@ -38,49 +38,41 @@
 
 .mission-month{
 	font-size: 10pt;
-	/*table-layout: fixed;*/
+	width: 100%;
 }
 
 .mission-month-header{
 	font-size: 12pt;
 }
 
-.th-mission-time{
-	text-align: left;
+
+.footer-legend{
+	font-size: 8pt;
+	margin-top: -1.5em;
 }
 
-.th-mission-infos{
-	text-align: left;
+.th-mission{
+	padding: 0;
+	margin: 0;
+	/*background-color: green;	*/
 }
 
-.td-mission-date{
-	width: 35px; /*5%;*/
-	/*background-color: yellow;*/
-}
-
-.td-mission-time{
-	width: 35px; /*10%*/
+.th-mission-center{
+	padding: 0;
+	margin: 0;
 	text-align: center;
-	/*background-color: green;*/
 }
 
-.td-mission-type{
-	width: 155px; /*25%*/
-	text-align: left;
-	/*background-color: blue;*/
+.td-text-center{
+	text-align: center;
 }
 
-.td-mission-text{
-	width: 180px; /*35%;*/
-	/*background-color: purple;*/
-	/*overflow: scroll;*/
+.row:hover{
+	cursor: pointer;
+	color: white;
+	background-color: #B22222;
 }
 
-.td-mission-location{
-	width: 125px; /*15%*/
-}
-
-.td-mission-infos{
-	width: 60px;/*5%*/;
-	text-align: left;
+.row:hover a{
+	color: silver;
 }
