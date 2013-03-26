@@ -1,6 +1,5 @@
 /*@import url("reset.css");*/
 
-
 .open-post-info {
 	font-weight: bold;
 	margin-bottom: 0.5em;
@@ -71,7 +70,8 @@
 .row:hover{
 	cursor: pointer;
 	color: white;
-	background-color: #B22222;
+	background-color: #e51b1b;
+	/*background-color: #B22222;*/
 }
 
 .row:hover a{
