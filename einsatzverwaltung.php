@@ -807,12 +807,12 @@ function print_missions_by_year($arr_months){
 	// Ausgabe der Einsätze im aktuellen Jahr
 	foreach($arr_months as $key => $value) {
 		$german_month = get_german_month($key);
-		
+		$count = count($arr_months[$key]);
 		echo "<br /> <div>
 		<a name='$german_month'></a>
 
 		<table class='mission-month' summary='Einsatzliste im Monat $german_month' border='0'>
-			<caption class='mission-month-header'>$german_month&nbsp;<a href='#Übersicht'><img src='$arrow_up_path' class='overview'/></a></caption>
+			<caption class='mission-month-header'>".$german_month."&nbsp;<a href='#Übersicht'><img src='$arrow_up_path' class='overview'/></a></caption>
 			<thead>
 				<tr>
 					<th scope='col' class='th-mission'>Datum</th>
@@ -825,10 +825,10 @@ function print_missions_by_year($arr_months){
 			</thead>
 			<tfoot>
 				<tr>
-					<td colspan='6'>Anzahl der Eins&auml;tze im Monat: <b>$count</b></td>
+					<td colspan='6'>Anzahl der Eins&auml;tze im Monat: <b>".$count."</b></td>
 				</tr>
 			</tfoot>";
-		$count = count($arr_months[$key]);
+		
 	
 		foreach($arr_months[$key] as $key => $value) {
 			echo "
