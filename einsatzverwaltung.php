@@ -3,7 +3,7 @@
 Plugin Name: Einsatzverwaltung 2.0
 Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
 Description: Einsatzverwaltung der FF Langenbruecken
-Version: 0.5 beta
+Version: 0.48
 Author: Andre Becker
 Author URI: la.ffbs.de
 License: GPL2
@@ -11,6 +11,7 @@ License: GPL2
 
 //global $db_version;
 //$db_version = "1.0";
+// next to come: https://github.com/jkudish/WordPress-GitHub-Plugin-Updater
 
 include "einsatzverwaltung_admin.php";
 include "einsatzverwaltung_widget.php";
@@ -806,8 +807,10 @@ function print_missions_by_year($arr_months){
 
 	// Ausgabe der Einsätze im aktuellen Jahr
 	foreach($arr_months as $key => $value) {
+		
 		$german_month = get_german_month($key);
 		$count = count($arr_months[$key]);
+		
 		echo "<br /> <div>
 		<a name='$german_month'></a>
 
