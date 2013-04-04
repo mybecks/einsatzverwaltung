@@ -3,7 +3,7 @@
 Plugin Name: Einsatzverwaltung 2.0
 Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
 Description: Einsatzverwaltung der FF Langenbruecken
-Version: 0.48
+Version: 0.49
 Author: Andre Becker
 Author URI: la.ffbs.de
 License: GPL2
@@ -13,8 +13,29 @@ License: GPL2
 //$db_version = "1.0";
 // next to come: https://github.com/jkudish/WordPress-GitHub-Plugin-Updater
 
-include "einsatzverwaltung_admin.php";
-include "einsatzverwaltung_widget.php";
+include 'einsatzverwaltung_admin.php';
+include 'einsatzverwaltung_widget.php';
+include_once('updater.php');
+
+// Settings for Automatic Github Updates
+if (is_admin()) { // note the use of is_admin() to double check that this is happening in the admin
+    $config = array(
+        'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
+        'proper_folder_name' => 'einsatzverwaltung', // this is the name of the folder your plugin lives in
+        'api_url' => 'https://api.github.com/repos/mybecks/einsatzverwaltung', // the github API url of your github repo
+        'raw_url' => 'https://raw.github.com/mybecks/einsatzverwaltung/master', // the github raw url of your github repo
+        'github_url' => 'https://github.com/mybecks/einsatzverwaltung', // the github url of your github repo
+        'zip_url' => 'https://github.com/mybecks/einsatzverwaltung/zipball/master', // the zip url of the github repo
+        'sslverify' => true, // wether WP should check the validity of the SSL cert when getting an update, see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/2 and https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/4 for details
+        'requires' => '3.0', // which version of WordPress does your plugin require?
+        'tested' => '3.3', // which version of WordPress is your plugin tested up to?
+        'readme' => 'README.md', // which file to use as the readme for the version number
+        'access_token' => '', // Access private repositories by authorizing under Appearance > Github Updates when this example plugin is installed
+    );
+    new WPGitHubUpdater($config);
+}
+
+
 
 // Aktuelles Jahr
 define ("CURRENT_YEAR" , date("Y"));

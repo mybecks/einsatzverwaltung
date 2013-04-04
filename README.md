@@ -1,7 +1,7 @@
 Einsatzplugin FF Langenbruecken
 ===============================
 
-~Current Version:0.48~
+~Current Version:0.50~
 
 
 
