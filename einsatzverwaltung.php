@@ -177,22 +177,20 @@ function einsatzverwaltung_inner_custom_box( $post ) {
   	$script = <<< EOF
 <script type='text/javascript'>
     jQuery(document).ready(function($) {
-        $('#row_freitext_alarmstichwort').hide();
+    	if(!$('#mission_id').val())
+        	$('#row_freitext_alarmstichwort').hide();
             
-           // $('select').change(function() {
         $('#alarm_stichwort').change(function() {
-         if($('#sel_so_brand').is(':selected') || $('#sel_freitext').is(':selected')){
-             $('#row_freitext_alarmstichwort').show();
-
+        	if($('#sel_so_brand').is(':selected') || $('#sel_freitext').is(':selected')) {
+            	$('#row_freitext_alarmstichwort').show();
          }else{
             $('#row_freitext_alarmstichwort').hide();
          }
         });              
          
-         $('#alarm_date').change(function(){
-         	 $('#alarm_end_date').val($(this).val());
-         });
-
+        $('#alarm_date').change(function(){
+        	$('#alarm_end_date').val($(this).val());
+        });
 
 		var availableTags = [
 			"Langenbrücken",
@@ -204,7 +202,8 @@ function einsatzverwaltung_inner_custom_box( $post ) {
 			"Wiesental",
 			"Waghäusel",
 			"Kirrlach",
-			"Odenheim"];
+			"Odenheim",
+			"Kronau"];
 	        
 	    $( "#einsatzort" ).autocomplete({
 			source: availableTags
@@ -252,23 +251,28 @@ EOF;
 	echo '		</td>';
 	echo '		<td>';
 	echo '			<select id="alarm_stichwort" name="alarm_stichwort">';
-	echo '   			<option>Brandmeldealarm</option>';
-	echo '   			<option>Verkehrsunfall</option>';
-	echo '   			<option>Ölspur</option>';
-	echo '   			<option>Absperrmaßnahme</option>';
-	echo '   			<option>Dachstuhlbrand</option>';
-	echo '   			<option>Wohnungsbrand</option>';
-	echo '   			<option>Zimmerbrand</option>';
-	echo '   			<option>Kellerbrand</option>';
-	echo '   			<option id="sel_so_brand">Sonstiger Brand</option>';
-	echo '   			<option>PKW-Brand</option>';
-	echo '   			<option>Person in Not</option>';
-	echo '   			<option>Wasserschaden</option>';
-	echo '   			<option>Drehleitereinsatz</option>';
-	echo '   			<option>Sicherheitsdienst</option>';
-	echo '   			<option>Feuerschein</option>';
-	echo '   			<option>Unterstützung Rettungsdienst</option>';
-	echo '  			<option id="sel_freitext">Freitext</option>';
+	echo '				<optgroup label="Brand">';
+	echo '   				<option>Brandmeldealarm</option>';
+	echo '   				<option>Lagerhallenbrand</option>';
+	echo '   				<option>Dachstuhlbrand</option>';
+	echo '   				<option>Wohnungsbrand</option>';
+	echo '   				<option>Zimmerbrand</option>';
+	echo '   				<option>Kellerbrand</option>';
+	echo '   				<option>Kleinbrand</option>';
+	echo '   				<option>PKW-Brand</option>';
+	echo '   				<option>Feuerschein</option>';
+	echo '   				<option id="sel_so_brand">Sonstiger Brand</option>';
+	echo '				<optgroup label="Technische Hilfe">';
+	echo '   				<option>Verkehrsunfall</option>';
+	echo '   				<option>Person in Not</option>';
+	echo '   				<option>Unterstützung Rettungsdienst</option>';
+	echo '   				<option>Wasserschaden</option>';
+	echo '				<optgroup label="Sonstiges">';
+	echo '   				<option>Absperrmaßnahme</option>';
+	echo '   				<option>Ölspur</option>';
+	echo '		   			<option>Drehleitereinsatz</option>';
+	echo '   				<option>Sicherheitsdienst</option>';
+	echo '		  			<option id="sel_freitext">Freitext</option>';
 	echo '  		</select>';
 	echo '		</td>';
 	echo '	</tr>';
