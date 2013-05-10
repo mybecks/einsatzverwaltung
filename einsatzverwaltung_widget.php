@@ -38,4 +38,5 @@ function einsatzverwaltung_widget_init() {
   register_widget( 'Einsatzverwaltung_Widget' );
 }
 
+add_action( 'widgets_init', 'einsatzverwaltung_widget_init' );
 ?>
