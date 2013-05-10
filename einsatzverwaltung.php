@@ -591,11 +591,21 @@ function einsatzverwaltung_trash_mission( $post_id ) {
  * @author Andre Becker
  * */
 function einsatzverwaltung_shorten_media_link( $link ) {
-	$url = 'http://api.bit.ly/v3/shorten?format=txt&login='.BITLY_USER.'&apiKey='.BITLY_API_KEY.'&longUrl='.$link;
 
+	$short_link;
+	$url = 'http://api.bit.ly/v3/shorten?format=txt&login='.BITLY_USER.'&apiKey='.BITLY_API_KEY.'&longUrl='.$link;
+	$response = wp_remote_get( $url );
+
+  	if( !is_wp_error( $response ))
+  	{
+  		// wp_die($response['body']);
+  		$short_link = "";
+  	}else{
+  		$short_link = $link;
+  	}
 	// $shortend_url = file_get_contents($url);
-	
-	return $link;
+	$short_link = $link;
+	return $short_link;
 }
 
 /*
