@@ -39,7 +39,7 @@ class Einsatzverwaltung_Widget extends WP_Widget {
 
 		$html = "<aside id='einsatzverwaltungs_widget'>".
 					"<h3 class='widget-title'>Einsätze im laufenden Jahr</h3>".
-					"<p style='margin-left:3.5em; font-size: 2em; font-style:bold;'>".$count."</p>".
+					"<p style='margin-left:3em; font-size: 2em; font-style:bold;'>".$count."</p>".
 				"</aside>";
 		print($html);
 	}
