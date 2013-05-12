@@ -438,7 +438,7 @@ function einsatzverwaltung_save_postdata( $post_id ) {
 	$alarmierung_zeit = $_POST['alarmierung_zeit'];
 	$rueckkehr_datum = $_POST['rueckkehr_datum'];
 	$rueckkehr_zeit = $_POST['rueckkehr_zeit'];
-	$link_zu_medien = einsatzverwaltung_shorten_media_link($_POST['link_zu_medien']);
+	$link_zu_medien = einsatzverwaltung_shorten_media_link( $_POST['link_zu_medien'] );
 
 	$db_vehicles = einsatzverwaltung_load_vehicles();
 	$vehicles = array();
@@ -469,6 +469,9 @@ function einsatzverwaltung_save_postdata( $post_id ) {
 			array( 'id' => $mission_id )
 		);
 
+		if ( function_exists( "simple_history_add" ) ) {
+			simple_history_add( "action=updated&object_type=Mission&object_name=".$alarm_stichwort."" );
+		}
 		//loop for all vehicles
 		//remove all vehicles bound to current mission!
 		$query = "DELETE FROM ". $table_name_missions_has_vehicles ." WHERE einsaetze_id = ".$mission_id;
@@ -505,6 +508,10 @@ function einsatzverwaltung_save_postdata( $post_id ) {
 			), array() );
 
 		$id = $wpdb->insert_id;
+
+		if ( function_exists( "simple_history_add" ) ) {
+			simple_history_add( "action=created&object_type=Mission&object_name=".$alarm_stichwort."" );
+		}
 
 		foreach ( $vehicles as $vehicle ) {
 			$wpdb->insert(
@@ -596,13 +603,12 @@ function einsatzverwaltung_shorten_media_link( $link ) {
 	$url = 'http://api.bit.ly/v3/shorten?format=txt&login='.BITLY_USER.'&apiKey='.BITLY_API_KEY.'&longUrl='.$link;
 	$response = wp_remote_get( $url );
 
-  	if( !is_wp_error( $response ))
-  	{
-  		// wp_die($response['body']);
-  		$short_link = "";
-  	}else{
-  		$short_link = $link;
-  	}
+	if ( !is_wp_error( $response ) ) {
+		// wp_die($response['body']);
+		$short_link = "";
+	}else {
+		$short_link = $link;
+	}
 	// $shortend_url = file_get_contents($url);
 	$short_link = $link;
 	return $short_link;
