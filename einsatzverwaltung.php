@@ -14,6 +14,7 @@ License: GPL2
 // next to come: https://github.com/jkudish/WordPress-GitHub-Plugin-Updater
 
 include 'einsatzverwaltung_admin.php';
+include 'einsatzverwaltung_custom_post.php';
 include 'einsatzverwaltung_widget.php';
 // include_once 'updater.php';
 
