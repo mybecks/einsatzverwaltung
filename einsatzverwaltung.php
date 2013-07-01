@@ -1181,7 +1181,11 @@ function postinfo() {
 	$used_vehicles = "";
 
 	for ( $i=0; $i<count( $vehicles ); $i++ ) {
-		$used_vehicles .= $vehicles[$i]->description." ";
+		if($i === count( $vehicles ) -1 ){
+			$used_vehicles .= $vehicles[$i]->description;
+		}else{
+			$used_vehicles .= $vehicles[$i]->description." &#x95 ";
+		}		
 	}
 
 	if ( ( $mission->alarmstichwort == "Freitext" ) || ( $mission->alarmstichwort == "Sonstiger Brand" ) ) {
