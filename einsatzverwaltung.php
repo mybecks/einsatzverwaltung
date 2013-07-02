@@ -3,7 +3,7 @@
 Plugin Name: Einsatzverwaltung 2.0
 Plugin URI: http://la.ffbs.de
 Description: Einsatzverwaltung der FF Langenbruecken
-Version: 0.49
+Version: 0.0.65
 Author: Andre Becker
 Author URI: la.ffbs.de
 License: GPL2
@@ -286,9 +286,9 @@ function print_missions_by_year( $arr_months ) {
 					<td class='td-text-center'>$value[0]</td>
 					<td>$value[1]</td>
 					<td>$value[3]</td>
-					<td><a href=\"".$value[10]."\">$value[9]</a></td>
+					<td>".$value[9]."</td>
 				</tr>
-				</tbody>";
+				</tbody>";//ORGINAL <td><a href=\"".$value[10]."\">$value[9]</a></td>
 		}
 		echo "
 			</table>
