@@ -28,21 +28,42 @@ function custom_post_mission() {
 		'description'   => 'Holds our Eins&auml;tze and specific data',
 		'public'        => true,
 		'menu_position' => 5,
-		'supports'      => array( 'title', 'editor' ),
+		'supports'      => array( 'title', 'author', 'editor' ),
 		'has_archive'   => true,
-		'register_meta_box_cb' => 'ew_add_custom_box'
+		'menu_icon' 	=> plugin_dir_url( __FILE__ ).'img/blaulicht_state_hover.png',
+		'register_meta_box_cb' => 'einsatzverwaltung_add_custom_box'
 	);
 	register_post_type( 'mission', $args );	
 }
+
+// function my_updated_messages( $messages ) {
+// 	global $post, $post_ID;
+// 	$messages['einsatz'] = array(
+// 		0 => '', 
+// 		1 => sprintf( __('Product updated. <a href="%s">View product</a>'), esc_url( get_permalink($post_ID) ) ),
+// 		2 => __('Custom field updated.'),
+// 		3 => __('Custom field deleted.'),
+// 		4 => __('Product updated.'),
+// 		5 => isset($_GET['revision']) ? sprintf( __('Product restored to revision from %s'), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+// 		6 => sprintf( __('Product published. <a href="%s">View product</a>'), esc_url( get_permalink($post_ID) ) ),
+// 		7 => __('Product saved.'),
+// 		8 => sprintf( __('Product submitted. <a target="_blank" href="%s">Preview product</a>'), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
+// 		9 => sprintf( __('Product scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview product</a>'), date_i18n( __( 'M j, Y @ G:i' ), strtotime( $post->post_date ) ), esc_url( get_permalink($post_ID) ) ),
+// 		10 => sprintf( __('Product draft updated. <a target="_blank" href="%s">Preview product</a>'), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
+// 	);
+// 	return $messages;
+// }
+// add_filter( 'post_updated_messages', 'my_updated_messages' );
+
 
 /**
  * Add Custom Box to Category
  *
  * @author Andre Becker
  * */
-function ew_add_custom_box() {
+function einsatzverwaltung_add_custom_box() {
 	add_meta_box(
-		'einsatzverwaltung_sectionid1',
+		'einsatzverwaltung_sectionid',
 		__( 'Einsatzverwaltung', 'einsatzverwaltung_textdomain' ),
 		'einsatzverwaltung_inner_custom_box',
 		'mission'
@@ -63,18 +84,7 @@ function einsatzverwaltung_inner_custom_box( $post ) {
 		$vehicles = einsatzverwaltung_load_vehicles();
 	}else {
 		$vehicles = einsatzverwaltung_load_vehicles();
-		// $mission = (object)[
-		// 	'id' => "",
-  //    		'alarmstichwort' => "",
-  //    		'alarm_art' => "",
-  //    		'einsatzort' => "",
-  //    		'freitext'=> "",
-  //    		'alarmierung_date'=> "",
-  //    		'alarmierung_time'=> "",
-  //    		'rueckkehr_date'=> "",
-  //    		'rueckkehr_time'=> "",
-  //    		'link_to_media'=> ""
-		// ];$members = new stdClass;
+
 		$mission->id = "";
 		$mission->art_alarmierung = "";
 		$mission->alarmstichwort = "";
@@ -108,8 +118,6 @@ function einsatzverwaltung_inner_custom_box( $post ) {
 			set_selector_for_checkbox_value( $name );
 		}
 	}
-
-	print( "freitext: ".$mission->alarmstichwort);
 
 	$script = <<< EOF
 <script type='text/javascript'>
@@ -473,25 +481,6 @@ function einsatzverwaltung_save_data( $post_id ) {
 		add_post_meta( $post_id, MISSION_ID, $id );
 	}
 }
-
-// function my_updated_messages( $messages ) {
-// 	global $post, $post_ID;
-// 	$messages['einsatz'] = array(
-// 		0 => '', 
-// 		1 => sprintf( __('Product updated. <a href="%s">View product</a>'), esc_url( get_permalink($post_ID) ) ),
-// 		2 => __('Custom field updated.'),
-// 		3 => __('Custom field deleted.'),
-// 		4 => __('Product updated.'),
-// 		5 => isset($_GET['revision']) ? sprintf( __('Product restored to revision from %s'), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
-// 		6 => sprintf( __('Product published. <a href="%s">View product</a>'), esc_url( get_permalink($post_ID) ) ),
-// 		7 => __('Product saved.'),
-// 		8 => sprintf( __('Product submitted. <a target="_blank" href="%s">Preview product</a>'), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
-// 		9 => sprintf( __('Product scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview product</a>'), date_i18n( __( 'M j, Y @ G:i' ), strtotime( $post->post_date ) ), esc_url( get_permalink($post_ID) ) ),
-// 		10 => sprintf( __('Product draft updated. <a target="_blank" href="%s">Preview product</a>'), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
-// 	);
-// 	return $messages;
-// }
-// add_filter( 'post_updated_messages', 'my_updated_messages' );
 
 /**
  * Delete mission data of current post

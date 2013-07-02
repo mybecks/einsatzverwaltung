@@ -805,7 +805,7 @@ function einsatzverwaltung_install() {
  * */
 function display_missions() {
 
-	$selected_year = $_POST['einsatzjahr'];
+	// $selected_year = $_POST['einsatzjahr'];
 	$permalink = get_permalink();
 	$years = get_mission_years();
 
@@ -823,11 +823,11 @@ function display_missions() {
 	echo "<input type=\"submit\" value=\"Anzeigen\" />";
 	echo "</form></tr></table></div>";
 
-	if ( !isset( $selected_year ) ) {
+	if ( !isset( $_POST['einsatzjahr'] ) ) {
 		$missions = get_missions_by_year( CURRENT_YEAR );
 	}
 	else {
-		$missions = get_missions_by_year( $selected_year );
+		$missions = get_missions_by_year( $_POST['einsatzjahr'] );
 	}
 	print_missions_month_overview( $missions );
 	print_missions_by_year( $missions );
@@ -954,33 +954,29 @@ function get_missions_by_year( $year ) {
 	global $wpdb;
 	$table_name_missions = $wpdb->prefix . "einsaetze";
 
+	// $arr_months = initialize_array_month(array());
 	$arr_months = array();
+
 
 	$query = "SELECT id, art_alarmierung, alarmstichwort, alarm_art, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media, wp_posts_ID, MONTH(alarmierung_date) AS Month, freitext ".
 		"FROM ".$table_name_missions.
 		" WHERE YEAR(alarmierung_date) = ".$year.
 		" ORDER BY alarmierung_date DESC, alarmierung_time DESC";
 
-	// $missions = $wpdb->get_results(
-	// "
-	// SELECT id, art_alarmierung, alarmstichwort, alarm_art, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media, wp_posts_ID, MONTH(alarmierung_date) as Month, freitext
-	// FROM $table_name_missions
-	// WHERE YEAR(alarmierung_date) = $year
-	// ORDER BY alarmierung_date DESC, alarmierung_time DESC
-	// "
-	// );
 	$missions = $wpdb->get_results( $query );
-
+	
 	foreach ( $missions as $mission ) {
 
+		//http://stackoverflow.com/questions/1195549/php-arrays-and-solution-to-undefined-index-errors
 		if ( !is_array( $arr_months[$mission->Month] ) ) {
 			$arr_months[$mission->Month] = array();
 		}
+			// wp_die('Zero Index: '.$arr_months[0]);
 
 		foreach ( $arr_months as $key => $value ) {
 
-
 			if ( $key == $mission->Month ) {
+				print($key .'-'. $mission->Month. ' ');
 				$tmp_arr = $arr_months[$key];
 
 				$arr_content = array();
@@ -1035,11 +1031,21 @@ function get_missions_by_year( $year ) {
 		}
 	}
 
+	// array_map('array_filter', $arr_months);
+	
 	// Umgekehrte Sortierung der Monate (12,11,10,...,1)
 	krsort( $arr_months );
 
 	return $arr_months;
 }
+
+// function initialize_array_month($array){
+// 	for($i=1; $i<13; $i++){
+// 		$array[$i] = array();
+// 	}
+
+// 	return $array;
+// }
 
 /**
  * Print overview of missions grouped by month
@@ -1048,9 +1054,10 @@ function get_missions_by_year( $year ) {
  * */
 function print_missions_month_overview( $arr_months ) {
 	// START Attributes
-	$mission_year = $_POST['einsatzjahr'];
-	if ( $mission_year == '' )
-		$mission_year = CURRENT_YEAR;
+	$mission_year = CURRENT_YEAR;
+
+	if ( isset($_POST['einsatzjahr']) )
+		$mission_year = $_POST['einsatzjahr'];
 
 	$mission_year_count = 0;
 
