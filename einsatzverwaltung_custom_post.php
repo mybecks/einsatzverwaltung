@@ -9,23 +9,23 @@
 function custom_post_mission() {
 
 	$labels = array(
-		'name'               => _x( 'Eins&auml;tze', 'post type general name' ),
-		'singular_name'      => _x( 'Einsatz', 'post type singular name' ),
-		'add_new'            => _x( 'Add New', 'Einsatz' ),
-		'add_new_item'       => __( 'Add New Einsatz' ),
-		'edit_item'          => __( 'Edit Einsatz' ),
-		'new_item'           => __( 'New Einsatz' ),
-		'all_items'          => __( 'All Eins&auml;tze' ),
-		'view_item'          => __( 'View Einsatz' ),
-		'search_items'       => __( 'Search Einsatz' ),
-		'not_found'          => __( 'No Eins&auml;tze found' ),
-		'not_found_in_trash' => __( 'No Eins&auml;tze found in the Trash' ), 
+		'name'               => __( 'Missions', 'einsatzverwaltung_textdomain' ),
+		'singular_name'      => __( 'Mission', 'einsatzverwaltung_textdomain' ),
+		'add_new'            => __( 'Add New', 'einsatzverwaltung_textdomain' ),
+		'add_new_item'       => __( 'Add New Mission', 'einsatzverwaltung_textdomain' ),
+		'edit_item'          => __( 'Edit Mission', 'einsatzverwaltung_textdomain' ),
+		'new_item'           => __( 'New Mission', 'einsatzverwaltung_textdomain' ),
+		'all_items'          => __( 'All Missions', 'einsatzverwaltung_textdomain' ),
+		'view_item'          => __( 'View Mission', 'einsatzverwaltung_textdomain' ),
+		'search_items'       => __( 'Search Missions', 'einsatzverwaltung_textdomain' ),
+		'not_found'          => __( 'No Missions found', 'einsatzverwaltung_textdomain' ),
+		'not_found_in_trash' => __( 'No Missions found in the Trash', 'einsatzverwaltung_textdomain' ), 
 		'parent_item_colon'  => '',
 		'menu_name'          => 'Eins&auml;tze'
 	);
 	$args = array(
 		'labels'        => $labels,
-		'description'   => 'Holds our Eins&auml;tze and specific data',
+		'description'   => 'Holds our missions and specific data',
 		'public'        => true,
 		'menu_position' => 5,
 		'supports'      => array( 'title', 'author', 'editor' ),

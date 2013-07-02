@@ -1,76 +1,134 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Einsatzverwaltung\n"
-"POT-Creation-Date: 2013-01-21 09:51+0100\n"
-"PO-Revision-Date: 2013-01-21 09:51+0100\n"
+"POT-Creation-Date: 2013-07-02 15:49+0100\n"
+"PO-Revision-Date: 2013-07-02 15:49+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: English\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.5.5\n"
 "X-Poedit-KeywordsList: _e;__\n"
 "X-Poedit-Basepath: ./\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../einsatzverwaltung.php:88
+#: ../einsatzverwaltung_admin.php:261
+msgid "Neues Fahrzeug hinzuf&uuml;gen"
+msgstr ""
+
+#: ../einsatzverwaltung_custom_post.php:12
+msgid "Missions"
+msgstr ""
+
+#: ../einsatzverwaltung_custom_post.php:13
+msgid "Mission"
+msgstr ""
+
+#: ../einsatzverwaltung_custom_post.php:14
+msgid "Add New"
+msgstr ""
+
+#: ../einsatzverwaltung_custom_post.php:15
+msgid "Add New Mission"
+msgstr ""
+
+#: ../einsatzverwaltung_custom_post.php:16
+msgid "Edit Mission"
+msgstr ""
+
+#: ../einsatzverwaltung_custom_post.php:17
+msgid "New Mission"
+msgstr ""
+
+#: ../einsatzverwaltung_custom_post.php:18
+msgid "All Missions"
+msgstr ""
+
+#: ../einsatzverwaltung_custom_post.php:19
+msgid "View Mission"
+msgstr ""
+
+#: ../einsatzverwaltung_custom_post.php:20
+msgid "Search Missions"
+msgstr ""
+
+#: ../einsatzverwaltung_custom_post.php:21
+msgid "No Missions found"
+msgstr ""
+
+#: ../einsatzverwaltung_custom_post.php:22
+msgid "No Missions found in the Trash"
+msgstr ""
+
+#: ../einsatzverwaltung_custom_post.php:67
 msgid "Einsatzverwaltung"
 msgstr ""
 
-#: ../einsatzverwaltung.php:186
+#: ../einsatzverwaltung_custom_post.php:173
 msgid "Einsatz Nr."
 msgstr ""
 
-#: ../einsatzverwaltung.php:196
+#: ../einsatzverwaltung_custom_post.php:183
 msgid "Art der Alarmierung"
 msgstr ""
 
-#: ../einsatzverwaltung.php:210
+#: ../einsatzverwaltung_custom_post.php:197
 msgid "Alarmstichwort"
 msgstr ""
 
-#: ../einsatzverwaltung.php:237
+#: ../einsatzverwaltung_custom_post.php:230
 msgid "Alarmstichwort (Freitext)"
 msgstr ""
 
-#: ../einsatzverwaltung.php:254
+#: ../einsatzverwaltung_custom_post.php:245
 msgid "Alarm"
 msgstr ""
 
-#: ../einsatzverwaltung.php:267
+#: ../einsatzverwaltung_custom_post.php:258
 msgid "Einsatzort"
 msgstr ""
 
-#: ../einsatzverwaltung.php:277
+#: ../einsatzverwaltung_custom_post.php:268
 msgid "Alarmierung (Datum)"
 msgstr ""
 
-#: ../einsatzverwaltung.php:287
+#: ../einsatzverwaltung_custom_post.php:278
 msgid "Alarmierung (Uhrzeit)"
 msgstr ""
 
-#: ../einsatzverwaltung.php:297
+#: ../einsatzverwaltung_custom_post.php:288
 msgid "R&uuml;ckkehr (Datum)"
 msgstr ""
 
-#: ../einsatzverwaltung.php:307
+#: ../einsatzverwaltung_custom_post.php:298
 msgid "R&uuml;ckkehr (Uhrzeit)"
 msgstr ""
 
-#: ../einsatzverwaltung.php:317
+#: ../einsatzverwaltung_custom_post.php:308
 msgid "Link zu weiterf&uuml;hrenden Medien"
 msgstr ""
 
-#: ../einsatzverwaltung.php:327
+#: ../einsatzverwaltung_custom_post.php:318
 msgid "Eingesetzte Fahrzeuge"
 msgstr ""
 
-#: ../einsatzverwaltung.php:340
+#: ../einsatzverwaltung_custom_post.php:329
 msgid "Keine Fahrzeuge in der Datenbank gefunden!"
 msgstr ""
 
-#: ../einsatzverwaltung.php:926
-msgid "Neues Fahrzeug hinzuf&uuml;gen"
+#: ../einsatzverwaltung_widget.php:14
+msgid "Anzahl Eins&auml;tze im Jahr"
+msgstr ""
+
+#: ../updater.php:416
+msgid ""
+"The plugin has been updated, but could not be reactivated. Please reactivate "
+"it manually."
+msgstr ""
+
+#: ../updater.php:417
+msgid "Plugin reactivated successfully."
 msgstr ""
