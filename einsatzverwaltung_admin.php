@@ -70,7 +70,7 @@ function einsatzverwaltung_admin_handle_options() {
 	    <?php screen_icon( 'options-general' ); ?> <h2>Einstellungen</h2>
 	    <form method="POST" action="">
 	    	<table class="form-table">
-	    		<tbody>
+	    		<!-- <tbody>
 	    			<tr>
 	    				<th scope="rowgroup">Mapping</th>
 	    			</tr>
@@ -84,7 +84,7 @@ function einsatzverwaltung_admin_handle_options() {
 	                    <input type="text" name="category_id" size="25" value="<?php echo $category_id;?>" />
 	                </td>
 	    			</tr>
-	    		</tbody>
+	    		</tbody> -->
 	    		<tbody>
 	    			<tr>
 	    				<th scope="rowgroup">bit.ly Einstellungen</th>
@@ -130,8 +130,8 @@ function einsatzverwaltung_admin_handle_options() {
 
 	if ( isset( $_POST["update_settings"] ) ) {
 		// Do the saving
-		$category_id = esc_attr( $_POST["category_id"] );
-		update_option( "einsatzverwaltung_settings_option_category_id", $category_id );
+		// $category_id = esc_attr( $_POST["category_id"] );
+		// update_option( "einsatzverwaltung_settings_option_category_id", $category_id );
 
 		$bitly_user = esc_attr( $_POST["bitly_user"] );
 		update_option( "einsatzverwaltung_settings_option_bitly_user", $bitly_user );
@@ -141,7 +141,7 @@ function einsatzverwaltung_admin_handle_options() {
 ?>
 	    <div id="message" class="updated">Settings saved</div>
 	<?php
-		update_category_id_value( $category_id );
+		// update_category_id_value( $category_id );
 		update_values( 'bitly_user', $bitly_user );
 		update_values( 'bitly_api_key', $bitly_api_key );
 	}
@@ -152,15 +152,15 @@ function einsatzverwaltung_admin_handle_options() {
  *
  * @author Andre Becker
  * */
-function update_category_id_value( $value ) {
-	$script = "
-	<script type='text/javascript'>
-	 jQuery(document).ready(function($) {
-		$('input[name=category_id]').val('".$value."');
-	});
-	</script>";
-	echo $script;
-}
+// function update_category_id_value( $value ) {
+// 	$script = "
+// 	<script type='text/javascript'>
+// 	 jQuery(document).ready(function($) {
+// 		$('input[name=category_id]').val('".$value."');
+// 	});
+// 	</script>";
+// 	echo $script;
+// }
 
 /**
  * Updates the input field with the new value

@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Einsatzverwaltung 2.0
-Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
+Plugin URI: http://la.ffbs.de
 Description: Einsatzverwaltung der FF Langenbruecken
 Version: 0.49
 Author: Andre Becker
@@ -41,7 +41,7 @@ include 'einsatzverwaltung_widget.php';
  * Constants
  * */
 define( "CURRENT_YEAR" , date( "Y" ) );
-define( 'CATEGORY', get_option( "einsatzverwaltung_settings_option_category_id" ) );
+// define( 'CATEGORY', get_option( "einsatzverwaltung_settings_option_category_id" ) );
 define( 'MISSION_ID', 'mission_id' );
 define( 'BITLY_USER', get_option( "einsatzverwaltung_settings_option_bitly_user" ) );
 define( 'BITLY_API_KEY', get_option( "einsatzverwaltung_settings_option_bitly_api_key" ) ); //get via http://bitly.com/a/your_api_key
@@ -1136,10 +1136,10 @@ function print_missions_month_overview( $arr_months ) {
 function postinfo_head() {
 	global $post;
 
-	$cat_id = get_the_category( $post->ID );
+	// $cat_id = get_the_category( $post->ID );
 
 	//Check if mission category
-	if ( CATEGORY != $cat_id[0]->cat_ID )
+	if (  'mission' !== $post->post_type )
 		return;
 
 	$script = <<< EOF
@@ -1200,32 +1200,32 @@ function postinfo() {
 	echo '<p class="open-post-info" id="'. $post->post_name .'">Details</p>';
 	echo '<div class="post-info post-info-'. $post->post_name .'">';
 	echo '<ul>';
-	echo  '<li class="alarmstichwort">';
-	echo   "<b>Alarmstichwort:</b> ".$alarmstichwort;
-	echo  '</li>';
-	echo  '<li class="art_der_alarmierung">';
-	echo   "<b>Art der Alarmierung:</b> ".$mission->art_alarmierung;
-	echo  '</li>';
-	echo  '<li class="alarmierung">';
-	echo   "<b>Alarmierung:</b> ".strftime( "%d.%m.%Y", strtotime( $mission->alarmierung_date ) )." ".strftime( "%H:%M", strtotime( $mission->alarmierung_time ) );
-	echo  '</li>';
-	echo  '<li class="rueckkehr">';
-	echo   "<b>R&uuml;ckkehr:</b> ".strftime( "%d.%m.%Y", strtotime( $mission->rueckkehr_date ) )." ".strftime( "%H:%M", strtotime( $mission->rueckkehr_time ) );
-	echo  '</li>';
-	echo  '<li class="einsatzort">';
-	echo   "<b>Einsatzort:</b> ".$mission->einsatzort;
-	echo  '</li>';
-	echo  '<li class="eingesetzte_fahrzeuge">';
-	echo   "<b>Eingesetzte Fahrzeuge:</b> ".$used_vehicles;
-	echo  '</li>';
-	echo  '<li class="link">';
+	echo 	'<li class="alarmstichwort">';
+	echo  		"<b>Alarmstichwort:</b> ".$alarmstichwort;
+	echo  	'</li>';
+	echo  	'<li class="art_der_alarmierung">';
+	echo  		"<b>Art der Alarmierung:</b> ".$mission->art_alarmierung;
+	echo  	'</li>';
+	echo  	'<li class="alarmierung">';
+	echo  		"<b>Alarmierung:</b> ".strftime( "%d.%m.%Y", strtotime( $mission->alarmierung_date ) )." ".strftime( "%H:%M", strtotime( $mission->alarmierung_time ) );
+	echo  	'</li>';
+	echo  	'<li class="rueckkehr">';
+	echo  		"<b>R&uuml;ckkehr:</b> ".strftime( "%d.%m.%Y", strtotime( $mission->rueckkehr_date ) )." ".strftime( "%H:%M", strtotime( $mission->rueckkehr_time ) );
+	echo  	'</li>';
+	echo  	'<li class="einsatzort">';
+	echo  		"<b>Einsatzort:</b> ".$mission->einsatzort;
+	echo  	'</li>';
+	echo  	'<li class="eingesetzte_fahrzeuge">';
+	echo  		"<b>Eingesetzte Fahrzeuge:</b> ".$used_vehicles;
+	echo  	'</li>';
+	echo  	'<li class="link">';
 	if ( empty( $mission->link_to_media ) ) {
 		echo "<b>Quelle:</b> "."Nicht verf&uuml;gbar";
 	}
 	else {
 		echo "<b>Quelle:</b> <a href='$link' target='_blank'>".$mission->link_to_media."</a>";
 	}
-	echo  '</li>';
+	echo  	'</li>';
 	echo '</ul>';
 	echo '</div>';
 }
