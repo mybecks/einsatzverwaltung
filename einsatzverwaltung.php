@@ -83,8 +83,15 @@ add_action( 'wp_enqueue_scripts', 'einsatzverwaltung_add_stylesheet' );
  * */
 function my_einsatzverwaltung_handler( $atts, $content=null, $code="" ) {
 
+	ob_start();
+
 	//code 4 displaying
 	display_missions();
+
+	$output_string = ob_get_contents();
+	ob_end_clean();
+
+	return $output_string;
 }
 
 add_shortcode( 'einsatzverwaltung', 'my_einsatzverwaltung_handler' );
@@ -286,9 +293,9 @@ function print_missions_by_year( $arr_months ) {
 					<td class='td-text-center'>$value[0]</td>
 					<td>$value[1]</td>
 					<td>$value[3]</td>
-					<td>".$value[9]."</td>
+					<td><a href=\"".$value[10]."\">$value[9]</a></td>
 				</tr>
-				</tbody>";//ORGINAL <td><a href=\"".$value[10]."\">$value[9]</a></td>
+				</tbody>";
 		}
 		echo "
 			</table>
