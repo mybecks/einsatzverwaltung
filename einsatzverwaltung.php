@@ -48,9 +48,14 @@ define( 'BITLY_API_KEY', get_option( "einsatzverwaltung_settings_option_bitly_ap
 
 
 // wp_enqueue_script( 'einsatzverwaltung-responsive-table-script', plugins_url( '/js/responsive-tables.js', __FILE__ ) );
-wp_enqueue_script( 'jquery-ui-autocomplete', '', array( 'jquery-ui-widget', 'jquery-ui-position' ), '1.8.6' );
 
 register_activation_hook( __FILE__, 'einsatzverwaltung_install' );
+
+
+function add_scripts(){
+  wp_enqueue_script( 'jquery-ui-autocomplete' );
+}
+add_action('admin_enqueue_scripts', 'add_scripts');
 
 /**
  * Add Custom Stylesheet for Plugin
