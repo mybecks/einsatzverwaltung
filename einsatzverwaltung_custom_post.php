@@ -510,15 +510,15 @@ function einsatzverwaltung_trash_mission( $post_id ) {
 function einsatzverwaltung_shorten_media_link( $link ) {
 
 	$short_link;
-	$url = 'http://api.bit.ly/v3/shorten?format=txt&login='.BITLY_USER.'&apiKey='.BITLY_API_KEY.'&longUrl='.$link;
-	$response = wp_remote_get( $url );
+	// $url = 'http://api.bit.ly/v3/shorten?format=txt&login='.BITLY_USER.'&apiKey='.BITLY_API_KEY.'&longUrl='.$link;
+	// $response = wp_remote_get( $url );
 
-	if ( !is_wp_error( $response ) ) {
-		// wp_die($response['body']);
-		$short_link = "";
-	}else {
-		$short_link = $link;
-	}
+	// if ( !is_wp_error( $response ) ) {
+	// 	// wp_die($response['body']);
+	// 	$short_link = "";
+	// }else {
+	// 	$short_link = $link;
+	// }
 	// $shortend_url = file_get_contents($url);
 	$short_link = $link;
 	return $short_link;
@@ -608,9 +608,9 @@ function einsatzverwaltung_load_mission_by_post_id( $id ) {
 	$query = "SELECT * FROM ". $table_name_missions ." WHERE wp_posts_ID = ".$id;
 	$mission_details = $wpdb->get_row( $query );
 
-
 	return $mission_details;
 }
+
 /**
  *
  *
@@ -625,6 +625,7 @@ function set_selector_for_dropdown_value( $id, $value ) {
 	</script>";
 	echo $script;
 }
+
 /*
  *
  *
@@ -639,15 +640,4 @@ function set_selector_for_checkbox_value( $value ) {
 	</script>";
 	echo $script;
 }
-
-// // ONLY MOVIE CUSTOM TYPE POSTS
-// add_filter('manage_einsatz_posts_columns', 'ST4_columns_head_only_movies', 10);
-
-// // CREATE TWO FUNCTIONS TO HANDLE THE COLUMN
-// function ST4_columns_head_only_movies($defaults) {
-// 	$defaults['author'] = 'Author';
-// 	return $defaults;
-// }
 ?>
-
-

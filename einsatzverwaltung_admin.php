@@ -153,13 +153,13 @@ function einsatzverwaltung_admin_handle_options() {
  * @author Andre Becker
  * */
 // function update_category_id_value( $value ) {
-// 	$script = "
-// 	<script type='text/javascript'>
-// 	 jQuery(document).ready(function($) {
-// 		$('input[name=category_id]').val('".$value."');
-// 	});
-// 	</script>";
-// 	echo $script;
+//  $script = "
+//  <script type='text/javascript'>
+//   jQuery(document).ready(function($) {
+//   $('input[name=category_id]').val('".$value."');
+//  });
+//  </script>";
+//  echo $script;
 // }
 
 /**
@@ -187,7 +187,7 @@ function einsatzverwaltung_admin_howto() {
 	<div class="wrap">
 	<?php screen_icon( 'edit-pages' ); ?><h2>HowTo</h2>
 	</div>
-	<?php
+<?php
 }
 
 /**
@@ -219,7 +219,7 @@ function einsatzverwaltung_admin_handle_vehicles() {
 			<th>Edit</th>
 			<th>Delete</th>
 		</tr>
-	
+
 <?php
 	$script = "
 		<script type='text/javascript'>
@@ -237,7 +237,7 @@ function einsatzverwaltung_admin_handle_vehicles() {
 		echo    $vehicle->id;
 		echo '		</td>';
 		echo '		<td>';
-		echo 	$vehicle->description;
+		echo  $vehicle->description;
 		echo '		</td>';
 		echo '		<td>';
 		echo '			<img class="tab-images" src='.plugin_dir_url( __FILE__ ).'img/admin_edit.png />';
@@ -248,7 +248,7 @@ function einsatzverwaltung_admin_handle_vehicles() {
 		echo '	</tr>';
 	}
 
-	
+
 
 ?>
 
@@ -268,24 +268,23 @@ function einsatzverwaltung_admin_handle_vehicles() {
 	<?php
 
 
-	if ( isset( $_POST['insert_vehicle'] ) ) {
-		$wpdb->insert(
-			$table_name_vehicles,
-			array(
-				'description' => $_POST['add_new_vehicle']
-			),
-			array(
-				'%s'
-			)
-		);
+	$wpdb->insert(
+		$table_name_vehicles,
+		array(
+			'description' => $_POST['add_new_vehicle']
+		),
+		array(
+			'%s'
+		)
+	);
 
 ?>
 		<div id="message" class="updated">Added new vehicle</div>
 		<?php
-	}
-
-
 }
+
+
+// }
 
 /*
  * End Admin Menu
