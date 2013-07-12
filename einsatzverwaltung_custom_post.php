@@ -16,26 +16,26 @@ function einsatzverwaltung_custom_post_mission() {
 
 
 	$labels = array(
-		'name'               => __( 'Missions', 'einsatzverwaltung_textdomain' ),
-		'singular_name'      => __( 'Mission', 'einsatzverwaltung_textdomain' ),
-		'add_new'            => __( 'Add New', 'einsatzverwaltung_textdomain' ),
-		'add_new_item'       => __( 'Add New Mission', 'einsatzverwaltung_textdomain' ),
-		'edit_item'          => __( 'Edit Mission', 'einsatzverwaltung_textdomain' ),
-		'new_item'           => __( 'New Mission', 'einsatzverwaltung_textdomain' ),
-		'all_items'          => __( 'All Missions', 'einsatzverwaltung_textdomain' ),
-		'view_item'          => __( 'View Mission', 'einsatzverwaltung_textdomain' ),
-		'search_items'       => __( 'Search Missions', 'einsatzverwaltung_textdomain' ),
-		'not_found'          => __( 'No Missions found', 'einsatzverwaltung_textdomain' ),
-		'not_found_in_trash' => __( 'No Missions found in the Trash', 'einsatzverwaltung_textdomain' ), 
+		'name'               => __( 'Missions', TEXT_DOMAIN ),
+		'singular_name'      => __( 'Mission', TEXT_DOMAIN ),
+		'add_new'            => __( 'Add New', TEXT_DOMAIN ),
+		'add_new_item'       => __( 'Add New Mission', TEXT_DOMAIN ),
+		'edit_item'          => __( 'Edit Mission', TEXT_DOMAIN ),
+		'new_item'           => __( 'New Mission', TEXT_DOMAIN ),
+		'all_items'          => __( 'All Missions', TEXT_DOMAIN ),
+		'view_item'          => __( 'View Mission', TEXT_DOMAIN ),
+		'search_items'       => __( 'Search Missions', TEXT_DOMAIN ),
+		'not_found'          => __( 'No Missions found', TEXT_DOMAIN ),
+		'not_found_in_trash' => __( 'No Missions found in the Trash', TEXT_DOMAIN ), 
 		'parent_item_colon'  => '',
-		'menu_name'          => __( 'Missions', 'einsatzverwaltung_textdomain' )
+		'menu_name'          => __( 'Missions', TEXT_DOMAIN )
 	);
 		// 'query_var'			 => true,
 		// 'rewrite'			 => false,
 	
 	$args = array(
 		'labels'        => $labels,
-		'description'   => __( 'Holds our missions and specific data', 'einsatzverwaltung_textdomain' ),
+		'description'   => __( 'Holds our missions and specific data', TEXT_DOMAIN ),
 		'public'        => true,
 		'menu_position' => 5,
 		'supports'      => array( 'title', 'author', 'editor' ),
@@ -50,16 +50,16 @@ function einsatzverwaltung_mission_updated_messages( $messages ) {
 	global $post, $post_ID;
 	$messages['einsatz'] = array(
 		0 => '', 
-		1 => sprintf( __('Mission updated. <a href="%s">View mission</a>'), esc_url( get_permalink($post_ID) ) ),
-		2 => __('Custom field updated.'),
-		3 => __('Custom field deleted.'),
-		4 => __('Mission updated.'),
-		5 => isset($_GET['revision']) ? sprintf( __('Mission restored to revision from %s'), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
-		6 => sprintf( __('Mission published. <a href="%s">View mission</a>'), esc_url( get_permalink($post_ID) ) ),
-		7 => __('Mission saved.'),
-		8 => sprintf( __('Mission submitted. <a target="_blank" href="%s">Preview mission</a>'), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
-		9 => sprintf( __('Mission scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview mission</a>'), date_i18n( __( 'M j, Y @ G:i' ), strtotime( $post->post_date ) ), esc_url( get_permalink($post_ID) ) ),
-		10 => sprintf( __('Mission draft updated. <a target="_blank" href="%s">Preview mission</a>'), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
+		1 => sprintf( __('Mission updated. <a href="%s">View mission</a>', TEXT_DOMAIN), esc_url( get_permalink($post_ID) ) ),
+		2 => __('Custom field updated.', TEXT_DOMAIN),
+		3 => __('Custom field deleted.', TEXT_DOMAIN),
+		4 => __('Mission updated.', TEXT_DOMAIN),
+		5 => isset($_GET['revision']) ? sprintf( __('Mission restored to revision from %s', TEXT_DOMAIN), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+		6 => sprintf( __('Mission published. <a href="%s">View mission</a>', TEXT_DOMAIN), esc_url( get_permalink($post_ID) ) ),
+		7 => __('Mission saved.', TEXT_DOMAIN),
+		8 => sprintf( __('Mission submitted. <a target="_blank" href="%s">Preview mission</a>', TEXT_DOMAIN), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
+		9 => sprintf( __('Mission scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview mission</a>', TEXT_DOMAIN), date_i18n( __( 'M j, Y @ G:i', TEXT_DOMAIN ), strtotime( $post->post_date ) ), esc_url( get_permalink($post_ID) ) ),
+		10 => sprintf( __('Mission draft updated. <a target="_blank" href="%s">Preview mission</a>', TEXT_DOMAIN), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
 	);
 	return $messages;
 }
@@ -140,7 +140,7 @@ add_filter( 'post_updated_messages', 'einsatzverwaltung_mission_updated_messages
 function einsatzverwaltung_add_custom_box() {
 	add_meta_box(
 		'einsatzverwaltung_sectionid',
-		__( 'Einsatzverwaltung', 'einsatzverwaltung_textdomain' ),
+		__( 'Einsatzverwaltung', TEXT_DOMAIN ),
 		'einsatzverwaltung_inner_custom_box',
 		'mission'
 	);
@@ -246,7 +246,7 @@ EOF;
 	echo '	<tr>';
 	echo '		<td>';
 	echo '			<label for="mission_id">';
-	_e( "Einsatz Nr.", 'einsatzverwaltung_textdomain' );
+	_e( "Einsatz Nr.", TEXT_DOMAIN );
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
@@ -256,7 +256,7 @@ EOF;
 	echo '	<tr>';
 	echo '		<td>';
 	echo '			<label for="alarm_art">';
-	_e( "Art der Alarmierung", 'einsatzverwaltung_textdomain' );
+	_e( "Art der Alarmierung", TEXT_DOMAIN );
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
@@ -270,7 +270,7 @@ EOF;
 	echo '	<tr>';
 	echo '		<td>';
 	echo '			<label for="alarm_stichwort">';
-	_e( "Alarmstichwort", 'einsatzverwaltung_textdomain' );
+	_e( "Alarmstichwort", TEXT_DOMAIN );
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
@@ -303,7 +303,7 @@ EOF;
 	echo '	<tr id="row_freitext_alarmstichwort">';
 	echo '		<td>';
 	echo '			<label for="alarmstichwort_freitext">';
-	_e( "Alarmstichwort (Freitext)", 'einsatzverwaltung_textdomain' );
+	_e( "Alarmstichwort (Freitext)", TEXT_DOMAIN );
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
@@ -318,7 +318,7 @@ EOF;
 	echo '	<tr>';
 	echo '		<td>';
 	echo '			<label for="alarm">';
-	_e( "Alarm", 'einsatzverwaltung_textdomain' );
+	_e( "Alarm", TEXT_DOMAIN );
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
@@ -331,7 +331,7 @@ EOF;
 	echo '	<tr>';
 	echo '		<td>';
 	echo '			<label for="einsatzort">';
-	_e( "Einsatzort", 'einsatzverwaltung_textdomain' );
+	_e( "Einsatzort", TEXT_DOMAIN );
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
@@ -341,7 +341,7 @@ EOF;
 	echo '	<tr>';
 	echo '		<td>';
 	echo '			<label for="alarmierung_datum">';
-	_e( "Alarmierung (Datum)", 'einsatzverwaltung_textdomain' );
+	_e( "Alarmierung (Datum)", TEXT_DOMAIN );
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
@@ -351,7 +351,7 @@ EOF;
 	echo '	<tr>';
 	echo '		<td>';
 	echo '			<label for="alarmierung_zeit">';
-	_e( "Alarmierung (Uhrzeit)", 'einsatzverwaltung_textdomain' );
+	_e( "Alarmierung (Uhrzeit)", TEXT_DOMAIN );
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
@@ -361,7 +361,7 @@ EOF;
 	echo '	<tr>';
 	echo '		<td>';
 	echo '			<label for="rueckkehr_datum">';
-	_e( "R&uuml;ckkehr (Datum)", 'einsatzverwaltung_textdomain' );
+	_e( "R&uuml;ckkehr (Datum)", TEXT_DOMAIN );
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
@@ -371,7 +371,7 @@ EOF;
 	echo '	<tr>';
 	echo '		<td>';
 	echo '			<label for="rueckkehr_zeit">';
-	_e( "R&uuml;ckkehr (Uhrzeit)", 'einsatzverwaltung_textdomain' );
+	_e( "R&uuml;ckkehr (Uhrzeit)", TEXT_DOMAIN );
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
@@ -381,7 +381,7 @@ EOF;
 	echo '	<tr>';
 	echo '		<td>';
 	echo '			<label for="link_zu_medien">';
-	_e( "Link zu weiterf&uuml;hrenden Medien", 'einsatzverwaltung_textdomain' );
+	_e( "Link zu weiterf&uuml;hrenden Medien", TEXT_DOMAIN );
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
@@ -391,7 +391,7 @@ EOF;
 	echo '	<tr>';
 	echo '		<td>';
 	echo '			<label for="fahrzeuge">';
-	_e( "Eingesetzte Fahrzeuge", 'einsatzverwaltung_textdomain' );
+	_e( "Eingesetzte Fahrzeuge", TEXT_DOMAIN );
 	echo '			<label>';
 	echo '		</td>';
 	echo '		<td>';
@@ -402,7 +402,7 @@ EOF;
 		}
 	}else {
 		echo '<p>';
-		_e( "Keine Fahrzeuge in der Datenbank gefunden!", 'einsatzverwaltung_textdomain' );
+		_e( "Keine Fahrzeuge in der Datenbank gefunden!", TEXT_DOMAIN );
 		echo '</p>';
 	}
 	echo '		</td>';

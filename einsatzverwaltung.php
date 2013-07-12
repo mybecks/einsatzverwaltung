@@ -3,7 +3,7 @@
 Plugin Name: Einsatzverwaltung 2.0
 Plugin URI: http://la.ffbs.de
 Description: Einsatzverwaltung der FF Langenbruecken
-Version: 0.0.65
+Version: 0.0.66
 Author: Andre Becker
 Author URI: la.ffbs.de
 License: GPL2
@@ -12,10 +12,11 @@ License: GPL2
 //global $db_version;
 //$db_version = "1.0";
 // next to come: https://github.com/jkudish/WordPress-GitHub-Plugin-Updater
+require_once 'einsatzverwaltung_constants.php';
 
-include 'einsatzverwaltung_admin.php';
-include 'einsatzverwaltung_custom_post.php';
-include 'einsatzverwaltung_widget.php';
+include_once 'einsatzverwaltung_admin.php';
+include_once 'einsatzverwaltung_custom_post.php';
+include_once 'einsatzverwaltung_widget.php';
 // include_once 'updater.php';
 
 // Settings for Automatic Github Updates
@@ -37,14 +38,14 @@ include 'einsatzverwaltung_widget.php';
 // }
 
 
-/**
- * Constants
- * */
-define( "CURRENT_YEAR" , date( "Y" ) );
-// define( 'CATEGORY', get_option( "einsatzverwaltung_settings_option_category_id" ) );
-define( 'MISSION_ID', 'mission_id' );
-define( 'BITLY_USER', get_option( "einsatzverwaltung_settings_option_bitly_user" ) );
-define( 'BITLY_API_KEY', get_option( "einsatzverwaltung_settings_option_bitly_api_key" ) ); //get via http://bitly.com/a/your_api_key
+// /**
+//  * Constants
+//  * */
+// define( "CURRENT_YEAR" , date( "Y" ) );
+// // define( 'CATEGORY', get_option( "einsatzverwaltung_settings_option_category_id" ) );
+// define( 'MISSION_ID', 'mission_id' );
+// define( 'BITLY_USER', get_option( "einsatzverwaltung_settings_option_bitly_user" ) );
+// define( 'BITLY_API_KEY', get_option( "einsatzverwaltung_settings_option_bitly_api_key" ) ); //get via http://bitly.com/a/your_api_key
 
 
 // wp_enqueue_script( 'einsatzverwaltung-responsive-table-script', plugins_url( '/js/responsive-tables.js', __FILE__ ) );
