@@ -95,7 +95,8 @@ function my_einsatzverwaltung_handler( $atts, $content=null, $code="" ) {
 }
 
 add_shortcode( 'einsatzverwaltung', 'my_einsatzverwaltung_handler' );
-add_action( 'init', 'custom_post_mission' );
+add_action( 'init', 'einsatzverwaltung_init' );
+add_action( 'plugins_loaded', 'einsatzverwaltung_load_translation');
 add_action( 'publish_mission', 'einsatzverwaltung_save_data' );
 
 add_action( 'admin_init', 'einsatzverwaltung_admin_init' );
@@ -103,6 +104,15 @@ add_action( 'admin_menu', 'einsatzverwaltung_admin_menu' );
 add_action( 'widgets_init', 'einsatzverwaltung_widget_init' );
 
 
+function einsatzverwaltung_init() {
+
+	einsatzverwaltung_custom_post_mission();
+}
+
+
+function einsatzverwaltung_load_translation(){
+	load_plugin_textdomain( 'einsatzverwaltung_textdomain', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
+}
 /*
  * DB Setup
  */

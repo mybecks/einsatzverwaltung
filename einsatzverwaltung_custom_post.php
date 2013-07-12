@@ -6,7 +6,7 @@
  * @author Andre Becker
  **/
 
-function custom_post_mission() {
+function einsatzverwaltung_custom_post_mission() {
 
 	// add to our plugin init function
 	// global $wp_rewrite;
@@ -28,14 +28,14 @@ function custom_post_mission() {
 		'not_found'          => __( 'No Missions found', 'einsatzverwaltung_textdomain' ),
 		'not_found_in_trash' => __( 'No Missions found in the Trash', 'einsatzverwaltung_textdomain' ), 
 		'parent_item_colon'  => '',
-		'menu_name'          => 'Eins&auml;tze'
+		'menu_name'          => __( 'Missions', 'einsatzverwaltung_textdomain' )
 	);
 		// 'query_var'			 => true,
 		// 'rewrite'			 => false,
 	
 	$args = array(
 		'labels'        => $labels,
-		'description'   => 'Holds our missions and specific data',
+		'description'   => __( 'Holds our missions and specific data', 'einsatzverwaltung_textdomain' ),
 		'public'        => true,
 		'menu_position' => 5,
 		'supports'      => array( 'title', 'author', 'editor' ),
@@ -46,24 +46,24 @@ function custom_post_mission() {
 	register_post_type( 'mission', $args );	
 }
 
-// function my_updated_messages( $messages ) {
-// 	global $post, $post_ID;
-// 	$messages['einsatz'] = array(
-// 		0 => '', 
-// 		1 => sprintf( __('Product updated. <a href="%s">View product</a>'), esc_url( get_permalink($post_ID) ) ),
-// 		2 => __('Custom field updated.'),
-// 		3 => __('Custom field deleted.'),
-// 		4 => __('Product updated.'),
-// 		5 => isset($_GET['revision']) ? sprintf( __('Product restored to revision from %s'), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
-// 		6 => sprintf( __('Product published. <a href="%s">View product</a>'), esc_url( get_permalink($post_ID) ) ),
-// 		7 => __('Product saved.'),
-// 		8 => sprintf( __('Product submitted. <a target="_blank" href="%s">Preview product</a>'), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
-// 		9 => sprintf( __('Product scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview product</a>'), date_i18n( __( 'M j, Y @ G:i' ), strtotime( $post->post_date ) ), esc_url( get_permalink($post_ID) ) ),
-// 		10 => sprintf( __('Product draft updated. <a target="_blank" href="%s">Preview product</a>'), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
-// 	);
-// 	return $messages;
-// }
-// add_filter( 'post_updated_messages', 'my_updated_messages' );
+function einsatzverwaltung_mission_updated_messages( $messages ) {
+	global $post, $post_ID;
+	$messages['einsatz'] = array(
+		0 => '', 
+		1 => sprintf( __('Mission updated. <a href="%s">View mission</a>'), esc_url( get_permalink($post_ID) ) ),
+		2 => __('Custom field updated.'),
+		3 => __('Custom field deleted.'),
+		4 => __('Mission updated.'),
+		5 => isset($_GET['revision']) ? sprintf( __('Mission restored to revision from %s'), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+		6 => sprintf( __('Mission published. <a href="%s">View mission</a>'), esc_url( get_permalink($post_ID) ) ),
+		7 => __('Mission saved.'),
+		8 => sprintf( __('Mission submitted. <a target="_blank" href="%s">Preview mission</a>'), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
+		9 => sprintf( __('Mission scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview mission</a>'), date_i18n( __( 'M j, Y @ G:i' ), strtotime( $post->post_date ) ), esc_url( get_permalink($post_ID) ) ),
+		10 => sprintf( __('Mission draft updated. <a target="_blank" href="%s">Preview mission</a>'), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
+	);
+	return $messages;
+}
+add_filter( 'post_updated_messages', 'einsatzverwaltung_mission_updated_messages' );
 
 // Add filter to plugin init function
 // add_filter('post_type_link', 'mission_permalink', 10, 3);   

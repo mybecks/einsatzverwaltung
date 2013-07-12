@@ -1,0 +1,210 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Einsatzverwaltung\n"
+"POT-Creation-Date: 2013-07-12 09:17+0100\n"
+"PO-Revision-Date: 2013-07-12 09:19+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: German\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+"X-Poedit-KeywordsList: _e;__\n"
+"X-Poedit-Basepath: ./\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../einsatzverwaltung_admin.php:261
+msgid "Neues Fahrzeug hinzuf&uuml;gen"
+msgstr "Neues Fahrzeug hinzufügen"
+
+#: ../einsatzverwaltung_custom_post.php:19
+#: ../einsatzverwaltung_custom_post.php:31
+msgid "Missions"
+msgstr "Einsätze"
+
+#: ../einsatzverwaltung_custom_post.php:20
+msgid "Mission"
+msgstr "Einsatz"
+
+#: ../einsatzverwaltung_custom_post.php:21
+msgid "Add New"
+msgstr "Einsatz anlegen"
+
+#: ../einsatzverwaltung_custom_post.php:22
+msgid "Add New Mission"
+msgstr "Neuen Einsatz anlegen"
+
+#: ../einsatzverwaltung_custom_post.php:23
+msgid "Edit Mission"
+msgstr "Einsatz bearbeiten"
+
+#: ../einsatzverwaltung_custom_post.php:24
+msgid "New Mission"
+msgstr "Neuer Einsatz"
+
+#: ../einsatzverwaltung_custom_post.php:25
+msgid "All Missions"
+msgstr "Alle Einsätze"
+
+#: ../einsatzverwaltung_custom_post.php:26
+msgid "View Mission"
+msgstr "Zeige Einsatz"
+
+#: ../einsatzverwaltung_custom_post.php:27
+msgid "Search Missions"
+msgstr "Suche Einsatz"
+
+#: ../einsatzverwaltung_custom_post.php:28
+msgid "No Missions found"
+msgstr "Keine Einsätze gefunden"
+
+#: ../einsatzverwaltung_custom_post.php:29
+msgid "No Missions found in the Trash"
+msgstr "Keine Einsätze im Papierkorb gefunden"
+
+#: ../einsatzverwaltung_custom_post.php:38
+msgid "Holds our missions and specific data"
+msgstr "Verwaltung der Einsätze"
+
+#: ../einsatzverwaltung_custom_post.php:53
+#, php-format
+msgid "Mission updated. <a href=\"%s\">View mission</a>"
+msgstr "Einsatz aktualisiert. <a href=\"%s\">Einsatz ansehen</a>"
+
+#: ../einsatzverwaltung_custom_post.php:54
+msgid "Custom field updated."
+msgstr "Custom field aktualisiert."
+
+#: ../einsatzverwaltung_custom_post.php:55
+msgid "Custom field deleted."
+msgstr "Custom field gelöscht."
+
+#: ../einsatzverwaltung_custom_post.php:56
+msgid "Mission updated."
+msgstr "Einsatz aktualisiert."
+
+#: ../einsatzverwaltung_custom_post.php:57
+#, php-format
+msgid "Mission restored to revision from %s"
+msgstr "Einsatz aus Revision %s wiederhergestellt"
+
+#: ../einsatzverwaltung_custom_post.php:58
+#, php-format
+msgid "Mission published. <a href=\"%s\">View mission</a>"
+msgstr "Einsatz veröffentlicht. <a href=\"%s\">Einsatz ansehen</a>"
+
+#: ../einsatzverwaltung_custom_post.php:59
+msgid "Mission saved."
+msgstr "Einsatz gespeichert."
+
+#: ../einsatzverwaltung_custom_post.php:60
+#, php-format
+msgid "Mission submitted. <a target=\"_blank\" href=\"%s\">Preview mission</a>"
+msgstr ""
+"Einsatz eingereicht. <a target=\"_blank\" href=\"%s\">Vorschau Einsatz</a>"
+
+#: ../einsatzverwaltung_custom_post.php:61
+#, php-format
+msgid ""
+"Mission scheduled for: <strong>%1$s</strong>. <a target=\"_blank\" href="
+"\"%2$s\">Preview mission</a>"
+msgstr ""
+"Einsatz Veröffentlichung terminiert auf: <strong>%1$s</strong>. <a target="
+"\"_blank\" href=\"%2$s\">Vorschau Einsatz</a>"
+
+#: ../einsatzverwaltung_custom_post.php:61
+msgid "M j, Y @ G:i"
+msgstr "M j, Y @ G:i"
+
+#: ../einsatzverwaltung_custom_post.php:62
+#, php-format
+msgid ""
+"Mission draft updated. <a target=\"_blank\" href=\"%s\">Preview mission</a>"
+msgstr ""
+"Einsatz Entwurf aktualisiert. <a target=\"_blank\" href=\"%s\">Vorschau "
+"Einsatz</a>"
+
+#: ../einsatzverwaltung_custom_post.php:143
+msgid "Einsatzverwaltung"
+msgstr "Einsatzverwaltung"
+
+#: ../einsatzverwaltung_custom_post.php:249
+msgid "Einsatz Nr."
+msgstr "Einsatz Nr."
+
+#: ../einsatzverwaltung_custom_post.php:259
+msgid "Art der Alarmierung"
+msgstr "Art der Alarmierung"
+
+#: ../einsatzverwaltung_custom_post.php:273
+msgid "Alarmstichwort"
+msgstr "Alarmstichwort (Freitext)"
+
+#: ../einsatzverwaltung_custom_post.php:306
+msgid "Alarmstichwort (Freitext)"
+msgstr "Alarmstichwort (Freitext)"
+
+#: ../einsatzverwaltung_custom_post.php:321
+msgid "Alarm"
+msgstr "Alarm"
+
+#: ../einsatzverwaltung_custom_post.php:334
+msgid "Einsatzort"
+msgstr "Einsatzort"
+
+#: ../einsatzverwaltung_custom_post.php:344
+msgid "Alarmierung (Datum)"
+msgstr "Alarmierung (Datum)"
+
+#: ../einsatzverwaltung_custom_post.php:354
+msgid "Alarmierung (Uhrzeit)"
+msgstr "Alarmierung (Uhrzeit)"
+
+#: ../einsatzverwaltung_custom_post.php:364
+msgid "R&uuml;ckkehr (Datum)"
+msgstr "Rückkehr (Datum)"
+
+#: ../einsatzverwaltung_custom_post.php:374
+msgid "R&uuml;ckkehr (Uhrzeit)"
+msgstr "Rückkehr (Uhrzeit)"
+
+#: ../einsatzverwaltung_custom_post.php:384
+msgid "Link zu weiterf&uuml;hrenden Medien"
+msgstr "Link zu weiterführenden Medien"
+
+#: ../einsatzverwaltung_custom_post.php:394
+msgid "Eingesetzte Fahrzeuge"
+msgstr "Eingesetzte Fahrzeuge"
+
+#: ../einsatzverwaltung_custom_post.php:405
+msgid "Keine Fahrzeuge in der Datenbank gefunden!"
+msgstr "Keine Fahrzeuge in der Datenbank gefunden!"
+
+#: ../einsatzverwaltung_widget.php:14
+msgid "Anzahl Eins&auml;tze im Jahr"
+msgstr "Anzahl Einsäte im Jahr"
+
+#: ../updater.php:416
+msgid ""
+"The plugin has been updated, but could not be reactivated. Please reactivate "
+"it manually."
+msgstr ""
+"Das Plugin wurde aktualisiert, konnte aber nicht reaktiviert werden. Bitte "
+"manuel reaktiveren."
+
+#: ../updater.php:417
+msgid "Plugin reactivated successfully."
+msgstr "Plugin erfolgreich reaktiviert."
+
+#~ msgid "Edit Einsatz"
+#~ msgstr "Einsatz editieren"
+
+#~ msgid "New Einsatz"
+#~ msgstr "Neuer Einsatz"
+
+#~ msgid "All Eins&auml;tze"
+#~ msgstr "Alle Einsätze"
+
+#~ msgid "View Einsatz"
+#~ msgstr "Einsatz anzeigen"
