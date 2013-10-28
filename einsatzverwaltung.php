@@ -340,6 +340,10 @@ function get_mission_years() {
 			$array[] = $year->Year;
 	}
 
+	if(empty($array)){
+		array_push($array, CURRENT_YEAR);
+	}
+
 	return $array;
 }
 
