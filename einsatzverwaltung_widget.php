@@ -5,6 +5,8 @@
  * 
  * @author Andre Becker
  **/
+
+// http://www.wpbeginner.com/wp-tutorials/how-to-create-a-custom-wordpress-widget/ -- custom
 class Einsatzverwaltung_Widget extends WP_Widget {
 
 	public function __construct() {
@@ -17,15 +19,40 @@ class Einsatzverwaltung_Widget extends WP_Widget {
 
  	public function form( $instance ) {
 		// outputs the options form on admin
+		if ( isset( $instance[ 'title' ] ) ) {
+			$title = $instance[ 'title' ];
+		}
+		else {
+			$title = __( 'New title', 'einsatzverwaltung_textdomain' );
+		}
+		// Widget admin form
+		?>
+
+		<p>
+			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?></label>
+			<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
+		</p>
+		<?php
 	}
 
 	public function update( $new_instance, $old_instance ) {
 		// processes widget options to be saved
+		$instance = array();
+		$instance['title'] = ( ! empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
+		return $instance;
 	}
 
 	public function widget( $args, $instance ) {
 		// outputs the content of the widget
 		
+		$title = apply_filters( 'widget_title', $instance['title'] );
+		// before and after widget arguments are defined by themes
+		echo $args['before_widget'];
+		if ( ! empty( $title ) )
+		echo $args['before_title'] . $title . $args['after_title'];
+		
+
+
 		global $wpdb;
 
 		// $wpdb->show_errors();
@@ -37,11 +64,15 @@ class Einsatzverwaltung_Widget extends WP_Widget {
 
 		// $wpdb->print_error();
 
-		$html = "<aside id='einsatzverwaltungs_widget' class='widget'>".
-					"<h3 class='widget-title'>Einsätze im laufenden Jahr</h3>".
-					"<p style='margin-left:3em; font-size: 2em; font-style:bold;'>".$count."</p>".
-				"</aside>";
-		print($html);
+		// $html = "<aside id='einsatzverwaltungs_widget' class='widget'>".
+		// 			"<h3 class='widget-title'>Einsätze im laufenden Jahr</h3>".
+		// 			"<p style='margin-left:3em; font-size: 2em; font-style:bold;'>".$count."</p>".
+		// 		"</aside>";
+		$html = "<div class=\"center-mission-count\">".$count."</div>";
+		// print($html);
+		// This is where you run the code and display the output
+		echo $html;
+		echo $args['after_widget'];
 	}
 
 }

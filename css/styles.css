@@ -77,3 +77,13 @@
 .row:hover a{
 	color: silver;
 }
+
+/**
+ * Widget
+ */
+.center-mission-count{
+	margin: 0 auto;
+	width: 25px;
+	font-size: 2em; 
+	/*font-weight: bold;*/
+}
