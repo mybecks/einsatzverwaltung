@@ -576,7 +576,7 @@ function postinfo_head() {
 	// $cat_id = get_the_category( $post->ID );
 
 	//Check if mission category
-	if (  'mission' !== $post->post_type )
+	if ( 'mission' !== $post->post_type )
 		return;
 
 	$script = <<< EOF
@@ -668,4 +668,11 @@ function postinfo() {
 /*
  * End Postinfo
  */
+
+// function Einsatzverwaltung_start() {
+	
+// 		new Einsatzverwaltung();
+// }
+// add_action( 'plugins_loaded', 'Einsatzverwaltung_start' );
+
 ?>
