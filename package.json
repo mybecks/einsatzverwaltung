@@ -1,0 +1,7 @@
+{
+  "name": "einsatzplugin",
+  "version": "0.0.51",
+  "devDependencies": {
+    "grunt": "~0.4.2"
+  }
+}
