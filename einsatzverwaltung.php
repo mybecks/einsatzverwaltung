@@ -70,6 +70,8 @@ function einsatzverwaltung_add_stylesheet() {
 	// wp_die("url: ".$url);
 	wp_register_style( 'einsatzverwaltung-style', plugins_url( '/css/styles.css', __FILE__ ) );
 	wp_enqueue_style( 'einsatzverwaltung-style' );
+	wp_register_style( 'bootstrap-style', plugins_url( '/css/bootstrap.css', __FILE__ ) );
+	wp_enqueue_style( 'bootstrap-style' );
 
 	// wp_register_style( 'einsatzverwaltung-responsive-table-style', plugins_url( '/css/responsive-tables.css', __FILE__ ) );
 	// wp_enqueue_style( 'einsatzverwaltung-responsive-table-style' );
@@ -77,6 +79,11 @@ function einsatzverwaltung_add_stylesheet() {
 }
 add_action( 'wp_enqueue_scripts', 'einsatzverwaltung_add_stylesheet' );
 
+// function einsatzverwaltung_add_bootstrap() {
+// 	wp_register_style( 'einsatzverwaltung-style', plugins_url( '/css/bootstrap.css', __FILE__ ) );
+// 	wp_enqueue_style( 'einsatzverwaltung-style' );
+// }
+// add_action( 'wp_enqueue_scripts', 'einsatzverwaltung_add_bootstrap' );
 
 /**
  * Display Missions using [einsatzverwaltung] shortcode
@@ -100,8 +107,8 @@ add_shortcode( 'einsatzverwaltung', 'my_einsatzverwaltung_handler' );
 add_action( 'init', 'einsatzverwaltung_init' );
 add_action( 'plugins_loaded', 'einsatzverwaltung_load_translation');
 add_action( 'publish_mission', 'einsatzverwaltung_save_data' );
-add_action( 'admin_init', 'einsatzverwaltung_admin_init' );
-add_action( 'admin_menu', 'einsatzverwaltung_admin_menu' );
+// add_action( 'admin_init', 'einsatzverwaltung_admin_init' );
+// add_action( 'admin_menu', 'einsatzverwaltung_admin_menu' );
 add_action( 'widgets_init', 'einsatzverwaltung_widget_init' );
 
 
@@ -273,6 +280,7 @@ function print_missions_by_year( $arr_months ) {
 		$german_month = get_german_month( $key );
 		$count = count( $arr_months[$key] );
 
+		//redesign with bootstrap
 		echo "<br /> <div>
 		<a name='$german_month'></a>
 
@@ -293,7 +301,6 @@ function print_missions_by_year( $arr_months ) {
 					<td colspan='6'>Anzahl der Eins&auml;tze im Monat: <b>".$count."</b></td>
 				</tr>
 			</tfoot>";
-
 
 		foreach ( $arr_months[$key] as $key => $value ) {
 			echo "
