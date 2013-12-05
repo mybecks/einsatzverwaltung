@@ -40,6 +40,7 @@ function einsatzverwaltung_custom_post_mission() {
 		'menu_position' => 5,
 		'supports'      => array( 'title', 'author', 'editor' ),
 		'has_archive'   => true,
+		// 'rewrite' => array(true, array('slug' => '%year%/%monthno%/%postname%' )),
 		'menu_icon' 	=> plugin_dir_url( __FILE__ ).'img/blaulicht_state_hover.png',
 		'register_meta_box_cb' => 'einsatzverwaltung_add_custom_box'
 	);
@@ -65,8 +66,46 @@ function einsatzverwaltung_mission_updated_messages( $messages ) {
 }
 add_filter( 'post_updated_messages', 'einsatzverwaltung_mission_updated_messages' );
 
-// Add filter to plugin init function
+// function mission_permalink($permalink, $post) {
+//     if(('mission' == $post->post_type) && '' != $permalink && !in_array($post->post_status, array('draft', 'pending', 'auto-draft')) ) {
+// 		$rewritecode = array(
+// 	        '%year%',
+// 	        '%monthnum%',
+// 	        '%'.$permalink->query_var.'%'
+// 		);
+
+// 		var_dump($permalink);
+// 		wp_die('aus die maus');
+
+// 		$author = '';
+// 		if ( strpos($post->permalink_structure, '%author%') !== false ) {
+// 	    	$authordata = get_userdata($post->post_author);
+// 	        $author = $authordata->user_nicename;
+// 		}
+
+// 		$unixtime = strtotime($post->post_date);
+// 		$date = explode(" ",date('Y m d H i s', $unixtime));
+// 		$rewritereplace = array(
+// 	        $date[0],
+// 	        $date[1],
+// 	        $date[2],
+// 	        $date[3],
+// 	        $date[4],
+// 	        $date[5],
+// 	        $post->ID,
+// 	        $author,
+// 	        $post->post_name,
+// 		);
+// 		$permalink = str_replace($rewritecode, $rewritereplace, '/'.$post->permalink_prefix.'/'.$post->permalink_structure);
+// 		$permalink = user_trailingslashit(home_url($permalink));
+//     }
+//     return $permalink;
+// }
 // add_filter('post_type_link', 'mission_permalink', 10, 3);   
+
+
+// Add filter to plugin init function
+
 // // Adapted from get_permalink function in wp-includes/link-template.php
 // function mission_permalink($permalink, $post_id, $leavename) {
 //     $post = get_post($post_id);

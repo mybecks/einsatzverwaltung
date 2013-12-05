@@ -13,6 +13,7 @@ License: GPL2
 //$db_version = "1.0";
 // next to come: https://github.com/jkudish/WordPress-GitHub-Plugin-Updater
 require_once 'einsatzverwaltung_constants.php';
+// require_once 'LocalDateFormat.php';
 
 include_once 'einsatzverwaltung_admin.php';
 include_once 'einsatzverwaltung_custom_post.php';
@@ -99,7 +100,6 @@ add_shortcode( 'einsatzverwaltung', 'my_einsatzverwaltung_handler' );
 add_action( 'init', 'einsatzverwaltung_init' );
 add_action( 'plugins_loaded', 'einsatzverwaltung_load_translation');
 add_action( 'publish_mission', 'einsatzverwaltung_save_data' );
-
 add_action( 'admin_init', 'einsatzverwaltung_admin_init' );
 add_action( 'admin_menu', 'einsatzverwaltung_admin_menu' );
 add_action( 'widgets_init', 'einsatzverwaltung_widget_init' );
@@ -354,6 +354,13 @@ function get_mission_years() {
  * @author Florian Wallburg
  * */
 function get_german_month( $english_month_2number ) {
+
+
+	// $dateFormat = new LocaleDateFormat('MMMM'); # Long Month Names
+	// $date = new DateTime(); # Now
+ //    $month = $dateFormat->localeFormat(LOCALE, $date);
+ //    wp_die($month. ' # '. $english_month_2number);
+
 	$german_months = array( 1=>"Januar",
 		2=>"Februar",
 		3=>"M&auml;rz",
