@@ -54,11 +54,6 @@ include_once 'einsatzverwaltung_widget.php';
 register_activation_hook( __FILE__, 'einsatzverwaltung_install' );
 
 
-function add_scripts(){
-  wp_enqueue_script( 'jquery-ui-autocomplete' );
-}
-add_action('admin_enqueue_scripts', 'add_scripts');
-
 /**
  * Add Custom Stylesheet for Plugin
  *
@@ -104,7 +99,7 @@ function my_einsatzverwaltung_handler( $atts, $content=null, $code="" ) {
 }
 
 add_shortcode( 'einsatzverwaltung', 'my_einsatzverwaltung_handler' );
-add_action( 'init', 'einsatzverwaltung_init' );
+// add_action( 'init', 'einsatzverwaltung_init' );
 add_action( 'plugins_loaded', 'einsatzverwaltung_load_translation');
 add_action( 'publish_mission', 'einsatzverwaltung_save_data' );
 // add_action( 'admin_init', 'einsatzverwaltung_admin_init' );
