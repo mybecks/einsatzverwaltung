@@ -1,9 +1,4 @@
 <?php
-
-/*
- * Begin Admin Menu
- */
-
 /**
  * Initializing Admin Menu
  *
@@ -178,6 +173,7 @@ class EinsatzverwaltungAdmin {
 				</tr>
 
 		<?php
+            // http://codex.wordpress.org/AJAX_in_Plugins
 			foreach ( $vehicles as $vehicle ) {
 				echo '	<tr>';
 				echo '		<td>';
