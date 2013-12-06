@@ -41,6 +41,9 @@ class Einsatzverwaltung {
         wp_enqueue_style( 'bootstrap-style' );
     }
 
+    public function add_scripts(){
+    }
+
     public function my_einsatzverwaltung_handler( $atts, $content=null, $code="" ) {
 
         ob_start();

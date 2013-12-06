@@ -1,4 +1,5 @@
 .DS_Store
 .buildpath
 .phptidy-cache
+.bak
 node_modules
