@@ -13,47 +13,44 @@ class EinsatzverwaltungAdmin {
 
 	public function __construct()  {
 		$this->pluginPath = dirname(__FILE__);  
-        // $this->pluginUrl = WP_PLUGIN_URL . '/add-info-sources'; 
 
         add_action( 'admin_print_styles', array($this, 'einsatzverwaltung_admin_styles') );
         add_action( 'admin_enqueue_scripts', array($this,'einsatzverwaltung_admin_scripts') );
         add_action( 'admin_menu', array($this, 'einsatzverwaltung_admin_menu' ));
-        // add_action( 'wp_ajax_my_action', 'my_action_callback' );
         $this->dbHandler = DatabaseHandler::get_instance();
+
+        add_action('wp_ajax_nopriv_add_vehicle', array($this,'add_vehicle'));  
+        add_action('wp_ajax_add_vehicle', array($this,'add_vehicle'));  
 	}
 
 	public function einsatzverwaltung_admin_styles(){
 		wp_register_style( 'admin_styles', plugins_url( 'css/admin.css', __FILE__ ) );
         wp_register_style( 'admin_bootstrap', plugins_url( 'css/bootstrap.css', __FILE__ ) );
 
-        // if ($this->is_my_plugin_screen()) {
-            wp_enqueue_style( 'admin_styles' );
-            wp_enqueue_style( 'admin_bootstrap' );
-        // }
+        wp_enqueue_style( 'admin_styles' );
+        wp_enqueue_style( 'admin_bootstrap' );
 	}
 
     public function einsatzverwaltung_admin_scripts( $hook ){
 
-        // if( 'index.php' != $hook ) {
-        //     // Only applies to dashboard panel
-        //     return;
-        // }
-
-        // if ($this->is_my_plugin_screen()) {
         wp_enqueue_script( 'einsatzverwaltung_admin_scripts', plugins_url( 'js/functions.admin.js', __FILE__ ), array('jquery') );
-        // wp_localize_script( 'einsatzverwaltung_admin_scripts', 'ajax_object',
-        // array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'we_value' => 1234 ) );
-        // }
+        wp_localize_script('einsatzverwaltung_admin_scripts', 'ajax_var', array(  
+            'url' => admin_url('admin-ajax.php')
+            ,'nonce' => wp_create_nonce('ajax-nonce')  
+        ));
     }
 
-    
-    // public function my_action_callback() {
-    //     global $wpdb;
-    //     $whatever = intval( $_POST['whatever'] );
-    //     $whatever += 10;
-    //         echo $whatever;
-    //     die();
-    // }
+    public function add_vehicle()  
+    {  
+        $nonce = $_POST['nonce'];  
+   
+        if ( ! wp_verify_nonce( $nonce, 'ajax-nonce' ) )  
+            die ( 'Busted!');
+
+        $title = $_POST['id'];
+        wp_die("TEST" . $title);
+        exit;  
+    }
 
 	public function einsatzverwaltung_admin_menu() {
 
@@ -231,7 +228,7 @@ class EinsatzverwaltungAdmin {
 				<label for="new_vehicle">
 				<?php _e( "Neues Fahrzeug hinzuf&uuml;gen", 'einsatzverwaltung_textdomain' ); ?>
 				<label>
-				<input class="new_vehicle" name="add_new_vehicle" />
+				<input id="new_vehicle" name="add_new_vehicle" />
 				<input type="hidden" name="insert_vehicle" value="Y" />
 				<input type="submit" value="add" class="add-vehicle button-primary">
 			</form>

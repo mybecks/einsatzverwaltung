@@ -105,16 +105,27 @@ var ddFileUpload = function(){
 var addVehicle = function(){
 
     $('.add-vehicle').click(function(){
-        
-
+        // "action=post-like&nonce="+ajax_var.nonce+"&post-like=&post_id="+1
+        var data1 = {
+            action: 'add_vehicle',
+            nonce: ajax_var.nonce,
+            id: 1
+        };
         $.ajax({
             type: "post",
             url: ajax_var.url,
-            data: "action=post-like&nonce="+ajax_var.nonce+"&post_like=&post_id="+post_id,
-            success: function(count){
+            data: data1,
+            beforeSend: function(jqXHR, settings){
+                console.log(jqXHR);
+                console.log(settings);
+            },
+            success: function(data, textStatus, jqXHR){
                 alert('success.');
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                alert(errorThrown);
             }
-        });
+    });
 
         return false;
     });
