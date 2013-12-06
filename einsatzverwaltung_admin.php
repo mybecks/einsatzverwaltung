@@ -12,7 +12,7 @@ class EinsatzverwaltungAdmin {
     // protected $pluginUrl;
 
 	public function __construct()  {
-		$this->pluginPath = dirname(__FILE__);  
+		$this->pluginPath = dirname(__FILE__);
 
         add_action( 'admin_print_styles', array($this, 'einsatzverwaltung_admin_styles') );
         add_action( 'admin_enqueue_scripts', array($this,'einsatzverwaltung_admin_scripts') );
