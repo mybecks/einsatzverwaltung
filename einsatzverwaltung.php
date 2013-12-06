@@ -13,12 +13,20 @@ License: GPL2
 //$db_version = "1.0";
 // next to come: https://github.com/jkudish/WordPress-GitHub-Plugin-Updater
 require_once 'einsatzverwaltung_constants.php';
+require_once 'inc/class.db.php';
 // require_once 'LocalDateFormat.php';
 
 include_once 'einsatzverwaltung_admin.php';
 include_once 'einsatzverwaltung_custom_post.php';
 include_once 'einsatzverwaltung_widget.php';
 // include_once 'updater.php';
+
+
+// function __autoload($class){
+//   require('inc/class.' . strtolower($class) . '.inc.php');
+// }
+
+
 
 // Settings for Automatic Github Updates
 // if (is_admin()) { // note the use of is_admin() to double check that this is happening in the admin

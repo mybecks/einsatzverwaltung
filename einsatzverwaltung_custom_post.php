@@ -13,9 +13,6 @@ class EinsatzverwaltungCustomPost {
         add_action( 'admin_enqueue_scripts', array($this,'add_scripts') );
     }
 
-
-    
-
     public function einsatzverwaltung_custom_post_mission() {
 
         // add to our plugin init function
