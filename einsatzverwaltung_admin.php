@@ -4,8 +4,11 @@
  *
  * @author Andre Becker
  * */
+
+// http://wp.tutsplus.com/articles/tips-articles/quick-tip-conditionally-including-js-and-css-with-get_current_screen/?search_index=6
 class EinsatzverwaltungAdmin {
-	protected $pluginPath;  
+	protected $pluginPath;
+    private $dbHandler;  
     // protected $pluginUrl;
 
 	public function __construct()  {
@@ -15,19 +18,42 @@ class EinsatzverwaltungAdmin {
         add_action( 'admin_print_styles', array($this, 'einsatzverwaltung_admin_styles') );
         add_action( 'admin_enqueue_scripts', array($this,'einsatzverwaltung_admin_scripts') );
         add_action( 'admin_menu', array($this, 'einsatzverwaltung_admin_menu' ));
+        // add_action( 'wp_ajax_my_action', 'my_action_callback' );
+        $this->dbHandler = DatabaseHandler::get_instance();
 	}
 
 	public function einsatzverwaltung_admin_styles(){
 		wp_register_style( 'admin_styles', plugins_url( 'css/admin.css', __FILE__ ) );
-		wp_enqueue_style( 'admin_styles' );
-
         wp_register_style( 'admin_bootstrap', plugins_url( 'css/bootstrap.css', __FILE__ ) );
-        wp_enqueue_style( 'admin_bootstrap' );
+
+        // if ($this->is_my_plugin_screen()) {
+            wp_enqueue_style( 'admin_styles' );
+            wp_enqueue_style( 'admin_bootstrap' );
+        // }
 	}
 
-    public function einsatzverwaltung_admin_scripts(){
+    public function einsatzverwaltung_admin_scripts( $hook ){
+
+        // if( 'index.php' != $hook ) {
+        //     // Only applies to dashboard panel
+        //     return;
+        // }
+
+        // if ($this->is_my_plugin_screen()) {
         wp_enqueue_script( 'einsatzverwaltung_admin_scripts', plugins_url( 'js/functions.admin.js', __FILE__ ), array('jquery') );
+        // wp_localize_script( 'einsatzverwaltung_admin_scripts', 'ajax_object',
+        // array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'we_value' => 1234 ) );
+        // }
     }
+
+    
+    // public function my_action_callback() {
+    //     global $wpdb;
+    //     $whatever = intval( $_POST['whatever'] );
+    //     $whatever += 10;
+    //         echo $whatever;
+    //     die();
+    // }
 
 	public function einsatzverwaltung_admin_menu() {
 
@@ -48,7 +74,16 @@ class EinsatzverwaltungAdmin {
 			//wp_die('You do not have sufficient permissions to access this page.');
 			add_submenu_page( 'einsatzverwaltung-admin', 'Settings', 'Einstellungen', 'manage_options', 'einsatzverwaltung-admin-handle-options', array($this, 'einsatzverwaltung_admin_handle_options') );
 		}
-	}
+	} 
+
+    // private function is_my_plugin_screen() {  
+    //     $screen = get_current_screen();  
+    //     if (is_object($screen) && ($screen->id == 'einsatzverwaltung-admin' || $screen->id == 'einsatzverwaltung-admin-vehicles' || $screen->id == 'einsatzverwaltung-admin-import-missions' || $screen->id == 'einsatzverwaltung-admin-handle-options')) {  
+    //         return true;  
+    //     } else {  
+    //         return false;  
+    //     }  
+    // }  
 
 	public function einsatzverwaltung_admin_howto() {
 	?>
@@ -148,11 +183,10 @@ class EinsatzverwaltungAdmin {
 
 	public function einsatzverwaltung_admin_handle_vehicles() {
 		// AJAX loading: http://return-true.com/2010/01/using-ajax-in-your-wordpress-theme-admin/
-		// http://codex.wordpress.org/AJAX_in_Plugins
-		global $wpdb;
-
-		$table_name_vehicles = $wpdb->prefix . "fahrzeuge";
-		?>
+		// http://codex.wordpress.org/AJAX_in_Plugins	
+        global $wpdb;   
+        $table_name_vehicles = $wpdb->prefix . "fahrzeuge";
+     	?>
 
 		<div class="wrap">
 			<?php screen_icon( 'edit-pages' ); ?> <h2>Fahrzeugverwaltung</h2>
@@ -197,24 +231,26 @@ class EinsatzverwaltungAdmin {
 				<label for="new_vehicle">
 				<?php _e( "Neues Fahrzeug hinzuf&uuml;gen", 'einsatzverwaltung_textdomain' ); ?>
 				<label>
-				<input id="new_vehicle" name="add_new_vehicle" />
+				<input class="new_vehicle" name="add_new_vehicle" />
 				<input type="hidden" name="insert_vehicle" value="Y" />
-				<input type="submit" value="add" class="button-primary">
+				<input type="submit" value="add" class="add-vehicle button-primary">
 			</form>
 		</div>
 		<?php
 
         if( isset( $_POST["insert_vehicle"] ) )
         {
-            $wpdb->insert(
-                $table_name_vehicles,
-                array(
-                    'description' => $_POST['add_new_vehicle']
-                ),
-                array(
-                    '%s'
-                )
-            );		
+            $this->dbHandler->admin_insert_vehicle( $_POST['add_new_vehicle'] );
+
+            // $wpdb->insert(
+            //     $table_name_vehicles,
+            //     array(
+            //         'description' => $_POST['add_new_vehicle']
+            //     ),
+            //     array(
+            //         '%s'
+            //     )
+            // );		
 		?>
 		<div id="message" class="updated">Added new vehicle</div>
 		<?php

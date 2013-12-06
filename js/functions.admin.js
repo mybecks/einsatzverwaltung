@@ -102,7 +102,26 @@ var ddFileUpload = function(){
     }
 };
 
+var addVehicle = function(){
+
+    $('.add-vehicle').click(function(){
+        
+
+        $.ajax({
+            type: "post",
+            url: ajax_var.url,
+            data: "action=post-like&nonce="+ajax_var.nonce+"&post_like=&post_id="+post_id,
+            success: function(count){
+                alert('success.');
+            }
+        });
+
+        return false;
+    });
+};
+
 jQuery(document).ready(function($){
     deleteVehicleHandler();
-    ddFileUpload();
+    addVehicle();
+    // ddFileUpload();
 });
