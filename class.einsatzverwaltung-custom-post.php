@@ -173,7 +173,9 @@ class EinsatzverwaltungCustomPost {
                     "Waghäusel",
                     "Kirrlach",
                     "Odenheim",
-                    "Kronau"];
+                    "Kronau",
+                    "Unteröwisheim",
+                    "Oberöwisheim"];
 
                 $( "#einsatzort" ).autocomplete({
                     source: availableTags
