@@ -217,7 +217,7 @@ public function print_missions_by_year( $arr_months ) {
         foreach ( $arr_months[$key] as $key => $value ) {
             echo "
                 <tbody>
-                <tr class='row'>
+                <tr>
                     <td>$value[4]</td>
                     <td>$value[5]</td>
                     <td class='td-text-center'>$value[0]</td>
