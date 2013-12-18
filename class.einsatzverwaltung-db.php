@@ -44,6 +44,18 @@
                 )
             );
         }
+
+        public function get_mission_details_by_post_id( $id ) {
+            global $wpdb;
+
+            $table_missions = $wpdb->prefix . "einsaetze";
+
+            $query = "SELECT id, art_alarmierung, alarmstichwort, freitext, alarm_art, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media FROM ". $table_missions ." WHERE wp_posts_ID = ".$id;
+
+            $mission = $wpdb->get_results( $query );
+
+            return $mission;
+        }
     }
 
     // DatabaseHandler::get_instance();

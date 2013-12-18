@@ -10,10 +10,13 @@ class EinsatzverwaltungCustomPost {
     public function __construct() {
         add_action( 'init', array($this, 'custom_post_mission' ) );
         add_action( 'publish_mission', array($this, 'save_data' ));
+        // add_action( 'trash_mission', array($this, 'trash_mission') );
         add_action( 'admin_enqueue_scripts', array($this,'add_scripts') );
         add_action( 'manage_mission_posts_custom_column', array($this, 'manage_mission_columns'), 10, 2 );
         add_filter( 'post_updated_messages', array($this, 'mission_updated_messages' ) );
         add_filter( 'manage_edit-mission_columns', array($this, 'edit_mission_column' ) );
+
+        $this->dbHandler = DatabaseHandler::get_instance();
     }
 
     public function custom_post_mission() {
@@ -90,18 +93,27 @@ class EinsatzverwaltungCustomPost {
         return $columns;
     }
 
+    // http://justintadlock.com/archives/2011/06/27/custom-columns-for-custom-post-types
     public function manage_mission_columns( $column, $post_id ){
         global $post;
 
+        $mission = $this->dbHandler->get_mission_details_by_post_id( $post->ID );
+
+        // var_dump($mission);
+        // die();
         switch( $column ) {
             case 'type' :
-                echo __( 'Unknown' );
+                echo $mission[0]->art_alarmierung;
+                // echo __( 'Unknown' );
                 break;
             case 'alarmdate' :
-                echo __( 'Unknown' );
+                echo $mission[0]->alarmierung_date;
+                // echo __( 'Unknown' );
                 break;
             case 'alarmtime' :
-                echo __( 'Unknown' );
+                // echo __( 'Unknown' );
+                $date = new DateTime($mission[0]->alarmierung_time);
+                echo $date->format('H:i');
                 break;
             case 'lastedit' :
                 the_modified_author();
@@ -572,12 +584,12 @@ EOF;
     // }
 
     /**
-     * Delete mission data of current post
+     * Delete mission data & associated post
      *
      * @return boolean
      * @author Andre Becker
      * */
-    public function einsatzverwaltung_trash_mission( $post_id ) {
+    public function trash_mission( $post_id ) {
         // global $wpdb;
 
         if ( current_user_can( 'delete_posts' ) )
