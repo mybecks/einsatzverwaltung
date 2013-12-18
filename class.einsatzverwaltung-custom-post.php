@@ -15,7 +15,7 @@ class EinsatzverwaltungCustomPost {
         add_action( 'manage_mission_posts_custom_column', array($this, 'manage_mission_columns'), 10, 2 );
         add_filter( 'post_updated_messages', array($this, 'mission_updated_messages' ) );
         add_filter( 'manage_edit-mission_columns', array($this, 'edit_mission_column' ) );
-
+        add_filter( 'manage_edit-mission_sortable_columns', array($this,'mission_sortable_columns') );
         $this->dbHandler = DatabaseHandler::get_instance();
     }
 
@@ -82,7 +82,7 @@ class EinsatzverwaltungCustomPost {
         $columns = array(
             'cb' => '<input type="checkbox" />',
             'title' => __( 'Title' ),
-            'type' => __( 'Type' ),
+            'type' => __( 'Mission Type' ),
             'alarmdate' => __( 'Alarm Date' ),
             'alarmtime' => __( 'Alarm Time' ),
             'date' => __( 'Entry Date' ),
@@ -121,6 +121,12 @@ class EinsatzverwaltungCustomPost {
             default :
                 break;
         }
+    }
+
+    public function mission_sortable_columns( $columns ){
+        $columns['alarmdate'] = 'alarmdate';
+
+        return $columns;
     }
 
     public function add_scripts(){
