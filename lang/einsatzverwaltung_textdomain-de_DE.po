@@ -1,110 +1,110 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Einsatzverwaltung\n"
-"POT-Creation-Date: 2013-07-12 09:17+0100\n"
-"PO-Revision-Date: 2013-07-12 09:19+0100\n"
+"POT-Creation-Date: 2013-12-18 15:19+0100\n"
+"PO-Revision-Date: 2013-12-18 15:38+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: German\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 1.6.3\n"
 "X-Poedit-KeywordsList: _e;__\n"
 "X-Poedit-Basepath: ./\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../einsatzverwaltung_admin.php:261
+#: ../class.einsatzverwaltung-admin.php:229
 msgid "Neues Fahrzeug hinzuf&uuml;gen"
 msgstr "Neues Fahrzeug hinzufügen"
 
-#: ../einsatzverwaltung_custom_post.php:19
-#: ../einsatzverwaltung_custom_post.php:31
+#: ../class.einsatzverwaltung-custom-post.php:32
+#: ../class.einsatzverwaltung-custom-post.php:44
 msgid "Missions"
 msgstr "Einsätze"
 
-#: ../einsatzverwaltung_custom_post.php:20
+#: ../class.einsatzverwaltung-custom-post.php:33
 msgid "Mission"
 msgstr "Einsatz"
 
-#: ../einsatzverwaltung_custom_post.php:21
+#: ../class.einsatzverwaltung-custom-post.php:34
 msgid "Add New"
 msgstr "Einsatz anlegen"
 
-#: ../einsatzverwaltung_custom_post.php:22
+#: ../class.einsatzverwaltung-custom-post.php:35
 msgid "Add New Mission"
 msgstr "Neuen Einsatz anlegen"
 
-#: ../einsatzverwaltung_custom_post.php:23
+#: ../class.einsatzverwaltung-custom-post.php:36
 msgid "Edit Mission"
 msgstr "Einsatz bearbeiten"
 
-#: ../einsatzverwaltung_custom_post.php:24
+#: ../class.einsatzverwaltung-custom-post.php:37
 msgid "New Mission"
 msgstr "Neuer Einsatz"
 
-#: ../einsatzverwaltung_custom_post.php:25
+#: ../class.einsatzverwaltung-custom-post.php:38
 msgid "All Missions"
 msgstr "Alle Einsätze"
 
-#: ../einsatzverwaltung_custom_post.php:26
+#: ../class.einsatzverwaltung-custom-post.php:39
 msgid "View Mission"
 msgstr "Zeige Einsatz"
 
-#: ../einsatzverwaltung_custom_post.php:27
+#: ../class.einsatzverwaltung-custom-post.php:40
 msgid "Search Missions"
 msgstr "Suche Einsatz"
 
-#: ../einsatzverwaltung_custom_post.php:28
+#: ../class.einsatzverwaltung-custom-post.php:41
 msgid "No Missions found"
 msgstr "Keine Einsätze gefunden"
 
-#: ../einsatzverwaltung_custom_post.php:29
+#: ../class.einsatzverwaltung-custom-post.php:42
 msgid "No Missions found in the Trash"
 msgstr "Keine Einsätze im Papierkorb gefunden"
 
-#: ../einsatzverwaltung_custom_post.php:38
+#: ../class.einsatzverwaltung-custom-post.php:51
 msgid "Holds our missions and specific data"
 msgstr "Verwaltung der Einsätze"
 
-#: ../einsatzverwaltung_custom_post.php:53
+#: ../class.einsatzverwaltung-custom-post.php:67
 #, php-format
 msgid "Mission updated. <a href=\"%s\">View mission</a>"
 msgstr "Einsatz aktualisiert. <a href=\"%s\">Einsatz ansehen</a>"
 
-#: ../einsatzverwaltung_custom_post.php:54
+#: ../class.einsatzverwaltung-custom-post.php:68
 msgid "Custom field updated."
 msgstr "Custom field aktualisiert."
 
-#: ../einsatzverwaltung_custom_post.php:55
+#: ../class.einsatzverwaltung-custom-post.php:69
 msgid "Custom field deleted."
 msgstr "Custom field gelöscht."
 
-#: ../einsatzverwaltung_custom_post.php:56
+#: ../class.einsatzverwaltung-custom-post.php:70
 msgid "Mission updated."
 msgstr "Einsatz aktualisiert."
 
-#: ../einsatzverwaltung_custom_post.php:57
+#: ../class.einsatzverwaltung-custom-post.php:71
 #, php-format
 msgid "Mission restored to revision from %s"
 msgstr "Einsatz aus Revision %s wiederhergestellt"
 
-#: ../einsatzverwaltung_custom_post.php:58
+#: ../class.einsatzverwaltung-custom-post.php:72
 #, php-format
 msgid "Mission published. <a href=\"%s\">View mission</a>"
 msgstr "Einsatz veröffentlicht. <a href=\"%s\">Einsatz ansehen</a>"
 
-#: ../einsatzverwaltung_custom_post.php:59
+#: ../class.einsatzverwaltung-custom-post.php:73
 msgid "Mission saved."
 msgstr "Einsatz gespeichert."
 
-#: ../einsatzverwaltung_custom_post.php:60
+#: ../class.einsatzverwaltung-custom-post.php:74
 #, php-format
 msgid "Mission submitted. <a target=\"_blank\" href=\"%s\">Preview mission</a>"
 msgstr ""
 "Einsatz eingereicht. <a target=\"_blank\" href=\"%s\">Vorschau Einsatz</a>"
 
-#: ../einsatzverwaltung_custom_post.php:61
+#: ../class.einsatzverwaltung-custom-post.php:75
 #, php-format
 msgid ""
 "Mission scheduled for: <strong>%1$s</strong>. <a target=\"_blank\" href="
@@ -113,11 +113,11 @@ msgstr ""
 "Einsatz Veröffentlichung terminiert auf: <strong>%1$s</strong>. <a target="
 "\"_blank\" href=\"%2$s\">Vorschau Einsatz</a>"
 
-#: ../einsatzverwaltung_custom_post.php:61
+#: ../class.einsatzverwaltung-custom-post.php:75
 msgid "M j, Y @ G:i"
 msgstr "M j, Y @ G:i"
 
-#: ../einsatzverwaltung_custom_post.php:62
+#: ../class.einsatzverwaltung-custom-post.php:76
 #, php-format
 msgid ""
 "Mission draft updated. <a target=\"_blank\" href=\"%s\">Preview mission</a>"
@@ -125,65 +125,102 @@ msgstr ""
 "Einsatz Entwurf aktualisiert. <a target=\"_blank\" href=\"%s\">Vorschau "
 "Einsatz</a>"
 
-#: ../einsatzverwaltung_custom_post.php:143
+#: ../class.einsatzverwaltung-custom-post.php:84
+msgid "Title"
+msgstr ""
+
+#: ../class.einsatzverwaltung-custom-post.php:85
+msgid "Mission Type"
+msgstr "Einsatz Art"
+
+#: ../class.einsatzverwaltung-custom-post.php:86
+msgid "Alarm Date"
+msgstr "Alarm Datum"
+
+#: ../class.einsatzverwaltung-custom-post.php:87
+msgid "Alarm Time"
+msgstr "Alarmierungszeit"
+
+#: ../class.einsatzverwaltung-custom-post.php:88
+msgid "Entry Date"
+msgstr ""
+
+#: ../class.einsatzverwaltung-custom-post.php:89
+msgid "Last Edited by User"
+msgstr ""
+
+#: ../class.einsatzverwaltung-custom-post.php:90
+msgid "Author"
+msgstr ""
+
+#: ../class.einsatzverwaltung-custom-post.php:138
 msgid "Einsatzverwaltung"
 msgstr "Einsatzverwaltung"
 
-#: ../einsatzverwaltung_custom_post.php:249
+#: ../class.einsatzverwaltung-custom-post.php:247
 msgid "Einsatz Nr."
 msgstr "Einsatz Nr."
 
-#: ../einsatzverwaltung_custom_post.php:259
-msgid "Art der Alarmierung"
-msgstr "Art der Alarmierung"
+#: ../class.einsatzverwaltung-custom-post.php:257
+msgid "Einsatz Art"
+msgstr "Einsatz Art"
 
-#: ../einsatzverwaltung_custom_post.php:273
+#: ../class.einsatzverwaltung-custom-post.php:271
 msgid "Alarmstichwort"
 msgstr "Alarmstichwort (Freitext)"
 
-#: ../einsatzverwaltung_custom_post.php:306
+#: ../class.einsatzverwaltung-custom-post.php:304
 msgid "Alarmstichwort (Freitext)"
 msgstr "Alarmstichwort (Freitext)"
 
-#: ../einsatzverwaltung_custom_post.php:321
+#: ../class.einsatzverwaltung-custom-post.php:319
 msgid "Alarm"
 msgstr "Alarm"
 
-#: ../einsatzverwaltung_custom_post.php:334
+#: ../class.einsatzverwaltung-custom-post.php:332
 msgid "Einsatzort"
 msgstr "Einsatzort"
 
-#: ../einsatzverwaltung_custom_post.php:344
+#: ../class.einsatzverwaltung-custom-post.php:342
 msgid "Alarmierung (Datum)"
 msgstr "Alarmierung (Datum)"
 
-#: ../einsatzverwaltung_custom_post.php:354
+#: ../class.einsatzverwaltung-custom-post.php:352
 msgid "Alarmierung (Uhrzeit)"
 msgstr "Alarmierung (Uhrzeit)"
 
-#: ../einsatzverwaltung_custom_post.php:364
+#: ../class.einsatzverwaltung-custom-post.php:362
 msgid "R&uuml;ckkehr (Datum)"
 msgstr "Rückkehr (Datum)"
 
-#: ../einsatzverwaltung_custom_post.php:374
+#: ../class.einsatzverwaltung-custom-post.php:372
 msgid "R&uuml;ckkehr (Uhrzeit)"
 msgstr "Rückkehr (Uhrzeit)"
 
-#: ../einsatzverwaltung_custom_post.php:384
+#: ../class.einsatzverwaltung-custom-post.php:382
 msgid "Link zu weiterf&uuml;hrenden Medien"
 msgstr "Link zu weiterführenden Medien"
 
-#: ../einsatzverwaltung_custom_post.php:394
+#: ../class.einsatzverwaltung-custom-post.php:392
 msgid "Eingesetzte Fahrzeuge"
 msgstr "Eingesetzte Fahrzeuge"
 
-#: ../einsatzverwaltung_custom_post.php:405
+#: ../class.einsatzverwaltung-custom-post.php:403
 msgid "Keine Fahrzeuge in der Datenbank gefunden!"
 msgstr "Keine Fahrzeuge in der Datenbank gefunden!"
 
-#: ../einsatzverwaltung_widget.php:14
+#: ../class.einsatzverwaltung-widget.php:16
 msgid "Anzahl Eins&auml;tze im Jahr"
 msgstr "Anzahl Einsäte im Jahr"
+
+#: ../class.einsatzverwaltung-widget.php:26
+#, fuzzy
+msgid "New title"
+msgstr "Neuer Einsatz"
+
+#: ../class.einsatzverwaltung-widget.php:32
+msgid "Title:"
+msgstr ""
 
 #: ../updater.php:416
 msgid ""
@@ -197,11 +234,11 @@ msgstr ""
 msgid "Plugin reactivated successfully."
 msgstr "Plugin erfolgreich reaktiviert."
 
+#~ msgid "Art der Alarmierung"
+#~ msgstr "Art der Alarmierung"
+
 #~ msgid "Edit Einsatz"
 #~ msgstr "Einsatz editieren"
-
-#~ msgid "New Einsatz"
-#~ msgstr "Neuer Einsatz"
 
 #~ msgid "All Eins&auml;tze"
 #~ msgstr "Alle Einsätze"
