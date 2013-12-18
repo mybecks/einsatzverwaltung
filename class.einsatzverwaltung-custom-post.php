@@ -8,12 +8,15 @@
 class EinsatzverwaltungCustomPost {
     
     public function __construct() {
-        add_action( 'init', array($this, 'einsatzverwaltung_custom_post_mission' ) );
-        add_filter( 'post_updated_messages', array($this, 'einsatzverwaltung_mission_updated_messages' ) );
+        add_action( 'init', array($this, 'custom_post_mission' ) );
+        add_action( 'publish_mission', array($this, 'save_data' ));
         add_action( 'admin_enqueue_scripts', array($this,'add_scripts') );
+        add_action( 'manage_mission_posts_custom_column', array($this, 'manage_mission_columns'), 10, 2 );
+        add_filter( 'post_updated_messages', array($this, 'mission_updated_messages' ) );
+        add_filter( 'manage_edit-mission_columns', array($this, 'edit_mission_column' ) );
     }
 
-    public function einsatzverwaltung_custom_post_mission() {
+    public function custom_post_mission() {
 
         // add to our plugin init function
         // global $wp_rewrite;
@@ -54,7 +57,7 @@ class EinsatzverwaltungCustomPost {
         register_post_type( 'mission', $args ); 
     }
 
-    public function einsatzverwaltung_mission_updated_messages( $messages ) {
+    public function mission_updated_messages( $messages ) {
         global $post, $post_ID;
         $messages['einsatz'] = array(
             0 => '', 
@@ -70,6 +73,42 @@ class EinsatzverwaltungCustomPost {
             10 => sprintf( __('Mission draft updated. <a target="_blank" href="%s">Preview mission</a>', TEXT_DOMAIN), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
         );
         return $messages;
+    }
+
+    public function edit_mission_column( $columns ) {
+        $columns = array(
+            'cb' => '<input type="checkbox" />',
+            'title' => __( 'Title' ),
+            'type' => __( 'Type' ),
+            'alarmdate' => __( 'Alarm Date' ),
+            'alarmtime' => __( 'Alarm Time' ),
+            'date' => __( 'Entry Date' ),
+            'lastedit' => __( 'Last Edited by User' ),
+            'author' => __( 'Author' )
+        );
+
+        return $columns;
+    }
+
+    public function manage_mission_columns( $column, $post_id ){
+        global $post;
+
+        switch( $column ) {
+            case 'type' :
+                echo __( 'Unknown' );
+                break;
+            case 'alarmdate' :
+                echo __( 'Unknown' );
+                break;
+            case 'alarmtime' :
+                echo __( 'Unknown' );
+                break;
+            case 'lastedit' :
+                the_modified_author();
+                break;
+            default :
+                break;
+        }
     }
 
     public function add_scripts(){
@@ -105,8 +144,9 @@ class EinsatzverwaltungCustomPost {
         }else {
             $vehicles = $this->einsatzverwaltung_load_vehicles();
 
+            $mission = new stdClass();
             $mission->id = "";
-            $mission->art_alarmierung = "";
+            $mission->type = "";
             $mission->alarmstichwort = "";
             $mission->alarm_art = "";
             $mission->einsatzort = "";
@@ -119,10 +159,10 @@ class EinsatzverwaltungCustomPost {
             $vehicles_by_mission = array();
         }
 
-        if ( strlen( $mission->art_alarmierung ) != 0 ) {
+        if ( strlen( $mission->type ) != 0 ) {
             // http://wpquicktips.wordpress.com/2012/04/25/using-php-variables-in-javascript-with-wp_localize_script/
             // http://www.ronakg.com/2011/05/passing-php-array-to-javascript-using-wp_localize_script/
-            $this->set_selector_for_dropdown_value( "#alarm_art", $mission->art_alarmierung );
+            $this->set_selector_for_dropdown_value( "#mission_type", $mission->type );
         }
         if ( strlen( $mission->alarmstichwort ) != 0 ) {
             $this->set_selector_for_dropdown_value( "#alarm_stichwort", $mission->alarmstichwort );
@@ -201,12 +241,12 @@ EOF;
         echo '  </tr>';
         echo '  <tr>';
         echo '      <td>';
-        echo '          <label for="alarm_art">';
-        _e( "Art der Alarmierung", TEXT_DOMAIN );
+        echo '          <label for="mission_type">';
+        _e( "Einsatz Art", TEXT_DOMAIN );
         echo '          <label>';
         echo '      </td>';
         echo '      <td>';
-        echo '          <select id="alarm_art" name="alarm_art">';
+        echo '          <select id="mission_type" name="mission_type">';
         echo '              <option>Brandeinsatz</option>';
         echo '              <option>Technischer Einsatz</option>';
         echo '              <option>Sonstiger Einsatz</option>';
@@ -362,7 +402,7 @@ EOF;
      * @author Andre Becker
      * */
     /* When the post is saved, saves our custom data */
-    public function einsatzverwaltung_save_data( $post_id ) {
+    public function save_data( $post_id ) {
         global $wpdb;
 
         $table_name_missions =     $wpdb->prefix . "einsaetze";
@@ -399,7 +439,7 @@ EOF;
 
         $mission_id = $_POST['mission_id'];
 
-        $alarm_art = $_POST['alarm_art'];
+        $mission_type = $_POST['mission_type'];
 
         if ( ( $_POST['alarm_stichwort'] == "Freitext" ) || ( $_POST['alarm_stichwort'] == "Sonstiger Brand" ) ){
             $freitext = $_POST['alarmstichwort_freitext'];
@@ -432,7 +472,7 @@ EOF;
             $wpdb->update(
                 $table_name_missions,
                 array(
-                    'art_alarmierung' => $alarm_art,
+                    'art_alarmierung' => $mission_type,
                     'alarmstichwort' => $alarm_stichwort,
                     'alarm_art' => $alarm,
                     'einsatzort' => $einsatzort,
@@ -471,7 +511,7 @@ EOF;
             $wpdb->insert(
                 $table_name_missions,
                 array(
-                    'art_alarmierung' => $alarm_art,
+                    'art_alarmierung' => $mission_type,
                     'alarmstichwort' => $alarm_stichwort,
                     'alarm_art' => $alarm,
                     'freitext' => $freitext,
@@ -500,8 +540,36 @@ EOF;
             }
 
             add_post_meta( $post_id, MISSION_ID, $id );
+            // Update post 37
+            $current_post = array(
+                'ID'           => $post_id,
+                'post_date' => date($alarmierung_datum .' '. $alarmierung_zeit),
+                'post_date_gmt' => date($alarmierung_datum .' '. $alarmierung_zeit)
+            );
+            // remove_action('publish_post', array($this, 'save_data'));
+            // // Update the post into the database
+            // wp_update_post( $current_post );
+
+            // add_action('publish_post', array($this, 'save_data'));
+            // add_filter( 'wp_insert_post_data' , array($this, 'modify_post_date') , 10, 2 , array($alarmierung_datum, $alarmierung_zeit));
         }
     }
+
+    // public function modify_post_date( $data , $postarr, $mission ){
+    //     if($data['post_type'] == 'mission') 
+    //     {
+    //         // if(empty($data['post_title'])) 
+    //         // {
+            
+    //             wp_die(' $message, $title, $args'. date($mission[0] .' '. $mission[1]) );            
+    //             $data[ 'post_date' ] = '';
+    //             $data[ 'post_date_gmt' ] = '';
+    //             return $data;
+    //         // }
+    //     }
+
+    //     return $data;
+    // }
 
     /**
      * Delete mission data of current post
