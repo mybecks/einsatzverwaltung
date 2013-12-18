@@ -28,7 +28,6 @@ class Einsatzverwaltung {
 
         add_action( 'wp_enqueue_scripts', array($this, 'add_styles' ));
         add_action( 'plugins_loaded', array($this, 'plugin_textdomain'));
-        // add_action( 'publish_mission', array($this, 'einsatzverwaltung_save_data' ));
         add_action( 'wp_footer', array($this, 'postinfo_head' ));
         add_shortcode( 'einsatzverwaltung', array($this, 'my_einsatzverwaltung_handler' ));
     }
