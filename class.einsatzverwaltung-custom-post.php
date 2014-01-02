@@ -104,14 +104,11 @@ class EinsatzverwaltungCustomPost {
         switch( $column ) {
             case 'type' :
                 echo $mission[0]->art_alarmierung;
-                // echo __( 'Unknown' );
                 break;
             case 'alarmdate' :
                 echo $mission[0]->alarmierung_date;
-                // echo __( 'Unknown' );
                 break;
             case 'alarmtime' :
-                // echo __( 'Unknown' );
                 $date = new DateTime($mission[0]->alarmierung_time);
                 echo $date->format('H:i');
                 break;
