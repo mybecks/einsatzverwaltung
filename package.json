@@ -1,7 +1,7 @@
 {
-  "name": "einsatzplugin",
-  "version": "0.0.70",
-  "devDependencies": {
-    "grunt": "~0.4.2"
-  }
+    "name": "einsatzplugin",
+    "version": "0.0.71",
+    "devDependencies": {
+        "grunt": "~0.4.2"
+    }
 }
