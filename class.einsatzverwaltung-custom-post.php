@@ -16,12 +16,12 @@ class EinsatzverwaltungCustomPost {
         add_filter( 'post_updated_messages', array($this, 'mission_updated_messages' ) );
         add_filter( 'manage_edit-mission_columns', array($this, 'edit_mission_column' ) );
         add_filter( 'manage_edit-mission_sortable_columns', array($this,'mission_sortable_columns') );
-        // add_filter( 'post_type_link', array($this, 'gallery_permalink'), 10, 3 ); 
+        add_filter( 'post_type_link', array($this, 'mission_permalink'), 10, 3 ); 
         $this->dbHandler = DatabaseHandler::get_instance();
     }
 
     public function custom_post_mission() {
-        // global $wp_rewrite;
+        global $wp_rewrite;
 
         $labels = array(
             'name'               => __( 'Missions', TEXT_DOMAIN ),
@@ -38,8 +38,6 @@ class EinsatzverwaltungCustomPost {
             'parent_item_colon'  => '',
             'menu_name'          => __( 'Missions', TEXT_DOMAIN )
         );
-            // 'query_var'           => true,
-            // 'rewrite'             => false,
         
         $args = array(
             'labels'        => $labels,
@@ -48,17 +46,14 @@ class EinsatzverwaltungCustomPost {
             'menu_position' => 5,
             'supports'      => array( 'title', 'author', 'editor' ),
             'has_archive'   => true,
-            // 'publicly_queryable' => true,
-            // 'query_var' => true,
-            // 'rewrite' => false,
             'menu_icon'     => plugin_dir_url( __FILE__ ).'img/blaulicht_state_hover.png',
             'register_meta_box_cb' => array( $this, 'add_custom_box' )
         );
         register_post_type( 'mission', $args );
 
-        // $mission_structure = '/mission/%year%/%monthnum%/%mission%';
-        // $wp_rewrite->add_rewrite_tag("%mission%", '([^/]+)', "mission=");
-        // $wp_rewrite->add_permastruct('mission', $mission_structure, false); 
+        $wp_rewrite->add_permastruct('mission', 'mission/%year%/%monthnum%/%mission%/', true, 1);
+        add_rewrite_rule('mission/([0-9]{4})/([0-9]{2})/(.+)/?$', 'index.php?mission=$matches[3]', 'top');
+        $wp_rewrite->flush_rules(); // !!!
     }
 
     public function mission_updated_messages( $messages ) {
@@ -120,70 +115,72 @@ class EinsatzverwaltungCustomPost {
                 break;
         }
     }
-  
-    // // Adapted from get_permalink function in wp-includes/link-template.php
-    // public function gallery_permalink($permalink, $post_id, $leavename) {
-    //     $post = get_post($post_id);
-    //     $rewritecode = array(
-    //         '%year%',
-    //         '%monthnum%',
-    //         '%day%',
-    //         '%hour%',
-    //         '%minute%',
-    //         '%second%',
-    //         $leavename? '' : '%postname%',
-    //         '%post_id%',
-    //         '%category%',
-    //         '%author%',
-    //         $leavename? '' : '%pagename%',
-    //     );
+    
+function mission_permalink( $permalink, $post_id, $leavename ) {
+    $post = get_post($post_id);
+        $rewritecode = array(
+            '%year%',
+            '%monthnum%',
+            '%day%',
+            '%hour%',
+            '%minute%',
+            '%second%',
+            $leavename? '' : '%postname%',
+            '%post_id%',
+            '%category%',
+            '%author%',
+            $leavename? '' : '%pagename%',
+        );
      
-    //     if ( '' != $permalink && !in_array($post->post_status, array('draft', 'pending', 'auto-draft')) ) {
-    //         $unixtime = strtotime($post->post_date);
+        if ( '' != $permalink && !in_array($post->post_status, array('draft', 'pending', 'auto-draft')) ) {
+            $unixtime = strtotime($post->post_date);
          
-    //         $category = '';
-    //         if ( strpos($permalink, '%category%') !== false ) {
-    //             $cats = get_the_category($post->ID);
-    //             if ( $cats ) {
-    //                 usort($cats, '_usort_terms_by_ID'); // order by ID
-    //                 $category = $cats[0]->slug;
-    //                 if ( $parent = $cats[0]->parent )
-    //                     $category = get_category_parents($parent, false, '/', true) . $category;
-    //             }
-    //             // show default category in permalinks, without
-    //             // having to assign it explicitly
-    //             if ( empty($category) ) {
-    //                 $default_category = get_category( get_option( 'default_category' ) );
-    //                 $category = is_wp_error( $default_category ) ? '' : $default_category->slug;
-    //             }
-    //         }
+            $category = '';
+            if ( strpos($permalink, '%category%') !== false ) {
+                $cats = get_the_category($post->ID);
+                if ( $cats ) {
+                    usort($cats, '_usort_terms_by_ID'); // order by ID
+                    $category = $cats[0]->slug;
+                    if ( $parent = $cats[0]->parent )
+                        $category = get_category_parents($parent, false, '/', true) . $category;
+                }
+                // show default category in permalinks, without
+                // having to assign it explicitly
+                if ( empty($category) ) {
+                    $default_category = get_category( get_option( 'default_category' ) );
+                    $category = is_wp_error( $default_category ) ? '' : $default_category->slug;
+                }
+            }
          
-    //         $author = '';
-    //         if ( strpos($permalink, '%author%') !== false ) {
-    //             $authordata = get_userdata($post->post_author);
-    //             $author = $authordata->user_nicename;
-    //         }
+            $author = '';
+            if ( strpos($permalink, '%author%') !== false ) {
+                $authordata = get_userdata($post->post_author);
+                $author = $authordata->user_nicename;
+            }
          
-    //         $date = explode(" ",date('Y m d H i s', $unixtime));
-    //         $rewritereplace =
-    //         array(
-    //             $date[0],
-    //             $date[1],
-    //             $date[2],
-    //             $date[3],
-    //             $date[4],
-    //             $date[5],
-    //             $post->post_name,
-    //             $post->ID,
-    //             $category,
-    //             $author,
-    //             $post->post_name,
-    //         );
-    //         $permalink = str_replace($rewritecode, $rewritereplace, $permalink);
-    //     } else { // if they're not using the fancy permalink option
-    //     }
-    //     return $permalink;
-    // }
+            $date = explode(" ",date('Y m d H i s', $unixtime));
+            $rewritereplace =
+            array(
+                $date[0],
+                $date[1],
+                $date[2],
+                $date[3],
+                $date[4],
+                $date[5],
+                $post->post_name,
+                $post->ID,
+                $category,
+                $author,
+                $post->post_name,
+            );
+            $permalink = str_replace($rewritecode, $rewritereplace, $permalink);
+
+            // wp_die($permalink );
+        } else { // if they're not using the fancy permalink option
+            // wp_die("gello" );
+        }
+        return $permalink;
+    }
 
     public function mission_sortable_columns( $columns ){
         $columns['alarmdate'] = 'alarmdate';
