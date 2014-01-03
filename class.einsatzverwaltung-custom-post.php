@@ -177,7 +177,6 @@ function mission_permalink( $permalink, $post_id, $leavename ) {
 
             // wp_die($permalink );
         } else { // if they're not using the fancy permalink option
-            // wp_die("gello" );
         }
         return $permalink;
     }

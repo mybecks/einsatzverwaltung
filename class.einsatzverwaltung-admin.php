@@ -14,16 +14,15 @@ class EinsatzverwaltungAdmin {
 	public function __construct()  {
 		$this->pluginPath = dirname(__FILE__);
 
-        add_action( 'admin_print_styles', array($this, 'einsatzverwaltung_admin_styles') );
-        add_action( 'admin_enqueue_scripts', array($this,'einsatzverwaltung_admin_scripts') );
-        add_action( 'admin_menu', array($this, 'einsatzverwaltung_admin_menu' ));
+        add_action( 'admin_print_styles', array( $this, 'add_admin_styles') );
+        add_action( 'admin_enqueue_scripts', array( $this,'add_admin_scripts') );
+        add_action( 'admin_menu', array( $this, 'einsatzverwaltung_admin_menu' ) );
         $this->dbHandler = DatabaseHandler::get_instance();
-
-        add_action('wp_ajax_nopriv_add_vehicle', array($this,'add_vehicle'));  
-        add_action('wp_ajax_add_vehicle', array($this,'add_vehicle'));  
+ 
+        add_action( 'wp_ajax_blubb', array( $this,'add_vehicle' ) );  
 	}
 
-	public function einsatzverwaltung_admin_styles(){
+	public function add_admin_styles(){
 		wp_register_style( 'admin_styles', plugins_url( 'css/admin.css', __FILE__ ) );
         wp_register_style( 'admin_bootstrap', plugins_url( 'css/bootstrap.css', __FILE__ ) );
 
@@ -31,13 +30,14 @@ class EinsatzverwaltungAdmin {
         wp_enqueue_style( 'admin_bootstrap' );
 	}
 
-    public function einsatzverwaltung_admin_scripts( $hook ){
+    public function add_admin_scripts( ){
 
-        wp_enqueue_script( 'einsatzverwaltung_admin_scripts', plugins_url( 'js/functions.admin.js', __FILE__ ), array('jquery') );
-        wp_localize_script('einsatzverwaltung_admin_scripts', 'ajax_var', array(  
+        wp_enqueue_script( 'admin_scripts', plugins_url( 'js/functions.admin.js', __FILE__ ), array('jquery') );
+        wp_localize_script('admin_scripts', 'ajax_var', array(  
             'url' => admin_url('admin-ajax.php')
             ,'nonce' => wp_create_nonce('ajax-nonce')  
-        ));
+        ) );
+        // wp_print_scripts( 'admin_scripts' );
     }
 
     public function add_vehicle()  
@@ -48,7 +48,7 @@ class EinsatzverwaltungAdmin {
             die ( 'Busted!');
 
         $title = $_POST['id'];
-        wp_die("TEST" . $title);
+        wp_die("Post Id: " . $title);
         exit;  
     }
 
@@ -237,7 +237,7 @@ class EinsatzverwaltungAdmin {
 
         if( isset( $_POST["insert_vehicle"] ) )
         {
-            $this->dbHandler->admin_insert_vehicle( $_POST['add_new_vehicle'] );
+            // $this->dbHandler->admin_insert_vehicle( $_POST['add_new_vehicle'] );
 
             // $wpdb->insert(
             //     $table_name_vehicles,
