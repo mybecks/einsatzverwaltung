@@ -561,11 +561,11 @@ EOF;
                 'post_date' => date($alarmierung_datum .' '. $alarmierung_zeit),
                 'post_date_gmt' => date($alarmierung_datum .' '. $alarmierung_zeit)
             );
-            // remove_action('publish_post', array($this, 'save_data'));
-            // // Update the post into the database
-            // wp_update_post( $current_post );
+            remove_action('publish_mission', array($this, 'save_data'));
+            // Update the post into the database
+            wp_update_post( $current_post );
 
-            // add_action('publish_post', array($this, 'save_data'));
+            add_action('publish_mission', array($this, 'save_data'));
             // add_filter( 'wp_insert_post_data' , array($this, 'modify_post_date') , 10, 2 , array($alarmierung_datum, $alarmierung_zeit));
         }
     }
