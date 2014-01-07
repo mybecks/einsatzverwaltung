@@ -53,7 +53,7 @@ class EinsatzverwaltungCustomPost {
 
         $wp_rewrite->add_permastruct('mission', 'mission/%year%/%monthnum%/%mission%/', true, 1);
         add_rewrite_rule('mission/([0-9]{4})/([0-9]{2})/(.+)/?$', 'index.php?mission=$matches[3]', 'top');
-        $wp_rewrite->flush_rules(); // !!!
+        // $wp_rewrite->flush_rules(); // !!!
     }
 
     public function mission_updated_messages( $messages ) {
