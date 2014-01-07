@@ -9,7 +9,7 @@ class EinsatzverwaltungCustomPost {
     
     public function __construct() {
         add_action( 'init', array($this, 'custom_post_mission' ) );
-        add_action( 'publish_mission', array($this, 'save_data' ));
+        add_action( 'publish_mission', array($this, 'save_data' ) );
         // add_action( 'trash_mission', array($this, 'trash_mission') );
         add_action( 'admin_enqueue_scripts', array($this,'add_scripts') );
         add_action( 'manage_mission_posts_custom_column', array($this, 'manage_mission_columns'), 10, 2 );
@@ -51,6 +51,21 @@ class EinsatzverwaltungCustomPost {
         );
         register_post_type( 'mission', $args );
 
+
+        /**
+         * rewrite
+         * (boolean or array) (optional) Triggers the handling of rewrites for this post type. To prevent rewrites, set to false.
+         * Default: true and use $post_type as slug
+         * $args array
+         * 'slug' => string Customize the permastruct slug. Defaults to the $post_type value. Should be translatable.
+         * 'with_front' => bool Should the permastruct be prepended with the front base. (example: if your permalink structure is /blog/, then your links will be: false->/news/, true->/blog/news/). Defaults to true
+         * 'feeds' => bool Should a feed permastruct be built for this post type. Defaults to has_archive value.
+         * 'pages' => bool Should the permastruct provide for pagination. Defaults to true
+         * 'ep_mask' => const As of 3.4 Assign an endpoint mask for this post type. For more info see Trac Ticket 19275 and this Make WordPress Plugins summary of endpoints.
+         * If not specified and permalink_epmask is set, inherits from permalink_epmask
+         * If not specified and permalink_epmask is not set, defaults to EP_PERMALINK
+         * Note: If registering a post type inside of a plugin, call flush_rewrite_rules() in your activation and deactivation hook (see Flushing Rewrite on Activation below). If flush_rewrite_rules() is not used, then you will have to manually go to Settings > Permalinks and refresh your permalink structure before your custom post type will show the correct structure.
+         **/
         $wp_rewrite->add_permastruct('mission', 'mission/%year%/%monthnum%/%mission%/', true, 1);
         add_rewrite_rule('mission/([0-9]{4})/([0-9]{2})/(.+)/?$', 'index.php?mission=$matches[3]', 'top');
         // $wp_rewrite->flush_rules(); // !!!
