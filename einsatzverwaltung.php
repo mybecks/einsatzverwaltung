@@ -3,7 +3,7 @@
 Plugin Name: Einsatzverwaltung 2.0
 Plugin URI: http://la.ffbs.de
 Description: Einsatzverwaltung der FF Langenbruecken
-Version: 0.0.66
+Version: 0.0.70
 Author: Andre Becker
 Author URI: la.ffbs.de
 License: GPL2
