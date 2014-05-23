@@ -7,6 +7,8 @@ Version: 0.0.70
 Author: Andre Becker
 Author URI: la.ffbs.de
 License: GPL2
+GitHub Plugin URI: https://github.com/mybecks/einsatzverwaltung
+GitHub Branch:     master
 */
 
 define( 'MISSIONS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
