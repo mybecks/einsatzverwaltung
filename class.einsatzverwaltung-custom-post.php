@@ -612,13 +612,17 @@ EOF;
                 simple_history_add( "action=created&object_type=Mission&object_name=".$alarm_stichwort."" );
             }
 
+            // foreach ( $vehicles as $vehicle ) {
+            //     $wpdb->insert(
+            //         $table_name_missions_has_vehicles,
+            //         array(
+            //             'einsaetze_id' => $id,
+            //             'fahrzeuge_id' => $vehicle
+            //         ), array() );
+            // }
+            
             foreach ( $vehicles as $vehicle ) {
-                $wpdb->insert(
-                    $table_name_missions_has_vehicles,
-                    array(
-                        'einsaetze_id' => $id,
-                        'fahrzeuge_id' => $vehicle
-                    ), array() );
+               $this->dbHandler->insert_new_vehicle_to_mission( $id, $vehicle );
             }
 
             add_post_meta( $post_id, MISSION_ID, $id );
