@@ -16,8 +16,8 @@ class Einsatzverwaltung {
     // Respects SSL, style.css is relative to the current file
         wp_register_style( 'einsatzverwaltung-style', plugins_url( '/css/styles.css', __FILE__ ) );
         wp_enqueue_style( 'einsatzverwaltung-style' );
-        wp_register_style( 'bootstrap-style', plugins_url( '/css/bootstrap.css', __FILE__ ) );
-        wp_enqueue_style( 'bootstrap-style' );
+        // wp_register_style( 'bootstrap-style', plugins_url( '/css/bootstrap.css', __FILE__ ) );
+        // wp_enqueue_style( 'bootstrap-style' );
     }
 
     public function add_scripts(){
@@ -187,7 +187,7 @@ class Einsatzverwaltung {
                 <caption class='mission-month-header'>".$german_month."&nbsp;<a href='#Übersicht'><img src='$arrow_up_path' class='overview'/></a></caption>
                 <thead>
                     <tr>
-                        <th scope='col' class='th-mission'>Datum</th>
+                        <th scope='col' class='th-mission td-space-left'>Datum</th>
                         <th scope='col' class='th-mission'>Zeit</th>
                         <th scope='col' class='th-mission'>Art</th>
                         <th scope='col' class='th-mission'>Alarmstichwort</th>
@@ -199,22 +199,22 @@ class Einsatzverwaltung {
                     <tr>
                         <td colspan='6'>Anzahl der Eins&auml;tze im Monat: <b>".$count."</b></td>
                     </tr>
-                </tfoot>";
+                </tfoot>
+                <tbody>";
 
             foreach ( $arr_months[$key] as $key => $value ) {
                 echo "
-                    <tbody>
-                    <tr>
-                        <td>$value[4]</td>
+                    <tr class='row-mission'>
+                        <td class='td-space-left'>$value[4]</td>
                         <td>$value[5]</td>
                         <td class='td-text-center'>$value[0]</td>
-                        <td>$value[1]</td>
+                        <td class='td-mission-keyword'>$value[1]</td>
                         <td>$value[3]</td>
                         <td><a href=\"".$value[10]."\">$value[9]</a></td>
-                    </tr>
-                    </tbody>";
+                    </tr>";
             }
             echo "
+                </tbody>
                 </table>
                     <div class='footer-legend'>
                         BE - Brandeinsatz &#x95
