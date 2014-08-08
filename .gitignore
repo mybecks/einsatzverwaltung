@@ -3,3 +3,4 @@
 .phptidy-cache
 .bak
 node_modules
+/nbproject/private/

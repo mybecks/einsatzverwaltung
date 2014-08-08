@@ -29,21 +29,21 @@ class DatabaseHandler {
  
     }
 
-    // public function admin_insert_vehicle( $description ) {
-    //     global $wpdb;
+    public function admin_insert_vehicle( $description ) {
+        global $wpdb;
         
-    //     $table_name_vehicles = $wpdb->prefix . "fahrzeuge";
+        $table_name_vehicles = $wpdb->prefix . "fahrzeuge";
 
-    //     $wpdb->insert(
-    //         $table_name_vehicles,
-    //         array(
-    //             'description' => $_POST['add_new_vehicle']
-    //         ),
-    //         array(
-    //             '%s'
-    //         )
-    //     );
-    // }
+        $wpdb->insert(
+            $table_name_vehicles,
+            array(
+                'description' => $_POST['add_new_vehicle']
+            ),
+            array(
+                '%s'
+            )
+        );
+    }
     
     /**
      *
