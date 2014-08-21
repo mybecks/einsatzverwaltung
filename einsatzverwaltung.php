@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Einsatzverwaltung 2.0
+Plugin Name: Einsatzverwaltung MC 2.0
 Plugin URI: http://la.ffbs.de
 Description: Einsatzverwaltung der FF Langenbruecken
 Version: 0.0.75
