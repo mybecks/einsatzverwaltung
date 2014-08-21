@@ -11,6 +11,7 @@ class DatabaseHandler {
      * Creates or returns an instance of this class.
      *
      * @return A single instance of this class.
+     * @author Andre Becker
      */
     public static function get_instance() {
  
@@ -19,7 +20,6 @@ class DatabaseHandler {
         }
  
         return self::$instance;
- 
     }
  
     /**
@@ -29,28 +29,31 @@ class DatabaseHandler {
  
     }
 
-    public function admin_insert_vehicle( $description ) {
-        global $wpdb;
-        
-        $table_name_vehicles = $wpdb->prefix . "fahrzeuge";
-
-        $wpdb->insert(
-            $table_name_vehicles,
-            array(
-                'description' => $_POST['add_new_vehicle']
-            ),
-            array(
-                '%s'
-            )
-        );
-    }
-    
     /**
      *
      * Mission Related Requests
      * 
      **/
     
+
+    /**
+     * Delete mission by post id
+     * 
+     * @param  int $post_id
+     * @author Andre Becker
+     */
+    public function delete_mission_by_post_id( $post_id ) {
+        global $wpdb;
+        $table_missions = $wpdb->prefix . "einsaetze";
+
+        $mission = $this->load_mission_by_post_id( $post_id );
+
+        $query = "DELETE FROM " . $table_missions . " WHERE wp_posts_ID = %d";
+        $result = $wpdb->query( $wpdb->prepare( $query, $post_id ) );
+
+        $this->remove_vehicles_from_mission( $mission->id );
+    }
+
 
     /**
      * Update mission
@@ -62,45 +65,6 @@ class DatabaseHandler {
     }
 
     /**
-     *
-     * Vehicle Related Requests
-     * 
-     **/
-
-    /**
-     * Remove vehicle from mission
-     * @param  int $mission_id [description]
-     * @author Andre Becker
-     */
-    public function remove_vehicles_from_mission( $mission_id ) {
-        global $wpdb;
-        $table_name_missions_has_vehicles = $wpdb->prefix . "einsaetze_has_fahrzeuge";
-
-        $query = "DELETE FROM ". $table_name_missions_has_vehicles ." WHERE einsaetze_id = ".$mission_id;
-        //fire delete query!
-        $delete = $wpdb->query( $query );
-    }
-
-    /**
-     * Insert new vehicles to mission
-     * @param $mission_id [description]
-     * @param $vehicle_id [description]
-     * @author Andre Becker
-     */
-    public function insert_new_vehicle_to_mission( $mission_id, $vehicle_id ) {
-        global $wpdb;
-        $table_name_missions_has_vehicles = $wpdb->prefix . "einsaetze_has_fahrzeuge";
-
-        $wpdb->insert(
-            $table_name_missions_has_vehicles,
-            array(
-                'einsaetze_id' => $mission_id,
-                'fahrzeuge_id' => $vehicle_id
-            ), 
-            array() );
-    }
-
-    /**
      * Returns array with all mission years
      *
      * @return array()
@@ -109,57 +73,46 @@ class DatabaseHandler {
     public function get_mission_years() {
         global $wpdb;
         $array = array();
-        $table_name_missions = $wpdb->prefix . "einsaetze";
+        $table_missions = $wpdb->prefix . "einsaetze";
 
-        $query = "SELECT YEAR(alarmierung_date) AS Year FROM ".$table_name_missions." GROUP BY Year DESC";
+        $query = "SELECT YEAR(alarmierung_date) AS Year FROM " . $table_missions . " GROUP BY Year DESC";
 
         $years = $wpdb->get_results( $query );
 
         foreach ( $years as $year ) {
-            if ( $year->Year != 1970 )
+            if ( 1970 != $year->Year )
                 $array[] = $year->Year;
         }
 
-        if(empty($array)){
-            array_push($array, CURRENT_YEAR);
+        if ( empty( $array ) ) {
+            array_push( $array, CURRENT_YEAR );
         }
 
         return $array;
     }
 
-    public function get_mission_details_by_post_id( $id ) {
+    /**
+     * Get mission details by post id
+     * 
+     * @param  int $post_id
+     * @return mission
+     * @author Andre Becker
+     */
+    public function get_mission_details_by_post_id( $post_id ) {
         global $wpdb;
-
         $table_missions = $wpdb->prefix . "einsaetze";
 
-        $query = "SELECT id, art_alarmierung, alarmstichwort, freitext, alarm_art, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media FROM ". $table_missions ." WHERE wp_posts_ID = ".$id;
-
+        $query = "SELECT id, art_alarmierung, alarmstichwort, freitext, alarm_art, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media FROM "
+                 . $table_missions . " WHERE wp_posts_ID = " . $post_id;
         $mission = $wpdb->get_results( $query );
 
         return $mission;
     }
 
     /**
-     * Load all vehicles
-     *
-     * @return array()
-     * @author Andre Becker
-     * */
-    public function load_vehicles() {
-        global $wpdb;
-        $table_name_vehicles = $wpdb->prefix . "fahrzeuge";
-
-        $query = "SELECT id, description FROM ". $table_name_vehicles;
-        $vehicles = $wpdb->get_results( $query );
-
-
-        return $vehicles;
-    }
-
-    /**
      * Load missions by mission_id
      *
-     * @param $id
+     * @param int id
      * @return array()
      * @author Andre Becker
      * */
@@ -167,9 +120,8 @@ class DatabaseHandler {
         global $wpdb;
         $table_name_missions = $wpdb->prefix . "einsaetze";
 
-        $query = "SELECT * FROM ". $table_name_missions ." WHERE id = ".$id;
+        $query = "SELECT * FROM " . $table_name_missions . " WHERE id = " . $id;
         $mission_details = $wpdb->get_row( $query );
-
 
         return $mission_details;
     }
@@ -186,7 +138,8 @@ class DatabaseHandler {
         $table_name_missions_has_vehicles = $wpdb->prefix . "einsaetze_has_fahrzeuge";
         $table_name_vehicles =     $wpdb->prefix . "fahrzeuge";
 
-        $query = "SELECT f.description FROM ". $table_name_vehicles ." as f, ". $table_name_missions_has_vehicles ." as h WHERE f.id = h.fahrzeuge_id AND h.einsaetze_id = ".$mission_id;
+        $query = "SELECT f.description FROM " . $table_name_vehicles . 
+                 " as f, " . $table_name_missions_has_vehicles . " as h WHERE f.id = h.fahrzeuge_id AND h.einsaetze_id = " . $mission_id;
 
         $vehicles = $wpdb->get_results( $query );
 
@@ -197,14 +150,14 @@ class DatabaseHandler {
      * Load missions bound to post id
      *
      * @param post    id
-     * @return single mission
+     * @return mission
      * @author Andre Becker
      * */
     public function load_mission_by_post_id( $id ) {
         global $wpdb;
         $table_name_missions = $wpdb->prefix . "einsaetze";
 
-        $query = "SELECT * FROM ". $table_name_missions ." WHERE wp_posts_ID = ".$id;
+        $query = "SELECT * FROM " . $table_name_missions . " WHERE wp_posts_ID = " . $id;
         $mission_details = $wpdb->get_row( $query );
 
         return $mission_details;
@@ -222,9 +175,9 @@ class DatabaseHandler {
 
         $arr_months = array();
 
-        $query = "SELECT id, art_alarmierung, alarmstichwort, alarm_art, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media, wp_posts_ID, MONTH(alarmierung_date) AS Month, freitext ".
-            "FROM ".$table_name_missions.
-            " WHERE YEAR(alarmierung_date) = ".$year.
+        $query = "SELECT id, art_alarmierung, alarmstichwort, alarm_art, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media, wp_posts_ID, MONTH(alarmierung_date) AS Month, freitext " .
+            "FROM " . $table_name_missions .
+            " WHERE YEAR(alarmierung_date) = " . $year .
             " ORDER BY alarmierung_date DESC, alarmierung_time DESC";
 
         $missions = $wpdb->get_results( $query );
@@ -233,7 +186,7 @@ class DatabaseHandler {
 
             //http://stackoverflow.com/questions/1195549/php-arrays-and-solution-to-undefined-index-errors
 
-            if( !array_key_exists($mission->Month, $arr_months)){
+            if ( ! array_key_exists( $mission->Month, $arr_months ) ) {
                 $arr_months[$mission->Month] = array();
             }
 
@@ -248,17 +201,16 @@ class DatabaseHandler {
                     $post = get_post( $mission->wp_posts_ID );
 
 
-                    if ( strlen( $post->post_content )!=0 ) {
+                    if ( 0 != strlen( $post->post_content ) ) {
                         $description = "Bericht";
-                    }
-                    else {
+                    } else {
                         $description = "Kurzinfo";
                     }
 
 
                     if ( 'Freitext' == $mission->alarmstichwort || 'Sonstiger Brand' == $mission->alarmstichwort ) {
                         $alarmstichwort = $mission->freitext;
-                    }else {
+                    } else {
                         $alarmstichwort = $mission->alarmstichwort;
                     }
 
@@ -268,11 +220,11 @@ class DatabaseHandler {
                     // }
 
 
-                    if ( strpos( $mission->art_alarmierung, 'Brandeinsatz' ) !== false ) {
+                    if ( false !== strpos( $mission->art_alarmierung, 'Brandeinsatz' ) ) {
                         $alarm_short = 'BE';
-                    }else if ( strpos( $mission->art_alarmierung, 'Technischer Einsatz' ) !== false ) {
-                            $alarm_short = 'TE';
-                        }else {
+                    } else if ( false !== strpos( $mission->art_alarmierung, 'Technischer Einsatz' ) ) {
+                        $alarm_short = 'TE';
+                    } else {
                         $alarm_short = 'SE';
                     }
 
@@ -295,11 +247,92 @@ class DatabaseHandler {
             }
         }
 
-        // Umgekehrte Sortierung der Monate (12,11,10,...,1)
+        // reverse sort of months (12,11,10,...,1)
         krsort( $arr_months );
 
         return $arr_months;
     }
+
+    /**
+     *
+     * Vehicle Related Requests
+     * 
+     **/
+
+    /**
+     * Load all vehicles
+     *
+     * @return array()
+     * @author Andre Becker
+     * */
+    public function load_vehicles() {
+        global $wpdb;
+        $table_vehicles = $wpdb->prefix . "fahrzeuge";
+
+        $query = "SELECT id, description FROM " . $table_vehicles;
+        $vehicles = $wpdb->get_results( $query );
+
+        return $vehicles;
+    }
+
+    /**
+     * Remove vehicle from mission
+     * @param  int $mission_id [description]
+     * @author Andre Becker
+     */
+    public function remove_vehicles_from_mission( $mission_id ) {
+        global $wpdb;
+        $table_missions_has_vehicles = $wpdb->prefix . "einsaetze_has_fahrzeuge";
+        // $wpdb->show_errors();
+        $query = "DELETE FROM " . $table_missions_has_vehicles . " WHERE einsaetze_id = %d";
+        $delete = $wpdb->query( $wpdb->prepare( $query, $mission_id ) );
+
+        // $wpdb->print_error();
+        // wp_die($delete);
+        // $wpdb->hide_errors();
+    }
+
+    /**
+     * Insert new vehicles to mission
+     * 
+     * @param int $mission_id [description]
+     * @param int $vehicle_id [description]
+     * @author Andre Becker
+     */
+    public function insert_new_vehicle_to_mission( $mission_id, $vehicle_id ) {
+        global $wpdb;
+        $table_missions_has_vehicles = $wpdb->prefix . "einsaetze_has_fahrzeuge";
+
+        $wpdb->insert(
+            $table_missions_has_vehicles,
+            array(
+                'einsaetze_id' => $mission_id,
+                'fahrzeuge_id' => $vehicle_id
+            ), 
+            array() );
+    }
+
+    /**
+     * Insert a new vehicle in the database
+     * 
+     * @param  string $description
+     * @author Andre Becker
+     */
+    public function admin_insert_vehicle( $description ) {
+        global $wpdb;
+        
+        $table_vehicles = $wpdb->prefix . "fahrzeuge";
+
+        $wpdb->insert(
+            $table_vehicles,
+            array(
+                'description' => $_POST['add_new_vehicle']
+            ),
+            array(
+                '%s'
+            )
+        );
+    }
 }
-// DatabaseHandler::get_instance();
+
 ?>

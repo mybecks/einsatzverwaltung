@@ -8,15 +8,16 @@
 class EinsatzverwaltungCustomPost {
     
     public function __construct() {
-        add_action( 'init', array($this, 'custom_post_mission' ) );
-        add_action( 'publish_mission', array($this, 'save_data' ) );
-        // add_action( 'trash_mission', array($this, 'trash_mission') );
-        add_action( 'admin_enqueue_scripts', array($this,'add_scripts') );
-        add_action( 'manage_mission_posts_custom_column', array($this, 'manage_mission_columns'), 10, 2 );
-        add_filter( 'post_updated_messages', array($this, 'mission_updated_messages' ) );
-        add_filter( 'manage_edit-mission_columns', array($this, 'edit_mission_column' ) );
-        add_filter( 'manage_edit-mission_sortable_columns', array($this,'mission_sortable_columns') );
-        add_filter( 'post_type_link', array($this, 'mission_permalink'), 10, 3 ); 
+        add_action( 'init', array( $this, 'custom_post_mission' ) );
+        add_action( 'publish_mission', array( $this, 'save_data' ) );
+        // add_action( 'trash_mission', array($this, 'trash_mission') ); //to set a flag that the mission is not shown any more
+        add_action( 'before_delete_post', array( $this, 'delete_mission' ) ); //deltes the mission data
+        add_action( 'admin_enqueue_scripts', array( $this,'add_scripts') );
+        add_action( 'manage_mission_posts_custom_column', array( $this, 'manage_mission_columns'), 10, 2 );
+        add_filter( 'post_updated_messages', array( $this, 'mission_updated_messages' ) );
+        add_filter( 'manage_edit-mission_columns', array( $this, 'edit_mission_column' ) );
+        add_filter( 'manage_edit-mission_sortable_columns', array( $this, 'mission_sortable_columns' ) );
+        // add_filter( 'post_type_link', array( $this, 'mission_permalink' ), 10, 3 ); 
         $this->dbHandler = DatabaseHandler::get_instance();
     }
 
@@ -66,8 +67,8 @@ class EinsatzverwaltungCustomPost {
          * If not specified and permalink_epmask is not set, defaults to EP_PERMALINK
          * Note: If registering a post type inside of a plugin, call flush_rewrite_rules() in your activation and deactivation hook (see Flushing Rewrite on Activation below). If flush_rewrite_rules() is not used, then you will have to manually go to Settings > Permalinks and refresh your permalink structure before your custom post type will show the correct structure.
          **/
-        $wp_rewrite->add_permastruct('mission', 'mission/%year%/%monthnum%/%mission%/', true, 1);
-        add_rewrite_rule('mission/([0-9]{4})/([0-9]{2})/(.+)/?$', 'index.php?mission=$matches[3]', 'top');
+        // $wp_rewrite->add_permastruct( 'mission', 'mission/%year%/%monthnum%/%mission%/', true, 1 );
+        // add_rewrite_rule( 'mission/([0-9]{4})/([0-9]{2})/(.+)/?$', 'index.php?mission=$matches[3]', 'top' );
         // $wp_rewrite->flush_rules(); // !!!
     }
 
@@ -75,16 +76,16 @@ class EinsatzverwaltungCustomPost {
         global $post, $post_ID;
         $messages['einsatz'] = array(
             0 => '', 
-            1 => sprintf( __('Mission updated. <a href="%s">View mission</a>', TEXT_DOMAIN), esc_url( get_permalink($post_ID) ) ),
-            2 => __('Custom field updated.', TEXT_DOMAIN),
-            3 => __('Custom field deleted.', TEXT_DOMAIN),
-            4 => __('Mission updated.', TEXT_DOMAIN),
-            5 => isset($_GET['revision']) ? sprintf( __('Mission restored to revision from %s', TEXT_DOMAIN), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
-            6 => sprintf( __('Mission published. <a href="%s">View mission</a>', TEXT_DOMAIN), esc_url( get_permalink($post_ID) ) ),
-            7 => __('Mission saved.', TEXT_DOMAIN),
-            8 => sprintf( __('Mission submitted. <a target="_blank" href="%s">Preview mission</a>', TEXT_DOMAIN), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
-            9 => sprintf( __('Mission scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview mission</a>', TEXT_DOMAIN), date_i18n( __( 'M j, Y @ G:i', TEXT_DOMAIN ), strtotime( $post->post_date ) ), esc_url( get_permalink($post_ID) ) ),
-            10 => sprintf( __('Mission draft updated. <a target="_blank" href="%s">Preview mission</a>', TEXT_DOMAIN), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
+            1 => sprintf( __( 'Mission updated. <a href="%s">View mission</a>', TEXT_DOMAIN ), esc_url( get_permalink($post_ID) ) ),
+            2 => __( 'Custom field updated.', TEXT_DOMAIN ),
+            3 => __( 'Custom field deleted.', TEXT_DOMAIN ),
+            4 => __( 'Mission updated.', TEXT_DOMAIN ),
+            5 => isset( $_GET['revision']) ? sprintf( __( 'Mission restored to revision from %s', TEXT_DOMAIN ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+            6 => sprintf( __( 'Mission published. <a href="%s">View mission</a>', TEXT_DOMAIN), esc_url( get_permalink($post_ID) ) ),
+            7 => __( 'Mission saved.', TEXT_DOMAIN ),
+            8 => sprintf( __( 'Mission submitted. <a target="_blank" href="%s">Preview mission</a>', TEXT_DOMAIN ), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
+            9 => sprintf( __( 'Mission scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview mission</a>', TEXT_DOMAIN ), date_i18n( __( 'M j, Y @ G:i', TEXT_DOMAIN ), strtotime( $post->post_date ) ), esc_url( get_permalink( $post_ID ) ) ),
+            10 => sprintf( __( 'Mission draft updated. <a target="_blank" href="%s">Preview mission</a>', TEXT_DOMAIN ), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
         );
         return $messages;
     }
@@ -98,7 +99,8 @@ class EinsatzverwaltungCustomPost {
             'alarmtime' => __( 'Alarm Time' ),
             'date' => __( 'Entry Date' ),
             'lastedit' => __( 'Last Edited by User' ),
-            'author' => __( 'Author' )
+            'author' => __( 'Author' ),
+            'id' => __( 'Mission Id' )
         );
 
         return $columns;
@@ -110,9 +112,10 @@ class EinsatzverwaltungCustomPost {
 
         $mission = $this->dbHandler->get_mission_details_by_post_id( $post->ID );
 
-        // var_dump($mission);
-        // die();
         switch( $column ) {
+            case 'id' :
+                echo $mission[0]->id;
+                break;
             case 'type' :
                 echo $mission[0]->art_alarmierung;
                 break;
@@ -120,8 +123,8 @@ class EinsatzverwaltungCustomPost {
                 echo $mission[0]->alarmierung_date;
                 break;
             case 'alarmtime' :
-                $date = new DateTime($mission[0]->alarmierung_time);
-                echo $date->format('H:i');
+                $date = new DateTime( $mission[0]->alarmierung_time );
+                echo $date->format( 'H:i' );
                 break;
             case 'lastedit' :
                 the_modified_author();
@@ -131,68 +134,69 @@ class EinsatzverwaltungCustomPost {
         }
     }
     
-function mission_permalink( $permalink, $post_id, $leavename ) {
-    $post = get_post($post_id);
-        $rewritecode = array(
-            '%year%',
-            '%monthnum%',
-            '%day%',
-            '%hour%',
-            '%minute%',
-            '%second%',
-            $leavename? '' : '%postname%',
-            '%post_id%',
-            '%category%',
-            '%author%',
-            $leavename? '' : '%pagename%',
-        );
-     
-        if ( '' != $permalink && !in_array($post->post_status, array('draft', 'pending', 'auto-draft')) ) {
-            $unixtime = strtotime($post->post_date);
-         
-            $category = '';
-            if ( strpos($permalink, '%category%') !== false ) {
-                $cats = get_the_category($post->ID);
-                if ( $cats ) {
-                    usort($cats, '_usort_terms_by_ID'); // order by ID
-                    $category = $cats[0]->slug;
-                    if ( $parent = $cats[0]->parent )
-                        $category = get_category_parents($parent, false, '/', true) . $category;
-                }
-                // show default category in permalinks, without
-                // having to assign it explicitly
-                if ( empty($category) ) {
-                    $default_category = get_category( get_option( 'default_category' ) );
-                    $category = is_wp_error( $default_category ) ? '' : $default_category->slug;
-                }
-            }
-         
-            $author = '';
-            if ( strpos($permalink, '%author%') !== false ) {
-                $authordata = get_userdata($post->post_author);
-                $author = $authordata->user_nicename;
-            }
-         
-            $date = explode(" ",date('Y m d H i s', $unixtime));
-            $rewritereplace =
-            array(
-                $date[0],
-                $date[1],
-                $date[2],
-                $date[3],
-                $date[4],
-                $date[5],
-                $post->post_name,
-                $post->ID,
-                $category,
-                $author,
-                $post->post_name,
+    public function mission_permalink( $permalink, $post_id, $leavename ) {
+        $post = get_post( $post_id );
+            $rewritecode = array(
+                '%year%',
+                '%monthnum%',
+                '%day%',
+                '%hour%',
+                '%minute%',
+                '%second%',
+                $leavename? '' : '%postname%',
+                '%post_id%',
+                '%category%',
+                '%author%',
+                $leavename? '' : '%pagename%',
             );
-            $permalink = str_replace($rewritecode, $rewritereplace, $permalink);
+         
+            if ( '' != $permalink && ! in_array( $post->post_status, array( 'draft', 'pending', 'auto-draft' ) ) ) {
+                $unixtime = strtotime($post->post_date);
+             
+                $category = '';
+                if ( false !== strpos( $permalink, '%category%' ) ) {
+                    $cats = get_the_category( $post->ID );
+                    if ( $cats ) {
+                        usort( $cats, '_usort_terms_by_ID' ); // order by ID
+                        $category = $cats[0]->slug;
+                        if ( $parent = $cats[0]->parent ) {
+                            $category = get_category_parents( $parent, false, '/', true ) . $category;
+                        }
+                    }
+                    // show default category in permalinks, without
+                    // having to assign it explicitly
+                    if ( empty( $category ) ) {
+                        $default_category = get_category( get_option( 'default_category' ) );
+                        $category = is_wp_error( $default_category ) ? '' : $default_category->slug;
+                    }
+                }
+             
+                $author = '';
+                if ( false !== strpos( $permalink, '%author%' ) ) {
+                    $authordata = get_userdata( $post->post_author );
+                    $author = $authordata->user_nicename;
+                }
+             
+                $date = explode( " ", date( 'Y m d H i s', $unixtime ) );
+                $rewritereplace =
+                array(
+                    $date[0],
+                    $date[1],
+                    $date[2],
+                    $date[3],
+                    $date[4],
+                    $date[5],
+                    $post->post_name,
+                    $post->ID,
+                    $category,
+                    $author,
+                    $post->post_name,
+                );
+                $permalink = str_replace( $rewritecode, $rewritereplace, $permalink );
 
-            // wp_die($permalink );
-        } else { // if they're not using the fancy permalink option
-        }
+                // wp_die($permalink );
+            } else { // if they're not using the fancy permalink option
+            }
         return $permalink;
     }
 
@@ -228,11 +232,11 @@ function mission_permalink( $permalink, $post_id, $leavename ) {
         $meta_values = get_post_meta( $post->ID, MISSION_ID, '' );
         $meta_values = array_filter( $meta_values );
 
-        if ( !empty( $meta_values ) ) {
+        if ( ! empty( $meta_values ) ) {
             $mission = $this->dbHandler->load_mission_by_id( $meta_values[0] );
             $vehicles_by_mission = $this->dbHandler->load_vehicles_by_mission_id( $mission->id );
             $vehicles = $this->dbHandler->load_vehicles();
-        }else {
+        } else {
             $vehicles = $this->dbHandler->load_vehicles();
 
             $mission = new stdClass();
@@ -250,21 +254,22 @@ function mission_permalink( $permalink, $post_id, $leavename ) {
             $vehicles_by_mission = array();
         }
 
-        if ( strlen( $mission->type ) != 0 ) {
+        if ( 0 !== strlen( $mission->type ) ) {
             // http://wpquicktips.wordpress.com/2012/04/25/using-php-variables-in-javascript-with-wp_localize_script/
             // http://www.ronakg.com/2011/05/passing-php-array-to-javascript-using-wp_localize_script/
             $this->set_selector_for_dropdown_value( "#mission_type", $mission->type );
         }
-        if ( strlen( $mission->alarmstichwort ) != 0 ) {
+
+        if ( 0 !== strlen( $mission->alarmstichwort ) ) {
             $this->set_selector_for_dropdown_value( "#alarm_stichwort", $mission->alarmstichwort );
         }
 
-        if ( strlen( $mission->alarm_art ) != 0 ) {
+        if ( 0 !== strlen( $mission->alarm_art ) ) {
             $this->set_selector_for_dropdown_value( "#alarm", $mission->alarm_art );
         }
 
-        if ( count( $vehicles_by_mission ) != 0 ) {
-            for ( $i=0; $i < count( $vehicles_by_mission ); $i++ ) {
+        if ( 0 !== count( $vehicles_by_mission ) ) {
+            for ( $i = 0; $i < count( $vehicles_by_mission ); $i++ ) {
                 $name = $this->rename_db_vehicle_name( $vehicles_by_mission[$i]->description );
                 $this->set_selector_for_checkbox_value( $name );
             }
@@ -306,7 +311,10 @@ function mission_permalink( $permalink, $post_id, $leavename ) {
                     "Odenheim",
                     "Kronau",
                     "Unteröwisheim",
-                    "Oberöwisheim"];
+                    "Oberöwisheim",
+                    "Weiher",
+                    "Ubstadt",
+                    "Stettfeld"];
 
                 $( "#einsatzort" ).autocomplete({
                     source: availableTags
@@ -327,7 +335,7 @@ EOF;
         echo '          <label>';
         echo '      </td>';
         echo '      <td>';
-        echo '          <input id="mission_id" name="mission_id" value="'.$mission->id.'" readonly="true" size="4"/>';
+        echo '          <input id="mission_id" name="mission_id" value="' . $mission->id . '" readonly="true" size="4"/>';
         echo '      </td>';
         echo '  </tr>';
         echo '  <tr>';
@@ -384,8 +392,8 @@ EOF;
         echo '          <label>';
         echo '      </td>';
         echo '      <td>';
-        if ( ( $mission->alarmstichwort == "Freitext" ) || ( $mission->alarmstichwort == "Sonstiger Brand" ) ) {
-            echo '          <input name="alarmstichwort_freitext" value="'.$mission->freitext.'"/>';
+        if ( ( "Freitext" == $mission->alarmstichwort ) || ( "Sonstiger Brand" == $mission->alarmstichwort ) ) {
+            echo '          <input name="alarmstichwort_freitext" value="' . $mission->freitext . '"/>';
         }
         else {
             echo '          <input name="alarmstichwort_freitext" />';
@@ -412,7 +420,7 @@ EOF;
         echo '          <label>';
         echo '      </td>';
         echo '      <td>';
-        echo '          <input id="einsatzort" name="einsatzort" value="'.$mission->einsatzort.'"/>';
+        echo '          <input id="einsatzort" name="einsatzort" value="' . $mission->einsatzort . '"/>';
         echo '      </td>';
         echo '  </tr>';
         echo '  <tr>';
@@ -422,7 +430,7 @@ EOF;
         echo '          <label>';
         echo '      </td>';
         echo '      <td>';
-        echo '          <input id="alarm_date" name="alarmierung_datum" type="date" value="'.$mission->alarmierung_date.'"/>';
+        echo '          <input id="alarm_date" name="alarmierung_datum" type="date" value="' . $mission->alarmierung_date . '"/>';
         echo '      </td>';
         echo '  </tr>';
         echo '  <tr>';
@@ -432,7 +440,7 @@ EOF;
         echo '          <label>';
         echo '      </td>';
         echo '      <td>';
-        echo '          <input name="alarmierung_zeit" type="time" value="'.$mission->alarmierung_time.'"/>';
+        echo '          <input name="alarmierung_zeit" type="time" value="' . $mission->alarmierung_time . '"/>';
         echo '      </td>';
         echo '  </tr>';
         echo '  <tr>';
@@ -442,7 +450,7 @@ EOF;
         echo '          <label>';
         echo '      </td>';
         echo '      <td>';
-        echo '          <input id="alarm_end_date" name="rueckkehr_datum" type="date" value="'.$mission->rueckkehr_date.'"/>';
+        echo '          <input id="alarm_end_date" name="rueckkehr_datum" type="date" value="' . $mission->rueckkehr_date . '"/>';
         echo '      </td>';
         echo '  </tr>';
         echo '  <tr>';
@@ -452,7 +460,7 @@ EOF;
         echo '          <label>';
         echo '      </td>';
         echo '      <td>';
-        echo '          <input name="rueckkehr_zeit" type="time" value="'.$mission->rueckkehr_time.'"/>';
+        echo '          <input name="rueckkehr_zeit" type="time" value="' . $mission->rueckkehr_time . '"/>';
         echo '      </td>';
         echo '  </tr>';
         echo '  <tr>';
@@ -462,7 +470,7 @@ EOF;
         echo '          <label>';
         echo '      </td>';
         echo '      <td>';
-        echo '          <input name="link_zu_medien" type="url" value="'.$mission->link_to_media.'" size="50"/>';
+        echo '          <input name="link_zu_medien" type="url" value="' . $mission->link_to_media . '" size="50"/>';
         echo '      </td>';
         echo '  </tr>';
         echo '  <tr>';
@@ -472,12 +480,12 @@ EOF;
         echo '          <label>';
         echo '      </td>';
         echo '      <td>';
-        if ( count( $vehicles ) > 0 ) {
-            for ( $i=0; $i<count( $vehicles ); $i++ ) {
+        if ( 0 < count( $vehicles ) ) {
+            for ( $i = 0; $i < count( $vehicles ); $i++ ) {
                 $name = $this->rename_db_vehicle_name( $vehicles[$i]->description );
-                echo '          <label for="'.$name.'"> <input name="'.$name.'" type="checkbox"/> '.$vehicles[$i]->description.' </label>';
+                echo '          <label for="' . $name . '"> <input name="' . $name . '" type="checkbox"/> ' . $vehicles[$i]->description . ' </label>';
             }
-        }else {
+        } else {
             echo '<p>';
             _e( "Keine Fahrzeuge in der Datenbank gefunden!", TEXT_DOMAIN );
             echo '</p>';
@@ -496,7 +504,7 @@ EOF;
     public function save_data( $post_id ) {
         global $wpdb;
 
-        $table_name_missions =     $wpdb->prefix . "einsaetze";
+        $table_missions = $wpdb->prefix . "einsaetze";
         
         
         // verify if this is an auto save routine.
@@ -506,16 +514,16 @@ EOF;
 
         // verify this came from the our screen and with proper authorization,
         // because save_post can be triggered at other times
-        if ( !wp_verify_nonce( $_POST['einsatzverwaltung_noncename'], plugin_basename( __FILE__ ) ) )
+        if ( ! wp_verify_nonce( $_POST['einsatzverwaltung_noncename'], plugin_basename( __FILE__ ) ) )
             return;
 
         // Check permissions
         if ( 'page' == $_POST['post_type'] ) {
-            if ( !current_user_can( 'edit_page', $post_id ) )
+            if ( ! current_user_can( 'edit_page', $post_id ) )
                 return;
         }
         else {
-            if ( !current_user_can( 'edit_post', $post_id ) )
+            if ( ! current_user_can( 'edit_post', $post_id ) )
                 return;
         }
 
@@ -531,13 +539,12 @@ EOF;
         $mission_id = $_POST['mission_id'];
         $mission_type = $_POST['mission_type'];
 
-        if ( ( $_POST['alarm_stichwort'] == "Freitext" ) || ( $_POST['alarm_stichwort'] == "Sonstiger Brand" ) ){
+        if ( ( "Freitext" == $_POST['alarm_stichwort'] ) || ( "Sonstiger Brand" == $_POST['alarm_stichwort'] ) ) {
             $freitext = $_POST['alarmstichwort_freitext'];
-        } else{
+        } else {
             $freitext = "";
         }
         
-
         $alarm = $_POST['alarm'];
         $einsatzort = $_POST['einsatzort'];
         $alarm_stichwort = $_POST['alarm_stichwort'];
@@ -550,17 +557,18 @@ EOF;
         $db_vehicles = $this->dbHandler->load_vehicles();
         $vehicles = array();
 
-        for ( $i=0; $i<count( $db_vehicles ); $i++ ) {
+        for ( $i = 0; $i < count( $db_vehicles ); $i++ ) {
             $name = $this->rename_db_vehicle_name( $db_vehicles[$i]->description );
 
-            if ( isset( $_POST[$name] ) )
+            if ( isset( $_POST[$name] ) ) {
                 $vehicles[] = $db_vehicles[$i]->id;
+            }
         }
 
-        if ( !empty( $mission_id ) ) {
+        if ( ! empty( $mission_id ) ) {
             //Update
             $wpdb->update(
-                $table_name_missions,
+                $table_missions,
                 array(
                     'art_alarmierung' => $mission_type,
                     'alarmstichwort' => $alarm_stichwort,
@@ -577,7 +585,7 @@ EOF;
             );
 
             if ( function_exists( "simple_history_add" ) ) {
-                simple_history_add( "action=updated&object_type=Mission&object_name=".$alarm_stichwort."" );
+                simple_history_add( "action=updated&object_type=Mission&object_name=" . $alarm_stichwort . "" );
             }
 
             //remove all vehicles bound to current mission!
@@ -591,7 +599,7 @@ EOF;
         }else {
             //new mission entry
             $wpdb->insert(
-                $table_name_missions,
+                $table_missions,
                 array(
                     'art_alarmierung' => $mission_type,
                     'alarmstichwort' => $alarm_stichwort,
@@ -609,12 +617,12 @@ EOF;
             $id = $wpdb->insert_id;
 
             if ( function_exists( "simple_history_add" ) ) {
-                simple_history_add( "action=created&object_type=Mission&object_name=".$alarm_stichwort."" );
+                simple_history_add( "action=created&object_type=Mission&object_name=" . $alarm_stichwort . "" );
             }
 
             // foreach ( $vehicles as $vehicle ) {
             //     $wpdb->insert(
-            //         $table_name_missions_has_vehicles,
+            //         $table_missions_has_vehicles,
             //         array(
             //             'einsaetze_id' => $id,
             //             'fahrzeuge_id' => $vehicle
@@ -629,14 +637,14 @@ EOF;
             
             $current_post = array(
                 'ID'           => $post_id,
-                'post_date' => date($alarmierung_datum .' '. $alarmierung_zeit),
-                'post_date_gmt' => date($alarmierung_datum .' '. $alarmierung_zeit)
+                'post_date' => date( $alarmierung_datum . ' ' . $alarmierung_zeit ),
+                'post_date_gmt' => date( $alarmierung_datum . ' ' . $alarmierung_zeit )
             );
-            remove_action('publish_mission', array($this, 'save_data'));
+            remove_action( 'publish_mission', array( $this, 'save_data' ) );
             // Update the post into the database
             wp_update_post( $current_post );
 
-            add_action('publish_mission', array($this, 'save_data'));
+            add_action( 'publish_mission', array( $this, 'save_data' ) );
         }
     }
 
@@ -646,17 +654,11 @@ EOF;
      * @return boolean
      * @author Andre Becker
      * */
-    public function trash_mission( $post_id ) {
-        // global $wpdb;
+    public function delete_mission( $post_id ) {
 
-        if ( current_user_can( 'delete_posts' ) )
-            $i = 0;
-        // wp_die("Post ID: ".$pid);
-
-        // if ($wpdb->get_var($wpdb->prepare('SELECT post_id FROM codex_postmeta WHERE post_id = %d', $pid))) {
-        //   return $wpdb->query($wpdb->prepare('DELETE FROM codex_postmeta WHERE post_id = %d', $pid));
-        // }
-        // return true;
+        if ( current_user_can( 'delete_posts' ) ) {
+            $this->dbHandler->delete_mission_by_post_id( $post_id );
+        }
     }
 
     /**
@@ -689,13 +691,13 @@ EOF;
      * */
     public function rename_db_vehicle_name( $name ) {
 
-        if ( $name == "DLK 23/12" )
+        if ( "DLK 23/12" == $name )
             $name = "dlk";
 
         $cleaned_name = str_replace( ' ', '', $name );
         $name = strtolower( $cleaned_name );
 
-        return "fahrzeuge_".$name;
+        return "fahrzeuge_" . $name;
     }
 
     /**
@@ -707,7 +709,7 @@ EOF;
         $script = "
         <script type='text/javascript'>
          jQuery(document).ready(function($) {
-            $('".$id."').val('".$value."');
+            $('" . $id . "').val('" . $value . "');
         });
         </script>";
         echo $script;
@@ -722,7 +724,7 @@ EOF;
         $script = "
         <script type='text/javascript'>
          jQuery(document).ready(function($) {
-            $('input[name=".$value."]').attr('checked', true);
+            $('input[name=" . $value . "]').attr('checked', true);
         });
         </script>";
         echo $script;
