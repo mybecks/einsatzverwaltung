@@ -3,9 +3,12 @@
  * Handler for all database related requests
  * @author Andre Becker
  */
+
+ //http://wordpress.stackexchange.com/questions/73868/queries-inside-of-a-class
 class DatabaseHandler {
     /** Refers to a single instance of this class. */
     private static $instance = null;
+    private $table;
 
     /**
      * Creates or returns an instance of this class.
@@ -14,42 +17,43 @@ class DatabaseHandler {
      * @author Andre Becker
      */
     public static function get_instance() {
- 
+
         if ( null == self::$instance ) {
             self::$instance = new self;
         }
- 
+
         return self::$instance;
     }
- 
+
     /**
      * Constructor
      */
     private function __construct() {
- 
+        global $wpdb;
+        $this->db = $wpdb;
+        $this->table = (object) array( "missions" => $this->db->prefix . "einsaetze",
+                                       "mission_has_vehicles" => $this->db->prefix . "einsaetze_has_fahrzeuge",
+                                       "vehicles" => $this->db->prefix . "fahrzeuge" );
     }
 
     /**
      *
      * Mission Related Requests
-     * 
+     *
      **/
-    
+
 
     /**
      * Delete mission by post id
-     * 
+     *
      * @param  int $post_id
      * @author Andre Becker
      */
     public function delete_mission_by_post_id( $post_id ) {
-        global $wpdb;
-        $table_missions = $wpdb->prefix . "einsaetze";
-
         $mission = $this->load_mission_by_post_id( $post_id );
 
-        $query = "DELETE FROM " . $table_missions . " WHERE wp_posts_ID = %d";
-        $result = $wpdb->query( $wpdb->prepare( $query, $post_id ) );
+        $query = "DELETE FROM " . $this->table->_missions . " WHERE wp_posts_ID = %d";
+        $result = $this->db->query( $this->db->prepare( $query, $post_id ) );
 
         $this->remove_vehicles_from_mission( $mission->id );
     }
@@ -71,13 +75,10 @@ class DatabaseHandler {
      * @author Andre Becker
      * */
     public function get_mission_years() {
-        global $wpdb;
         $array = array();
-        $table_missions = $wpdb->prefix . "einsaetze";
 
-        $query = "SELECT YEAR(alarmierung_date) AS Year FROM " . $table_missions . " GROUP BY Year DESC";
-
-        $years = $wpdb->get_results( $query );
+        $query = "SELECT YEAR(alarmierung_date) AS Year FROM " . $this->table->missions . " GROUP BY Year DESC";
+        $years = $this->db->get_results( $query );
 
         foreach ( $years as $year ) {
             if ( 1970 != $year->Year )
@@ -93,18 +94,15 @@ class DatabaseHandler {
 
     /**
      * Get mission details by post id
-     * 
+     *
      * @param  int $post_id
      * @return mission
      * @author Andre Becker
      */
     public function get_mission_details_by_post_id( $post_id ) {
-        global $wpdb;
-        $table_missions = $wpdb->prefix . "einsaetze";
-
         $query = "SELECT id, art_alarmierung, alarmstichwort, freitext, alarm_art, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media FROM "
-                 . $table_missions . " WHERE wp_posts_ID = " . $post_id;
-        $mission = $wpdb->get_results( $query );
+                 . $this->table->missions . " WHERE wp_posts_ID = " . $post_id;
+        $mission = $this->db->get_results( $query );
 
         return $mission;
     }
@@ -117,11 +115,8 @@ class DatabaseHandler {
      * @author Andre Becker
      * */
     public function load_mission_by_id( $id ) {
-        global $wpdb;
-        $table_name_missions = $wpdb->prefix . "einsaetze";
-
-        $query = "SELECT * FROM " . $table_name_missions . " WHERE id = " . $id;
-        $mission_details = $wpdb->get_row( $query );
+        $query = "SELECT * FROM " . $this->table->missions . " WHERE id = " . $id;
+        $mission_details = $this->db->get_row( $query );
 
         return $mission_details;
     }
@@ -129,19 +124,15 @@ class DatabaseHandler {
     /**
      * Load vehicles bound to mission
      *
-     * @param $mission_id
+     * @param int mission id
      * @return array()
      * @author Andre Becker
      * */
     public function load_vehicles_by_mission_id( $mission_id ) {
-        global $wpdb;
-        $table_name_missions_has_vehicles = $wpdb->prefix . "einsaetze_has_fahrzeuge";
-        $table_name_vehicles =     $wpdb->prefix . "fahrzeuge";
+        $query = "SELECT f.description FROM " . $this->table->vehicles .
+                 " as f, " . $this->table->mission_has_vehicles . " as h WHERE f.id = h.fahrzeuge_id AND h.einsaetze_id = " . $mission_id;
 
-        $query = "SELECT f.description FROM " . $table_name_vehicles . 
-                 " as f, " . $table_name_missions_has_vehicles . " as h WHERE f.id = h.fahrzeuge_id AND h.einsaetze_id = " . $mission_id;
-
-        $vehicles = $wpdb->get_results( $query );
+        $vehicles = $this->db->get_results( $query );
 
         return $vehicles;
     }
@@ -154,11 +145,8 @@ class DatabaseHandler {
      * @author Andre Becker
      * */
     public function load_mission_by_post_id( $id ) {
-        global $wpdb;
-        $table_name_missions = $wpdb->prefix . "einsaetze";
-
-        $query = "SELECT * FROM " . $table_name_missions . " WHERE wp_posts_ID = " . $id;
-        $mission_details = $wpdb->get_row( $query );
+        $query = "SELECT * FROM " . $this->table->missions . " WHERE wp_posts_ID = " . $id;
+        $mission_details = $this->db->get_row( $query );
 
         return $mission_details;
     }
@@ -170,18 +158,15 @@ class DatabaseHandler {
      * @author Andre Becker
      * */
     public function get_missions_by_year( $year ) {
-        global $wpdb;
-        $table_name_missions = $wpdb->prefix . "einsaetze";
-
         $arr_months = array();
 
         $query = "SELECT id, art_alarmierung, alarmstichwort, alarm_art, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media, wp_posts_ID, MONTH(alarmierung_date) AS Month, freitext " .
-            "FROM " . $table_name_missions .
+            "FROM " . $this->table->missions .
             " WHERE YEAR(alarmierung_date) = " . $year .
             " ORDER BY alarmierung_date DESC, alarmierung_time DESC";
 
-        $missions = $wpdb->get_results( $query );
-        
+        $missions = $this->db->get_results( $query );
+
         foreach ( $missions as $mission ) {
 
             //http://stackoverflow.com/questions/1195549/php-arrays-and-solution-to-undefined-index-errors
@@ -191,15 +176,10 @@ class DatabaseHandler {
             }
 
             foreach ( $arr_months as $key => $value ) {
-
                 if ( $key == $mission->Month ) {
-
                     $tmp_arr = $arr_months[$key];
-
                     $arr_content = array();
-
                     $post = get_post( $mission->wp_posts_ID );
-
 
                     if ( 0 != strlen( $post->post_content ) ) {
                         $description = "Bericht";
@@ -207,18 +187,11 @@ class DatabaseHandler {
                         $description = "Kurzinfo";
                     }
 
-
                     if ( 'Freitext' == $mission->alarmstichwort || 'Sonstiger Brand' == $mission->alarmstichwort ) {
                         $alarmstichwort = $mission->freitext;
                     } else {
                         $alarmstichwort = $mission->alarmstichwort;
                     }
-
-                    // if(strlen($alarmstichwort) > 22) {
-                    //  // Shortening the string to 22 characters
-                    //  $alarmstichwort = substr($alarmstichwort,0,22)."…";
-                    // }
-
 
                     if ( false !== strpos( $mission->art_alarmierung, 'Brandeinsatz' ) ) {
                         $alarm_short = 'BE';
@@ -256,7 +229,7 @@ class DatabaseHandler {
     /**
      *
      * Vehicle Related Requests
-     * 
+     *
      **/
 
     /**
@@ -266,11 +239,8 @@ class DatabaseHandler {
      * @author Andre Becker
      * */
     public function load_vehicles() {
-        global $wpdb;
-        $table_vehicles = $wpdb->prefix . "fahrzeuge";
-
-        $query = "SELECT id, description FROM " . $table_vehicles;
-        $vehicles = $wpdb->get_results( $query );
+        $query = "SELECT id, description FROM " . $this->table->vehicles;
+        $vehicles = $this->db->get_results( $query );
 
         return $vehicles;
     }
@@ -281,57 +251,53 @@ class DatabaseHandler {
      * @author Andre Becker
      */
     public function remove_vehicles_from_mission( $mission_id ) {
-        global $wpdb;
-        $table_missions_has_vehicles = $wpdb->prefix . "einsaetze_has_fahrzeuge";
-        // $wpdb->show_errors();
-        $query = "DELETE FROM " . $table_missions_has_vehicles . " WHERE einsaetze_id = %d";
-        $delete = $wpdb->query( $wpdb->prepare( $query, $mission_id ) );
-
-        // $wpdb->print_error();
-        // wp_die($delete);
-        // $wpdb->hide_errors();
+        $query = "DELETE FROM " . $this->table->missions_has_vehicles . " WHERE einsaetze_id = %d";
+        $delete = $this->db->query( $this->db->prepare( $query, $mission_id ) );
     }
 
     /**
      * Insert new vehicles to mission
-     * 
+     *
      * @param int $mission_id [description]
      * @param int $vehicle_id [description]
      * @author Andre Becker
      */
     public function insert_new_vehicle_to_mission( $mission_id, $vehicle_id ) {
-        global $wpdb;
-        $table_missions_has_vehicles = $wpdb->prefix . "einsaetze_has_fahrzeuge";
-
-        $wpdb->insert(
-            $table_missions_has_vehicles,
+        $this->db->insert(
+            $this->table->missions_has_vehicles,
             array(
                 'einsaetze_id' => $mission_id,
                 'fahrzeuge_id' => $vehicle_id
-            ), 
-            array() );
+            ),
+            array(
+                '%d',
+                '%d'
+            )
+        );
     }
 
     /**
      * Insert a new vehicle in the database
-     * 
+     *
      * @param  string $description
      * @author Andre Becker
      */
     public function admin_insert_vehicle( $description ) {
-        global $wpdb;
-        
-        $table_vehicles = $wpdb->prefix . "fahrzeuge";
+        $this->table->vehicles = $this->db->prefix . "fahrzeuge";
 
-        $wpdb->insert(
-            $table_vehicles,
+        $this->db->insert(
+            $this->table->vehicles,
             array(
-                'description' => $_POST['add_new_vehicle']
+                'description' => $description
             ),
             array(
                 '%s'
             )
         );
+    }
+
+    public function get_last_insert_id() {
+        return $this->db->insert_id;
     }
 }
 

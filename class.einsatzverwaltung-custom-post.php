@@ -2,11 +2,11 @@
 
 /**
  * Custom Post Type for Einsatzverwaltung
- * 
+ *
  * @author Andre Becker
  **/
 class EinsatzverwaltungCustomPost {
-    
+
     public function __construct() {
         add_action( 'init', array( $this, 'custom_post_mission' ) );
         add_action( 'publish_mission', array( $this, 'save_data' ) );
@@ -17,8 +17,8 @@ class EinsatzverwaltungCustomPost {
         add_filter( 'post_updated_messages', array( $this, 'mission_updated_messages' ) );
         add_filter( 'manage_edit-mission_columns', array( $this, 'edit_mission_column' ) );
         add_filter( 'manage_edit-mission_sortable_columns', array( $this, 'mission_sortable_columns' ) );
-        // add_filter( 'post_type_link', array( $this, 'mission_permalink' ), 10, 3 ); 
-        $this->dbHandler = DatabaseHandler::get_instance();
+        // add_filter( 'post_type_link', array( $this, 'mission_permalink' ), 10, 3 );
+        $this->db_handler = DatabaseHandler::get_instance();
     }
 
     public function custom_post_mission() {
@@ -35,11 +35,11 @@ class EinsatzverwaltungCustomPost {
             'view_item'          => __( 'View Mission', TEXT_DOMAIN ),
             'search_items'       => __( 'Search Missions', TEXT_DOMAIN ),
             'not_found'          => __( 'No Missions found', TEXT_DOMAIN ),
-            'not_found_in_trash' => __( 'No Missions found in the Trash', TEXT_DOMAIN ), 
+            'not_found_in_trash' => __( 'No Missions found in the Trash', TEXT_DOMAIN ),
             'parent_item_colon'  => '',
             'menu_name'          => __( 'Missions', TEXT_DOMAIN )
         );
-        
+
         $args = array(
             'labels'        => $labels,
             'description'   => __( 'Holds our missions and specific data', TEXT_DOMAIN ),
@@ -75,7 +75,7 @@ class EinsatzverwaltungCustomPost {
     public function mission_updated_messages( $messages ) {
         global $post, $post_ID;
         $messages['einsatz'] = array(
-            0 => '', 
+            0 => '',
             1 => sprintf( __( 'Mission updated. <a href="%s">View mission</a>', TEXT_DOMAIN ), esc_url( get_permalink($post_ID) ) ),
             2 => __( 'Custom field updated.', TEXT_DOMAIN ),
             3 => __( 'Custom field deleted.', TEXT_DOMAIN ),
@@ -110,7 +110,7 @@ class EinsatzverwaltungCustomPost {
     public function manage_mission_columns( $column, $post_id ){
         global $post;
 
-        $mission = $this->dbHandler->get_mission_details_by_post_id( $post->ID );
+        $mission = $this->db_handler->get_mission_details_by_post_id( $post->ID );
 
         switch( $column ) {
             case 'id' :
@@ -133,72 +133,72 @@ class EinsatzverwaltungCustomPost {
                 break;
         }
     }
-    
-    public function mission_permalink( $permalink, $post_id, $leavename ) {
-        $post = get_post( $post_id );
-            $rewritecode = array(
-                '%year%',
-                '%monthnum%',
-                '%day%',
-                '%hour%',
-                '%minute%',
-                '%second%',
-                $leavename? '' : '%postname%',
-                '%post_id%',
-                '%category%',
-                '%author%',
-                $leavename? '' : '%pagename%',
-            );
-         
-            if ( '' != $permalink && ! in_array( $post->post_status, array( 'draft', 'pending', 'auto-draft' ) ) ) {
-                $unixtime = strtotime($post->post_date);
-             
-                $category = '';
-                if ( false !== strpos( $permalink, '%category%' ) ) {
-                    $cats = get_the_category( $post->ID );
-                    if ( $cats ) {
-                        usort( $cats, '_usort_terms_by_ID' ); // order by ID
-                        $category = $cats[0]->slug;
-                        if ( $parent = $cats[0]->parent ) {
-                            $category = get_category_parents( $parent, false, '/', true ) . $category;
-                        }
-                    }
-                    // show default category in permalinks, without
-                    // having to assign it explicitly
-                    if ( empty( $category ) ) {
-                        $default_category = get_category( get_option( 'default_category' ) );
-                        $category = is_wp_error( $default_category ) ? '' : $default_category->slug;
-                    }
-                }
-             
-                $author = '';
-                if ( false !== strpos( $permalink, '%author%' ) ) {
-                    $authordata = get_userdata( $post->post_author );
-                    $author = $authordata->user_nicename;
-                }
-             
-                $date = explode( " ", date( 'Y m d H i s', $unixtime ) );
-                $rewritereplace =
-                array(
-                    $date[0],
-                    $date[1],
-                    $date[2],
-                    $date[3],
-                    $date[4],
-                    $date[5],
-                    $post->post_name,
-                    $post->ID,
-                    $category,
-                    $author,
-                    $post->post_name,
-                );
-                $permalink = str_replace( $rewritecode, $rewritereplace, $permalink );
 
-                // wp_die($permalink );
-            } else { // if they're not using the fancy permalink option
-            }
-        return $permalink;
-    }
+    // public function mission_permalink( $permalink, $post_id, $leavename ) {
+    //     $post = get_post( $post_id );
+    //         $rewritecode = array(
+    //             '%year%',
+    //             '%monthnum%',
+    //             '%day%',
+    //             '%hour%',
+    //             '%minute%',
+    //             '%second%',
+    //             $leavename? '' : '%postname%',
+    //             '%post_id%',
+    //             '%category%',
+    //             '%author%',
+    //             $leavename? '' : '%pagename%',
+    //         );
+    //
+    //         if ( '' != $permalink && ! in_array( $post->post_status, array( 'draft', 'pending', 'auto-draft' ) ) ) {
+    //             $unixtime = strtotime($post->post_date);
+    //
+    //             $category = '';
+    //             if ( false !== strpos( $permalink, '%category%' ) ) {
+    //                 $cats = get_the_category( $post->ID );
+    //                 if ( $cats ) {
+    //                     usort( $cats, '_usort_terms_by_ID' ); // order by ID
+    //                     $category = $cats[0]->slug;
+    //                     if ( $parent = $cats[0]->parent ) {
+    //                         $category = get_category_parents( $parent, false, '/', true ) . $category;
+    //                     }
+    //                 }
+    //                 // show default category in permalinks, without
+    //                 // having to assign it explicitly
+    //                 if ( empty( $category ) ) {
+    //                     $default_category = get_category( get_option( 'default_category' ) );
+    //                     $category = is_wp_error( $default_category ) ? '' : $default_category->slug;
+    //                 }
+    //             }
+    //
+    //             $author = '';
+    //             if ( false !== strpos( $permalink, '%author%' ) ) {
+    //                 $authordata = get_userdata( $post->post_author );
+    //                 $author = $authordata->user_nicename;
+    //             }
+    //
+    //             $date = explode( " ", date( 'Y m d H i s', $unixtime ) );
+    //             $rewritereplace =
+    //             array(
+    //                 $date[0],
+    //                 $date[1],
+    //                 $date[2],
+    //                 $date[3],
+    //                 $date[4],
+    //                 $date[5],
+    //                 $post->post_name,
+    //                 $post->ID,
+    //                 $category,
+    //                 $author,
+    //                 $post->post_name,
+    //             );
+    //             $permalink = str_replace( $rewritecode, $rewritereplace, $permalink );
+    //
+    //             // wp_die($permalink );
+    //         } else { // if they're not using the fancy permalink option
+    //         }
+    //     return $permalink;
+    // }
 
     public function mission_sortable_columns( $columns ){
         $columns['alarmdate'] = 'alarmdate';
@@ -233,11 +233,11 @@ class EinsatzverwaltungCustomPost {
         $meta_values = array_filter( $meta_values );
 
         if ( ! empty( $meta_values ) ) {
-            $mission = $this->dbHandler->load_mission_by_id( $meta_values[0] );
-            $vehicles_by_mission = $this->dbHandler->load_vehicles_by_mission_id( $mission->id );
-            $vehicles = $this->dbHandler->load_vehicles();
+            $mission = $this->db_handler->load_mission_by_id( $meta_values[0] );
+            $vehicles_by_mission = $this->db_handler->load_vehicles_by_mission_id( $mission->id );
+            $vehicles = $this->db_handler->load_vehicles();
         } else {
-            $vehicles = $this->dbHandler->load_vehicles();
+            $vehicles = $this->db_handler->load_vehicles();
 
             $mission = new stdClass();
             $mission->id = "";
@@ -505,8 +505,8 @@ EOF;
         global $wpdb;
 
         $table_missions = $wpdb->prefix . "einsaetze";
-        
-        
+
+
         // verify if this is an auto save routine.
         // If it is our form has not been submitted, so we dont want to do anything
         if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
@@ -544,7 +544,7 @@ EOF;
         } else {
             $freitext = "";
         }
-        
+
         $alarm = $_POST['alarm'];
         $einsatzort = $_POST['einsatzort'];
         $alarm_stichwort = $_POST['alarm_stichwort'];
@@ -554,7 +554,7 @@ EOF;
         $rueckkehr_zeit = $_POST['rueckkehr_zeit'];
         $link_zu_medien = $this->media_link_shortener( $_POST['link_zu_medien'] );
 
-        $db_vehicles = $this->dbHandler->load_vehicles();
+        $db_vehicles = $this->db_handler->load_vehicles();
         $vehicles = array();
 
         for ( $i = 0; $i < count( $db_vehicles ); $i++ ) {
@@ -589,11 +589,11 @@ EOF;
             }
 
             //remove all vehicles bound to current mission!
-            $this->dbHandler->remove_vehicles_from_mission( $mission_id );
+            $this->db_handler->remove_vehicles_from_mission( $mission_id );
 
             //insert new values:
             foreach ( $vehicles as $vehicle ) {
-               $this->dbHandler->insert_new_vehicle_to_mission( $mission_id, $vehicle );
+               $this->db_handler->insert_new_vehicle_to_mission( $mission_id, $vehicle );
             }
 
         }else {
@@ -620,27 +620,19 @@ EOF;
                 simple_history_add( "action=created&object_type=Mission&object_name=" . $alarm_stichwort . "" );
             }
 
-            // foreach ( $vehicles as $vehicle ) {
-            //     $wpdb->insert(
-            //         $table_missions_has_vehicles,
-            //         array(
-            //             'einsaetze_id' => $id,
-            //             'fahrzeuge_id' => $vehicle
-            //         ), array() );
-            // }
-            
             foreach ( $vehicles as $vehicle ) {
-               $this->dbHandler->insert_new_vehicle_to_mission( $id, $vehicle );
+               $this->db_handler->insert_new_vehicle_to_mission( $id, $vehicle );
             }
 
             add_post_meta( $post_id, MISSION_ID, $id );
-            
+
             $current_post = array(
                 'ID'           => $post_id,
                 'post_date' => date( $alarmierung_datum . ' ' . $alarmierung_zeit ),
                 'post_date_gmt' => date( $alarmierung_datum . ' ' . $alarmierung_zeit )
             );
             remove_action( 'publish_mission', array( $this, 'save_data' ) );
+
             // Update the post into the database
             wp_update_post( $current_post );
 
@@ -657,7 +649,7 @@ EOF;
     public function delete_mission( $post_id ) {
 
         if ( current_user_can( 'delete_posts' ) ) {
-            $this->dbHandler->delete_mission_by_post_id( $post_id );
+            $this->db_handler->delete_mission_by_post_id( $post_id );
         }
     }
 

@@ -16,35 +16,39 @@
 }
 
 .holder{
-    width: 20em; 
-    min-height: 20em; 
+    width: 20em;
+    min-height: 20em;
     /*margin: 2em auto;*/
-    border: 0.5em dashed #ccc; 
+    border: 0.5em dashed #ccc;
 }
 
 .holder.hover{
-    border: 10px dashed #0c0; 
-}
-               
-.holder p { 
-    margin: 10px; 
-    font-size: 14px; 
+    border: 10px dashed #0c0;
 }
 
-progress { 
-    width: 25%; 
+.holder p {
+    margin: 10px;
+    font-size: 14px;
 }
 
-progress:after { 
-    content: '%'; 
+progress {
+    width: 25%;
 }
 
-.fail { 
-    background: #c00; 
+progress:after {
+    content: '%';
+}
+
+.fail {
+    background: #c00;
     padding: 2px;
-    color: #fff; 
+    color: #fff;
 }
 
-.hidden { 
+.hidden {
     display: none !important;
+}
+
+#message {
+	display : none;
 }

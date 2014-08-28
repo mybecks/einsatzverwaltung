@@ -52,25 +52,25 @@ var readfiles = function(files) {
 
 var ddFileUpload = function(){
     var holder = $('.holder');
-    
+
     var tests = {
         filereader: typeof FileReader != 'undefined',
         dnd: 'draggable' in document.createElement('span'),
         formdata: !!window.FormData,
         progress: "upload" in new XMLHttpRequest()
     };
-    
+
     var support = {
         filereader: $('#filereader'),
         formdata: $('#formdata'),
         progress: $('#progress')
     };
-    
+
     var acceptedTypes = {
         'text/csv': true,
         'text/plain': true
     };
-    
+
     var progress = $('#uploadprogress');
     var fileupload = $('#upload');
 
@@ -105,44 +105,30 @@ var ddFileUpload = function(){
 var addVehicle = function(){
 
     $('.add-vehicle').click(function(){
-        var data1 = {
-            action: "blubb",
+        var data = {
+            action: 'add_vehicle',
             nonce: ajax_var.nonce,
-            id: 1
+            vehicle: $('#new_vehicle').val()
         };
 
         $.post(
-            ajax_var.url,
-            data1,
-            function( response ) {
-                alert('The server responded: ' + response);
-        }).done(function() {
-            alert( "second success" );
-        }).fail(function() {
-            alert( "error" );
+            ajaxurl,
+            data,
+            function( vehicle ) { //on success
+                // alert('Server response from the AJAX URL ' + vehicle);
+
+                $('#message').show();
+
+                $('.tab-vehicle').append('<tr>'+
+                                            '<td>'+vehicle.id+'</td>'+
+                                            '<td>'+vehicle.description+'</td>'+
+                                            '<td><img class="tab-images" src="../wp-content/plugins/einsatzverwaltung/img/admin_edit.png" /></td>'+
+                                            '<td><img class="tab-images" src="../wp-content/plugins/einsatzverwaltung/img/admin_delete.png" /></td>'+
+                                          '</tr>');
+                $('#message').fadeOut( 2000 );
         });
 
-
-        // $.ajax({
-        //     type: "post",
-        //     dataType : "json",
-        //     url: ajax_var.url,
-        //     data: {
-        //         action: 'blubb',
-        //         nonce: ajax_var.nonce,
-        //         id: 1
-        //     },
-        //     beforeSend: function(jqXHR, settings){
-        //         console.log(jqXHR);
-        //         console.log(settings);
-        //     },
-        //     success: function(data, textStatus, jqXHR){
-        //         alert('success.');
-        //     },
-        //     error: function(jqXHR, textStatus, errorThrown){
-        //         alert(jqXHR.status);
-        //     }
-        // });
+        return false;
     });
 };
 jQuery(document).ready(function($){
