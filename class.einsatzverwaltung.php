@@ -170,7 +170,7 @@ class Einsatzverwaltung {
      * */
     public function print_missions_by_year( $arr_months ) {
         // Paths
-        $arrow_up_path = $this->plugin_path . "img/mini-nav-top.gif";
+        $arrow_up_path = plugin_dir_url( __FILE__ ) . 'img/mini-nav-top.gif';
 
         // Ausgabe der Einsätze im aktuellen Jahr
         foreach ( $arr_months as $key => $value ) {
