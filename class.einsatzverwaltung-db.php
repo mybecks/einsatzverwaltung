@@ -52,7 +52,7 @@ class DatabaseHandler {
     public function delete_mission_by_post_id( $post_id ) {
         $mission = $this->load_mission_by_post_id( $post_id );
 
-        $query = "DELETE FROM " . $this->table->_missions . " WHERE wp_posts_ID = %d";
+        $query = "DELETE FROM " . $this->table->missions . " WHERE wp_posts_ID = %d";
         $result = $this->db->query( $this->db->prepare( $query, $post_id ) );
 
         $this->remove_vehicles_from_mission( $mission->id );
@@ -264,7 +264,7 @@ class DatabaseHandler {
      */
     public function insert_new_vehicle_to_mission( $mission_id, $vehicle_id ) {
         $this->db->insert(
-            $this->table->missions_has_vehicles,
+            $this->table->mission_has_vehicles,
             array(
                 'einsaetze_id' => $mission_id,
                 'fahrzeuge_id' => $vehicle_id

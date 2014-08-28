@@ -183,7 +183,11 @@ class Einsatzverwaltung {
             <a name='$german_month'></a>
 
             <table class='mission-month' summary='Einsatzliste im Monat $german_month' border='0'>
-                <caption class='mission-month-header'>" . $german_month . "&nbsp;<a href='#Übersicht'><img src='" . $arrow_up_path . "' class='overview'/></a></caption>
+                <caption class='mission-month-header'>$german_month
+                    <a href='#Übersicht'>
+                        <img src='" . $arrow_up_path . "' class='overview'/>
+                    </a>
+                </caption>
                 <thead>
                     <tr>
                         <th scope='col' class='th-mission td-space-left'>Datum</th>
