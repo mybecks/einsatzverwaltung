@@ -584,8 +584,8 @@ EOF;
                 array( 'id' => $mission_id )
             );
 
-            if ( function_exists( "simple_history_add" ) ) {
-                simple_history_add( "action=updated&object_type=Mission&object_name=" . $alarm_stichwort . "" );
+            if ( function_exists("SimpleLogger") ) {
+                SimpleLogger()->info( "Mission updated ".$alarm_stichwort );
             }
 
             //remove all vehicles bound to current mission!
@@ -616,8 +616,8 @@ EOF;
 
             $id = $wpdb->insert_id;
 
-            if ( function_exists( "simple_history_add" ) ) {
-                simple_history_add( "action=created&object_type=Mission&object_name=" . $alarm_stichwort . "" );
+            if ( function_exists("SimpleLogger") ) {
+                SimpleLogger()->info( "Mission ".$alarm_stichwort." created" );
             }
 
             foreach ( $vehicles as $vehicle ) {
