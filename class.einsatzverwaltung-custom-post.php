@@ -278,20 +278,43 @@ class EinsatzverwaltungCustomPost {
         $script = <<< EOF
         <script type='text/javascript'>
             jQuery(document).ready(function($) {
+                // Needs more testing - title will not be written to db
+                // $('#title').prop('disabled', true);
 
 
                 if($('#alarm_stichwort').val() === 'Sonstiger Brand' || $('#alarm_stichwort').val() === 'Freitext'){
                     $('#row_freitext_alarmstichwort').show();
+                    // $('#title').attr('value', $('#freitext').val());
                 }else{
                     $('#row_freitext_alarmstichwort').hide();
+                    // $('#title').attr('value', $("#alarm_stichwort option:first").text());
                 }
 
                 $('#alarm_stichwort').change(function() {
+                    // $('#title').attr('value', $("#alarm_stichwort option:selected").text());
                     if($('#sel_so_brand').is(':selected') || $('#sel_freitext').is(':selected')) {
                         $('#row_freitext_alarmstichwort').show();
-                 }else{
-                    $('#row_freitext_alarmstichwort').hide();
-                 }
+
+                        // $('#freitext').keyup(function(){
+                        //     $('#title').attr('value', $('#freitext').val());
+                        // });
+                    }else{
+                        $('#row_freitext_alarmstichwort').hide();
+                    }
+
+                    var label = $('#alarm_stichwort :selected').parent().attr('label');
+
+                    switch(label){
+                        case 'Brand':
+                            $('#mission_type').val('Brandeinsatz');
+                            break;
+                        case 'Technische Hilfe':
+                            $('#mission_type').val('Technischer Einsatz');
+                            break;
+                        case 'Sonstiges':
+                            $('#mission_type').val('Sonstiger Einsatz');
+                            break;
+                    }
                 });
 
                 $('#alarm_date').change(function(){
@@ -393,10 +416,10 @@ EOF;
         echo '      </td>';
         echo '      <td>';
         if ( ( "Freitext" == $mission->alarmstichwort ) || ( "Sonstiger Brand" == $mission->alarmstichwort ) ) {
-            echo '          <input name="alarmstichwort_freitext" value="' . $mission->freitext . '"/>';
+            echo '          <input name="alarmstichwort_freitext" id="freitext" value="' . $mission->freitext . '"/>';
         }
         else {
-            echo '          <input name="alarmstichwort_freitext" />';
+            echo '          <input name="alarmstichwort_freitext" id="freitext"/>';
         }
         echo '      </td>';
         echo '  </tr>';
