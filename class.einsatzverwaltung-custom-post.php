@@ -290,6 +290,22 @@ class EinsatzverwaltungCustomPost {
                     // $('#title').attr('value', $("#alarm_stichwort option:first").text());
                 }
 
+                var label = $('#alarm_stichwort :selected').parent().attr('label');
+
+                if(label) {
+                    switch(label){
+                        case 'Brand':
+                            $('#mission_type').val('Brandeinsatz');
+                            break;
+                        case 'Technische Hilfe':
+                            $('#mission_type').val('Technischer Einsatz');
+                            break;
+                        case 'Sonstiges':
+                            $('#mission_type').val('Sonstiger Einsatz');
+                            break;
+                        }
+                }
+
                 $('#alarm_stichwort').change(function() {
                     // $('#title').attr('value', $("#alarm_stichwort option:selected").text());
                     if($('#sel_so_brand').is(':selected') || $('#sel_freitext').is(':selected')) {
@@ -302,7 +318,8 @@ class EinsatzverwaltungCustomPost {
                         $('#row_freitext_alarmstichwort').hide();
                     }
 
-                    var label = $('#alarm_stichwort :selected').parent().attr('label');
+
+                    // var label = $('#alarm_stichwort :selected').parent().attr('label');
 
                     switch(label){
                         case 'Brand':
@@ -393,6 +410,7 @@ EOF;
         echo '                  <option>Kleinbrand</option>';
         echo '                  <option>PKW-Brand</option>';
         echo '                  <option>Feuerschein</option>';
+        echo '                  <option>Verdächtiger Rauch</option>';
         echo '                  <option id="sel_so_brand">Sonstiger Brand</option>';
         echo '              <optgroup label="Technische Hilfe">';
         echo '                  <option>Verkehrsunfall</option>';
