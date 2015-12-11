@@ -45,7 +45,7 @@ class EinsatzverwaltungCustomPost {
             'description'   => __( 'Holds our missions and specific data', TEXT_DOMAIN ),
             'public'        => true,
             'menu_position' => 5,
-            'supports'      => array( 'title', 'author', 'editor' ),
+            'supports'      => array('author', 'editor' ),
             'has_archive'   => true,
             'menu_icon'     => plugin_dir_url( __FILE__ ).'img/blaulicht_state_hover.png',
             'register_meta_box_cb' => array( $this, 'add_custom_box' )
@@ -669,6 +669,7 @@ EOF;
 
             $current_post = array(
                 'ID'           => $post_id,
+                'post_title' => $alarm_stichwort,
                 'post_date' => date( $alarmierung_datum . ' ' . $alarmierung_zeit ),
                 'post_date_gmt' => date( $alarmierung_datum . ' ' . $alarmierung_zeit )
             );
