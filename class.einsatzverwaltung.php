@@ -16,8 +16,8 @@ class Einsatzverwaltung {
     // Respects SSL, style.css is relative to the current file
         wp_register_style( 'einsatzverwaltung-style', plugins_url( '/css/styles.css', __FILE__ ) );
         wp_enqueue_style( 'einsatzverwaltung-style' );
-        // wp_register_style( 'bootstrap-style', plugins_url( '/css/bootstrap.css', __FILE__ ) );
-        // wp_enqueue_style( 'bootstrap-style' );
+        wp_register_style( 'bootstrap-style', plugins_url( '/css/bootstrap.css', __FILE__ ) );
+        wp_enqueue_style( 'bootstrap-style' );
     }
 
     public function add_scripts(){
@@ -45,7 +45,7 @@ class Einsatzverwaltung {
 
 
         flush_rewrite_rules();
-        // $wpdb->show_errors(); 
+        // $wpdb->show_errors();
         $table_vehicles =     $wpdb->prefix . "fahrzeuge";
         $table_missions =     $wpdb->prefix . "einsaetze";
         $table_missions_has_vehicles = $wpdb->prefix . "einsaetze_has_fahrzeuge";
@@ -59,7 +59,7 @@ class Einsatzverwaltung {
         * No Foreign Keys: http://wordpress.stackexchange.com/questions/52783/dbdelta-support-for-foreign-key
         */
 
-        $sql_vehicles = "CREATE TABLE IF NOT EXISTS ".$table_vehicles."  
+        $sql_vehicles = "CREATE TABLE IF NOT EXISTS ".$table_vehicles."
         (
             id                  INT UNSIGNED NOT NULL AUTO_INCREMENT,
             description         VARCHAR(25) NOT NULL,
@@ -69,7 +69,7 @@ class Einsatzverwaltung {
         COLLATE utf8_general_ci;
         ";
         dbDelta( $sql_vehicles );
-        
+
         $sql_missions = "CREATE TABLE IF NOT EXISTS $table_missions
         (
             id                  INT UNSIGNED NOT NULL AUTO_INCREMENT ,
@@ -129,7 +129,7 @@ class Einsatzverwaltung {
     }
 
     public function display_missions() {
-        
+
         $permalink = get_permalink();
         $years = $this->db_handler->get_mission_years();
 
@@ -181,8 +181,8 @@ class Einsatzverwaltung {
             //redesign with bootstrap
             echo "<br /> <div>
             <a name='$german_month'></a>
-
-            <table class='mission-month' summary='Einsatzliste im Monat $german_month' border='0'>
+            <div class='table-responsive'>
+            <table class='table mission-month' summary='Einsatzliste im Monat $german_month' border='0'>
                 <caption class='mission-month-header'>$german_month
                     <a href='#Übersicht'>
                         <img src='" . $arrow_up_path . "' class='overview'/>
@@ -219,6 +219,7 @@ class Einsatzverwaltung {
             echo "
                 </tbody>
                 </table>
+                </div>
                     <div class='footer-legend'>
                         BE - Brandeinsatz &#x95
                         TE - Technischer Einsatz &#x95
@@ -242,7 +243,7 @@ class Einsatzverwaltung {
      //    $month = $dateFormat->localeFormat(LOCALE, $date);
      //    wp_die($month. ' # '. $english_month_2number);
 
-        $german_months = array( 
+        $german_months = array(
             1=>"Januar",
             2=>"Februar",
             3=>"M&auml;rz",
@@ -394,7 +395,7 @@ EOF;
                 $used_vehicles .= $vehicles[$i]->description;
             } else {
                 $used_vehicles .= $vehicles[$i]->description . " &#x95 ";
-            }       
+            }
         }
 
         if ( ( "Freitext" === $mission->alarmstichwort ) || ( "Sonstiger Brand" === $mission->alarmstichwort ) ) {

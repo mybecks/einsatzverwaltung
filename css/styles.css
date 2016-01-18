@@ -86,6 +86,12 @@
     color: silver;
 }
 
+@-moz-document url-prefix() {
+    fieldset {
+        display: table-cell;
+    }
+}
+
 /**
  * Widget
  */
