@@ -319,7 +319,7 @@ class EinsatzverwaltungCustomPost {
                     }
 
 
-                    // var label = $('#alarm_stichwort :selected').parent().attr('label');
+                    var label = $('#alarm_stichwort :selected').parent().attr('label');
 
                     switch(label){
                         case 'Brand':
@@ -670,6 +670,7 @@ EOF;
             $current_post = array(
                 'ID'           => $post_id,
                 'post_title' => $alarm_stichwort,
+                'post_name' => date("Y_m", strtotime($alarmierung_datum)).'_'.$alarm_stichwort,
                 'post_date' => date( $alarmierung_datum . ' ' . $alarmierung_zeit ),
                 'post_date_gmt' => date( $alarmierung_datum . ' ' . $alarmierung_zeit )
             );
