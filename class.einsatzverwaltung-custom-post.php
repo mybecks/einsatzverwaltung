@@ -17,7 +17,7 @@ class EinsatzverwaltungCustomPost {
         add_filter( 'post_updated_messages', array( $this, 'mission_updated_messages' ) );
         add_filter( 'manage_edit-mission_columns', array( $this, 'edit_mission_column' ) );
         add_filter( 'manage_edit-mission_sortable_columns', array( $this, 'mission_sortable_columns' ) );
-        // add_filter( 'post_type_link', array( $this, 'mission_permalink' ), 10, 3 );
+        add_filter( 'post_type_link', array( $this, 'mission_permalink' ), 10, 3 );
         $this->db_handler = DatabaseHandler::get_instance();
     }
 
@@ -47,29 +47,15 @@ class EinsatzverwaltungCustomPost {
             'menu_position' => 5,
             'supports'      => array('author', 'editor' ),
             'has_archive'   => true,
+            'rewrite'       => array('slug' => 'mission', 'with_front' => false),
             'menu_icon'     => plugin_dir_url( __FILE__ ).'img/blaulicht_state_hover.png',
             'register_meta_box_cb' => array( $this, 'add_custom_box' )
         );
         register_post_type( 'mission', $args );
 
-
-        /**
-         * rewrite
-         * (boolean or array) (optional) Triggers the handling of rewrites for this post type. To prevent rewrites, set to false.
-         * Default: true and use $post_type as slug
-         * $args array
-         * 'slug' => string Customize the permastruct slug. Defaults to the $post_type value. Should be translatable.
-         * 'with_front' => bool Should the permastruct be prepended with the front base. (example: if your permalink structure is /blog/, then your links will be: false->/news/, true->/blog/news/). Defaults to true
-         * 'feeds' => bool Should a feed permastruct be built for this post type. Defaults to has_archive value.
-         * 'pages' => bool Should the permastruct provide for pagination. Defaults to true
-         * 'ep_mask' => const As of 3.4 Assign an endpoint mask for this post type. For more info see Trac Ticket 19275 and this Make WordPress Plugins summary of endpoints.
-         * If not specified and permalink_epmask is set, inherits from permalink_epmask
-         * If not specified and permalink_epmask is not set, defaults to EP_PERMALINK
-         * Note: If registering a post type inside of a plugin, call flush_rewrite_rules() in your activation and deactivation hook (see Flushing Rewrite on Activation below). If flush_rewrite_rules() is not used, then you will have to manually go to Settings > Permalinks and refresh your permalink structure before your custom post type will show the correct structure.
-         **/
-        // $wp_rewrite->add_permastruct( 'mission', 'mission/%year%/%monthnum%/%mission%/', true, 1 );
-        // add_rewrite_rule( 'mission/([0-9]{4})/([0-9]{2})/(.+)/?$', 'index.php?mission=$matches[3]', 'top' );
-        // $wp_rewrite->flush_rules(); // !!!
+        $wp_rewrite->add_rewrite_tag( '%mission%', '([^\/]+)', 'index.php?mission=' );
+        // $wp_rewrite->add_rewrite_tag( '%mission%', '(\d{4}\_\d{2}\_\D+[a-zA-Z])', 'index.php?mission=' );
+        $wp_rewrite->add_permastruct( 'mission', 'mission/%year%/%monthnum%/%mission%/' );
     }
 
     public function mission_updated_messages( $messages ) {
@@ -134,79 +120,63 @@ class EinsatzverwaltungCustomPost {
         }
     }
 
-    // public function mission_permalink( $permalink, $post_id, $leavename ) {
-    //     $post = get_post( $post_id );
-    //         $rewritecode = array(
-    //             '%year%',
-    //             '%monthnum%',
-    //             '%day%',
-    //             '%hour%',
-    //             '%minute%',
-    //             '%second%',
-    //             $leavename? '' : '%postname%',
-    //             '%post_id%',
-    //             '%category%',
-    //             '%author%',
-    //             $leavename? '' : '%pagename%',
-    //         );
-    //
-    //         if ( '' != $permalink && ! in_array( $post->post_status, array( 'draft', 'pending', 'auto-draft' ) ) ) {
-    //             $unixtime = strtotime($post->post_date);
-    //
-    //             $category = '';
-    //             if ( false !== strpos( $permalink, '%category%' ) ) {
-    //                 $cats = get_the_category( $post->ID );
-    //                 if ( $cats ) {
-    //                     usort( $cats, '_usort_terms_by_ID' ); // order by ID
-    //                     $category = $cats[0]->slug;
-    //                     if ( $parent = $cats[0]->parent ) {
-    //                         $category = get_category_parents( $parent, false, '/', true ) . $category;
-    //                     }
-    //                 }
-    //                 // show default category in permalinks, without
-    //                 // having to assign it explicitly
-    //                 if ( empty( $category ) ) {
-    //                     $default_category = get_category( get_option( 'default_category' ) );
-    //                     $category = is_wp_error( $default_category ) ? '' : $default_category->slug;
-    //                 }
-    //             }
-    //
-    //             $author = '';
-    //             if ( false !== strpos( $permalink, '%author%' ) ) {
-    //                 $authordata = get_userdata( $post->post_author );
-    //                 $author = $authordata->user_nicename;
-    //             }
-    //
-    //             $date = explode( " ", date( 'Y m d H i s', $unixtime ) );
-    //             $rewritereplace =
-    //             array(
-    //                 $date[0],
-    //                 $date[1],
-    //                 $date[2],
-    //                 $date[3],
-    //                 $date[4],
-    //                 $date[5],
-    //                 $post->post_name,
-    //                 $post->ID,
-    //                 $category,
-    //                 $author,
-    //                 $post->post_name,
-    //             );
-    //             $permalink = str_replace( $rewritecode, $rewritereplace, $permalink );
-    //
-    //             // wp_die($permalink );
-    //         } else { // if they're not using the fancy permalink option
-    //         }
-    //     return $permalink;
-    // }
+    public function mission_permalink( $permalink, $post_id, $leavename ) {
+        $post = get_post( $post_id );
 
-    public function mission_sortable_columns( $columns ){
+        $rewritecode = array(
+            '%year%',
+            '%monthnum%',
+            '%postname%'
+        );
+        // echo $permalink;
+        // $regex = '/(\d{4}\_\d{2}\_\D+[a-zA-Z])/';
+        // $rewritecode = array(
+        //     '/%year%/',
+        //     '/%monthnum%/',
+        //     $regex
+        // );
+
+        if ( '' != $permalink && ! in_array( $post->post_status, array( 'draft', 'pending', 'auto-draft' ) ) ) {
+            $unixtime = strtotime($post->post_date);
+
+            $date = explode( " ", date( 'Y m d H i s', $unixtime ) );
+
+            list ($year, $month, $postname) = explode( '_' , $post->post_name );
+            $rewritereplace = array(
+                $date[0],
+                $date[1],
+                $postname,
+            );
+
+            $permalink = str_replace( $rewritecode, $rewritereplace, $permalink );
+            // $permalink = preg_replace($rewritecode, $rewritereplace, $permalink);
+
+            // wp_die($permalink);
+        } else { // if they're not using the fancy permalink option
+        }
+        return $permalink;
+    }
+
+    private function prepare_permalink ( $permalink ){
+        // detect position of basis string
+        $pos = strrpos($permalink, '/', -2);
+        $basis = substr($permalink, 0, $pos) . '/';
+
+        // detect & clear post name
+        $postname = substr($permalink, $pos+1, strlen($permalink));
+        list($year, $monath, $postname) = explode('_', $postname);
+
+        // put basis & new post name together
+        return $basis . $postname;
+    }
+
+    public function mission_sortable_columns( $columns ) {
         $columns['alarmdate'] = 'alarmdate';
 
         return $columns;
     }
 
-    public function add_scripts(){
+    public function add_scripts() {
         wp_enqueue_script( 'jquery-ui-autocomplete' );
     }
 

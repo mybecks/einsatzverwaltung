@@ -43,7 +43,6 @@ class Einsatzverwaltung {
     public function plugin_activation() {
         global $wpdb;
 
-
         flush_rewrite_rules();
         // $wpdb->show_errors();
         $table_vehicles =     $wpdb->prefix . "fahrzeuge";
