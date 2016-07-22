@@ -2,7 +2,7 @@
 
 /**
  * Widget class
- * 
+ *
  * @author Andre Becker
  **/
 
@@ -44,33 +44,23 @@ class Einsatzverwaltung_Widget extends WP_Widget {
 
 	public function widget( $args, $instance ) {
 		// outputs the content of the widget
-		
+
 		$title = apply_filters( 'widget_title', $instance['title'] );
 		// before and after widget arguments are defined by themes
 		echo $args['before_widget'];
-		if ( ! empty( $title ) )
-		echo $args['before_title'] . $title . $args['after_title'];
-		
 
+		if ( ! empty( $title ) )
+			echo $args['before_title'] . $title . ' ' . date('Y') . $args['after_title'];
 
 		global $wpdb;
 
-		// $wpdb->show_errors();
-
 		$table_missions = $wpdb->prefix . "einsaetze";
-		
+
 		$sql = "SELECT count(id) FROM ".$table_missions." WHERE YEAR(alarmierung_date) = Year(CURDATE())";
 		$count = $wpdb->get_var($sql);
 
-		// $wpdb->print_error();
-
-		// $html = "<aside id='einsatzverwaltungs_widget' class='widget'>".
-		// 			"<h3 class='widget-title'>Einsätze im laufenden Jahr</h3>".
-		// 			"<p style='margin-left:3em; font-size: 2em; font-style:bold;'>".$count."</p>".
-		// 		"</aside>";
 		$html = "<div class=\"center-mission-count\">".$count."</div>";
-		// print($html);
-		// This is where you run the code and display the output
+
 		echo $html;
 		echo $args['after_widget'];
 	}
@@ -79,7 +69,7 @@ class Einsatzverwaltung_Widget extends WP_Widget {
 
 /**
  * Initialize Widget
- * 
+ *
  * @author Andre Becker
  **/
 function einsatzverwaltung_widget_init() {

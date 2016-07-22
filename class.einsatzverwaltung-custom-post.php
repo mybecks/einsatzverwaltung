@@ -324,7 +324,8 @@ class EinsatzverwaltungCustomPost {
                     "Oberöwisheim",
                     "Weiher",
                     "Ubstadt",
-                    "Stettfeld"];
+                    "Stettfeld",
+                    "Zeitern"];
 
                 $( "#einsatzort" ).autocomplete({
                     source: availableTags
@@ -606,7 +607,6 @@ EOF;
             foreach ( $vehicles as $vehicle ) {
                $this->db_handler->insert_new_vehicle_to_mission( $mission_id, $vehicle );
             }
-
         }else {
             //new mission entry
             $wpdb->insert(
@@ -636,21 +636,22 @@ EOF;
             }
 
             add_post_meta( $post_id, MISSION_ID, $id );
-
-            $current_post = array(
-                'ID'           => $post_id,
-                'post_title' => $alarm_stichwort,
-                'post_name' => date("Y_m", strtotime($alarmierung_datum)).'_'.$alarm_stichwort,
-                'post_date' => date( $alarmierung_datum . ' ' . $alarmierung_zeit ),
-                'post_date_gmt' => date( $alarmierung_datum . ' ' . $alarmierung_zeit )
-            );
-            remove_action( 'publish_mission', array( $this, 'save_data' ) );
-
-            // Update the post into the database
-            wp_update_post( $current_post );
-
-            add_action( 'publish_mission', array( $this, 'save_data' ) );
         }
+
+        $current_post = array(
+            'ID'           => $post_id,
+            'post_title' => $alarm_stichwort,
+            'post_name' => date("Y_m", strtotime($alarmierung_datum)).'_'.$alarm_stichwort,
+            'post_date' => date( $alarmierung_datum . ' ' . $alarmierung_zeit ),
+            'post_date_gmt' => date( $alarmierung_datum . ' ' . $alarmierung_zeit )
+        );
+
+        remove_action( 'publish_mission', array( $this, 'save_data' ) );
+
+        // Update the post into the database
+        wp_update_post( $current_post );
+
+        add_action( 'publish_mission', array( $this, 'save_data' ) );
     }
 
     /**

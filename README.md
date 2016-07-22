@@ -1,10 +1,13 @@
 Einsatzplugin FF Langenbruecken
 ===============================
 
-~Current Version:0.1.0~
+~Current Version:0.1.2~
 
 
 Update all Missions prior to 2016, to be conform with new rewrite rules & displaying:
+
+##Todo
+* change post info <ul> to <dl><dt>Alarmstichwort</dt><dd>BMA</dd></dt></dl> and use <style>dt:after { content: ": "; }</style>
 
 <pre>
 UPDATE wordpress.wp_posts SET post_name = CONCAT(YEAR(post_date), '_', MONTH(post_date), '_', post_name) WHERE post_type = 'mission' AND YEAR(post_date) < 2016

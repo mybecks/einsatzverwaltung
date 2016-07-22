@@ -359,7 +359,7 @@ class Einsatzverwaltung {
         $('.post-info').prependTo('.entry-content');
         $('.open-post-info').prependTo('.entry-content');
 
-        $('.post-info').hide();
+        $('.post-info').show();
         $('.open-post-info').click(function() {
             var id = $(this).attr('id');
 
@@ -403,7 +403,7 @@ EOF;
         else {
             $alarmstichwort = $mission->alarmstichwort;
         }
-
+        
         echo '<p class="open-post-info" id="' . $post->post_name . '">Details</p>';
         echo '<div class="post-info post-info-' . $post->post_name . '">';
         echo '<ul>';
