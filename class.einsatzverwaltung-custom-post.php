@@ -553,8 +553,10 @@ EOF;
 
         if ( ( "Freitext" == $_POST['alarm_stichwort'] ) || ( "Sonstiger Brand" == $_POST['alarm_stichwort'] ) ) {
             $freitext = $_POST['alarmstichwort_freitext'];
+            $pn = $freitext;
         } else {
             $freitext = "";
+            $pn = $_POST['alarm_stichwort'];
         }
 
         $alarm = $_POST['alarm'];
@@ -639,9 +641,9 @@ EOF;
         }
 
         $current_post = array(
-            'ID'           => $post_id,
-            'post_title' => $alarm_stichwort,
-            'post_name' => date("Y_m", strtotime($alarmierung_datum)).'_'.$alarm_stichwort,
+            'ID' => $post_id,
+            'post_title' => $pn,
+            'post_name' => date("Y_m", strtotime($alarmierung_datum)).'_'.$pn,
             'post_date' => date( $alarmierung_datum . ' ' . $alarmierung_zeit ),
             'post_date_gmt' => date( $alarmierung_datum . ' ' . $alarmierung_zeit )
         );
