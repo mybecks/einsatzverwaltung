@@ -52,8 +52,13 @@ class DatabaseHandler {
     public function delete_mission_by_post_id( $post_id ) {
         $mission = $this->load_mission_by_post_id( $post_id );
 
-        $query = "DELETE FROM " . $this->table->missions . " WHERE wp_posts_ID = %d";
-        $result = $this->db->query( $this->db->prepare( $query, $post_id ) );
+        // $query = "DELETE FROM " . $this->table->missions . " WHERE wp_posts_ID = %d";
+        // $result = $this->db->query( $this->db->prepare( $query, $post_id ) );
+        $this->db->delete( 
+            $this->table->missions, 
+            array( 'wp_posts_ID' => $post_id ), 
+            array( '%d' ) 
+        );
 
         $this->remove_vehicles_from_mission( $mission->id );
     }
@@ -73,7 +78,7 @@ class DatabaseHandler {
      *
      * @return array()
      * @author Andre Becker
-     * */
+     */
     public function get_mission_years() {
         $array = array();
 
@@ -101,8 +106,8 @@ class DatabaseHandler {
      */
     public function get_mission_details_by_post_id( $post_id ) {
         $query = "SELECT id, art_alarmierung, alarmstichwort, freitext, alarm_art, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media FROM "
-                 . $this->table->missions . " WHERE wp_posts_ID = " . $post_id;
-        $mission = $this->db->get_results( $query );
+                 . $this->table->missions . " WHERE wp_posts_ID = %d";
+        $mission = $this->db->get_results( $this->db->prepare( $query, $post_id ) );
 
         return $mission;
     }
@@ -113,10 +118,10 @@ class DatabaseHandler {
      * @param int id
      * @return array()
      * @author Andre Becker
-     * */
+     */
     public function load_mission_by_id( $id ) {
-        $query = "SELECT * FROM " . $this->table->missions . " WHERE id = " . $id;
-        $mission_details = $this->db->get_row( $query );
+        $query = "SELECT * FROM " . $this->table->missions . " WHERE id = %d";
+        $mission_details = $this->db->get_row( $this->db->prepare( $query, $id ) );
 
         return $mission_details;
     }
@@ -127,12 +132,12 @@ class DatabaseHandler {
      * @param int mission id
      * @return array()
      * @author Andre Becker
-     * */
+     */
     public function load_vehicles_by_mission_id( $mission_id ) {
         $query = "SELECT f.description FROM " . $this->table->vehicles .
-                 " as f, " . $this->table->mission_has_vehicles . " as h WHERE f.id = h.fahrzeuge_id AND h.einsaetze_id = " . $mission_id;
+                 " as f, " . $this->table->mission_has_vehicles . " as h WHERE f.id = h.fahrzeuge_id AND h.einsaetze_id = %d";
 
-        $vehicles = $this->db->get_results( $query );
+        $vehicles = $this->db->get_results( $this->db->prepare( $query, $mission_id ) );
 
         return $vehicles;
     }
@@ -143,10 +148,10 @@ class DatabaseHandler {
      * @param post    id
      * @return mission
      * @author Andre Becker
-     * */
+     */
     public function load_mission_by_post_id( $id ) {
-        $query = "SELECT * FROM " . $this->table->missions . " WHERE wp_posts_ID = " . $id;
-        $mission_details = $this->db->get_row( $query );
+        $query = "SELECT * FROM " . $this->table->missions . " WHERE wp_posts_ID = %d";
+        $mission_details = $this->db->get_row( $this->db->prepare( $query, $id ) );
 
         return $mission_details;
     }
@@ -156,16 +161,16 @@ class DatabaseHandler {
      *
      * @return array()
      * @author Andre Becker
-     * */
+     */
     public function get_missions_by_year( $year ) {
         $arr_months = array();
 
         $query = "SELECT id, art_alarmierung, alarmstichwort, alarm_art, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media, wp_posts_ID, MONTH(alarmierung_date) AS Month, freitext " .
             "FROM " . $this->table->missions .
-            " WHERE YEAR(alarmierung_date) = " . $year .
+            " WHERE YEAR(alarmierung_date) = %d" .
             " ORDER BY alarmierung_date DESC, alarmierung_time DESC";
 
-        $missions = $this->db->get_results( $query );
+        $missions = $this->db->get_results( $this->db->prepare( $query, $year ) );
 
         foreach ( $missions as $mission ) {
 
@@ -231,13 +236,13 @@ class DatabaseHandler {
      * Vehicle Related Requests
      *
      **/
-
+    
     /**
      * Load all vehicles
      *
      * @return array()
      * @author Andre Becker
-     * */
+     */
     public function load_vehicles() {
         $query = "SELECT id, description FROM " . $this->table->vehicles;
         $vehicles = $this->db->get_results( $query );
@@ -247,19 +252,24 @@ class DatabaseHandler {
 
     /**
      * Remove vehicle from mission
-     * @param  int $mission_id [description]
+     * @param  int $mission_id
      * @author Andre Becker
      */
     public function remove_vehicles_from_mission( $mission_id ) {
-        $query = "DELETE FROM " . $this->table->missions_has_vehicles . " WHERE einsaetze_id = %d";
-        $delete = $this->db->query( $this->db->prepare( $query, $mission_id ) );
+        // $query = "DELETE FROM " . $this->table->missions_has_vehicles . " WHERE einsaetze_id = %d";
+        // $delete = $this->db->query( $this->db->prepare( $query, $mission_id ) );
+        $this->db->delete( 
+            $this->table->missions_has_vehicles, 
+            array( 'einsaetze_id' => $mission_id ), 
+            array( '%d' ) 
+        );
     }
 
     /**
      * Insert new vehicles to mission
      *
-     * @param int $mission_id [description]
-     * @param int $vehicle_id [description]
+     * @param int $mission_id
+     * @param int $vehicle_id
      * @author Andre Becker
      */
     public function insert_new_vehicle_to_mission( $mission_id, $vehicle_id ) {
