@@ -1,18 +1,7 @@
-Einsatzplugin FF Langenbruecken
-===============================
+Wordpress Einsatz Plugin der FF Bad Schönborn
+=============================================
 
-~Current Version:0.1.2~
-
-
-Update all Missions prior to 2016, to be conform with new rewrite rules & displaying:
-
-##Todo
-* change post info <ul> to <dl><dt>Alarmstichwort</dt><dd>BMA</dd></dt></dl> and use <style>dt:after { content: ": "; }</style>
-
-<pre>
-UPDATE wordpress.wp_posts SET post_name = CONCAT(YEAR(post_date), '_', MONTH(post_date), '_', post_name) WHERE post_type = 'mission' AND YEAR(post_date) < 2016
-</pre>
-
+# Misc
 http://wordpress.org/extend/plugins/rewrite-rules-inspector/
 Goal rewrite /mission/2015/12/2015_12_brandmeldealarm to /mission/2015/12/brandmeldealarm(-1)
 

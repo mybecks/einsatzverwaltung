@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Einsatzverwaltung MC 2.0
-Plugin URI: http://la.ffbs.de
-Description: Einsatzverwaltung der FF Langenbruecken
+Plugin URI: http://ffbs.de
+Description: Einsatzverwaltung der FF Bad Schönborn
 Version: 0.0.95
 Author: Andre Becker
-Author URI: la.ffbs.de
+Author URI: ffbs.de
 License: GPL2
 GitHub Plugin URI: https://github.com/mybecks/einsatzverwaltung
 GitHub Branch:     master

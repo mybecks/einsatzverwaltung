@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Main Class
+ * 
+ * @author Andre Becker
+ */
 class Einsatzverwaltung {
     protected $pluginPath;
 

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Custom Post Type for Einsatzverwaltung
  *
