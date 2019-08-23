@@ -47,6 +47,8 @@ class Einsatzverwaltung {
     public function plugin_activation() {
         global $wpdb;
 
+        // https://codex.wordpress.org/Creating_Tables_with_Plugins#Adding_an_Upgrade_Function
+
         flush_rewrite_rules();
         // $wpdb->show_errors();
         $table_vehicles =     $wpdb->prefix . "fahrzeuge";
@@ -66,6 +68,8 @@ class Einsatzverwaltung {
         (
             id                  INT UNSIGNED NOT NULL AUTO_INCREMENT,
             description         VARCHAR(25) NOT NULL,
+            radio_call_name     VARCHAR(3) NOT NULL,
+            location            VARCHAR(14) NOT NULL,
             PRIMARY KEY  (id)
         )
         CHARACTER SET utf8

@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Einsatzverwaltung MC 2.0
+Plugin Name: FFBS Einsatzverwaltung
 Plugin URI: http://ffbs.de
 Description: Einsatzverwaltung der FF Bad Schönborn
 Version: 0.0.95
@@ -20,8 +20,8 @@ require_once( MISSIONS_PLUGIN_DIR . 'class.einsatzverwaltung-custom-post.php' );
 require_once( MISSIONS_PLUGIN_DIR . 'class.einsatzverwaltung-widget.php'          );
 require_once( MISSIONS_PLUGIN_DIR . 'einsatzverwaltung-constants.php'          );
 
-register_activation_hook( __FILE__, array( 'Einsatzverwaltung', 'plugin_activation' ) );
-register_deactivation_hook( __FILE__, array( 'Einsatzverwaltung', 'plugin_deactivation' ) );
+register_activation_hook( __FILE__, array( 'FFBS Einsatzverwaltung', 'plugin_activation' ) );
+register_deactivation_hook( __FILE__, array( 'FFBS Einsatzverwaltung', 'plugin_deactivation' ) );
 
 $wpEinsatzverwaltung = new Einsatzverwaltung();
 

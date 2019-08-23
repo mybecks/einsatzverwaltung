@@ -183,6 +183,8 @@ class EinsatzverwaltungAdmin {
 			<tr>
 				<th>ID</th>
 				<th>Beschreibung</th>
+				<th>Funkruf Name</th>
+				<th>Standort</th>
 				<th>Edit</th>
 				<th>Delete</th>
 			</tr>
@@ -196,6 +198,12 @@ class EinsatzverwaltungAdmin {
 			echo '		</td>';
 			echo '		<td>';
 			echo            $vehicle->description;
+			echo '		</td>';
+			echo '		<td>';
+			echo            $vehicle->radio_call_name;
+			echo '		</td>';
+			echo '		<td>';
+			echo            $vehicle->location;
 			echo '		</td>';
 			echo '		<td>';
 			echo '			<img class="tab-images" src='.plugin_dir_url( __FILE__ ).'img/admin_edit.png />';
