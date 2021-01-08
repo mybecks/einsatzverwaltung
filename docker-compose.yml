@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.9'
 
 services:
   db:
@@ -25,6 +25,6 @@ services:
       WORDPRESS_DB_PASSWORD: wordpress
       WORDPRESS_DB_NAME: wordpress
     volumes:
-      - ./ffbs-einsatzverwaltung:/var/www/html/wp-content/plugins
+      - ./ffbs-einsatzverwaltung/:/var/www/html/wp-content/plugins/ffbs-einsatzverwaltung
 volumes:
-  db_data: {}
+  db_data:
