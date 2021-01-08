@@ -44,97 +44,6 @@ class Einsatzverwaltung {
         load_plugin_textdomain( 'einsatzverwaltung_textdomain', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
     }
 
-    public function plugin_activation() {
-        global $wpdb;
-
-        // https://codex.wordpress.org/Creating_Tables_with_Plugins#Adding_an_Upgrade_Function
-
-        flush_rewrite_rules();
-        // $wpdb->show_errors();
-        $table_vehicles =     $wpdb->prefix . "fahrzeuge";
-        $table_missions =     $wpdb->prefix . "einsaetze";
-        $table_missions_has_vehicles = $wpdb->prefix . "einsaetze_has_fahrzeuge";
-        $table_wp_posts =    $wpdb->prefix . "posts";
-
-        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-
-        /*
-        * SQL Create Tables
-        *
-        * No Foreign Keys: http://wordpress.stackexchange.com/questions/52783/dbdelta-support-for-foreign-key
-        */
-
-        $sql_vehicles = "CREATE TABLE IF NOT EXISTS ".$table_vehicles."
-        (
-            id                  INT UNSIGNED NOT NULL AUTO_INCREMENT,
-            description         VARCHAR(25) NOT NULL,
-            radio_call_name     VARCHAR(3) NOT NULL,
-            location            VARCHAR(14) NOT NULL,
-            PRIMARY KEY  (id)
-        )
-        CHARACTER SET utf8
-        COLLATE utf8_general_ci;
-        ";
-        dbDelta( $sql_vehicles );
-
-        $sql_missions = "CREATE TABLE IF NOT EXISTS $table_missions
-        (
-            id                  INT UNSIGNED NOT NULL AUTO_INCREMENT ,
-            art_alarmierung     VARCHAR(25) NOT NULL ,
-            alarmstichwort      VARCHAR(125) NOT NULL ,
-            freitext            VARCHAR(125) NULL ,
-            alarm_art           VARCHAR(45) NOT NULL ,
-            einsatzort          VARCHAR(45) NOT NULL ,
-            alarmierung_date    DATE NOT NULL ,
-            alarmierung_time    TIME NOT NULL ,
-            rueckkehr_date      DATE NULL ,
-            rueckkehr_time      VARCHAR(45) NULL ,
-            link_to_media       VARCHAR(255) NULL ,
-            wp_posts_ID         INT UNSIGNED NOT NULL ,
-            PRIMARY KEY  (id)
-        )
-        CHARACTER SET utf8
-        COLLATE utf8_general_ci;
-        ";
-        // KEY fk_einsaetze_wp_posts1 (wp_posts_ID ASC),
-        // CONSTRAINT fk_einsaetze_wp_posts1
-        //     FOREIGN KEY (wp_posts_ID)
-        //     REFERENCES  $table_wp_posts (ID)
-        //     ON DELETE NO ACTION
-        //     ON UPDATE NO ACTION
-
-        dbDelta( $sql_missions );
-
-        $sql_missions_has_vehicles = "CREATE TABLE IF NOT EXISTS $table_missions_has_vehicles
-        (
-            einsaetze_id        INT NOT NULL ,
-            fahrzeuge_id        INT NOT NULL ,
-            PRIMARY KEY  (einsaetze_id, fahrzeuge_id)
-        )
-        CHARACTER SET utf8
-        COLLATE utf8_general_ci;
-        ";
-        // KEY fk_einsaetze_has_fahrzeuge_fahrzeuge1 (fahrzeuge_id ASC) ,
-        // KEY fk_einsaetze_has_fahrzeuge_einsaetze (einsaetze_id ASC) ,
-        //    CONSTRAINT fk_einsaetze_has_fahrzeuge_einsaetze
-        //      FOREIGN KEY  (einsaetze_id)
-        //      REFERENCES $table_missions (id)
-        //      ON DELETE NO ACTION
-        //      ON UPDATE NO ACTION,
-        //    CONSTRAINT fk_einsaetze_has_fahrzeuge_fahrzeuge1
-        //      FOREIGN KEY  (fahrzeuge_id)
-        //      REFERENCES $table_vehicles (id)
-        //      ON DELETE NO ACTION
-        //      ON UPDATE NO ACTION
-        dbDelta( $sql_missions_has_vehicles );
-
-        // $wpdb->print_error();
-    }
-
-    public function plugin_deactivation() {
-        flush_rewrite_rules();
-    }
-
     public function display_missions() {
 
         $permalink = get_permalink();
@@ -445,4 +354,96 @@ EOF;
         echo '</div>';
     }
 }
+
+function plugin_activation() {
+    global $wpdb;
+    // https://codex.wordpress.org/Creating_Tables_with_Plugins#Adding_an_Upgrade_Function
+
+    flush_rewrite_rules();
+
+    // $wpdb->show_errors();
+    $table_vehicles =     $wpdb->prefix . "fahrzeuge";
+    $table_missions =     $wpdb->prefix . "einsaetze";
+    $table_missions_has_vehicles = $wpdb->prefix . "einsaetze_has_fahrzeuge";
+    $table_wp_posts =    $wpdb->prefix . "posts";
+
+    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+    /*
+    * SQL Create Tables
+    *
+    * No Foreign Keys: http://wordpress.stackexchange.com/questions/52783/dbdelta-support-for-foreign-key
+    */
+
+    $sql_vehicles = "CREATE TABLE IF NOT EXISTS ".$table_vehicles."
+    (
+        id                  INT UNSIGNED NOT NULL AUTO_INCREMENT,
+        description         VARCHAR(25) NOT NULL,
+        radio_id            VARCHAR(10) NOT NULL,
+        location            VARCHAR(14) NOT NULL,
+        PRIMARY KEY  (id)
+    )
+    CHARACTER SET utf8
+    COLLATE utf8_general_ci;
+    ";
+    dbDelta( $sql_vehicles );
+
+    $sql_missions = "CREATE TABLE IF NOT EXISTS $table_missions
+    (
+        id                  INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+        art_alarmierung     VARCHAR(25) NOT NULL ,
+        alarmstichwort      VARCHAR(125) NOT NULL ,
+        freitext            VARCHAR(125) NULL ,
+        alarm_art           VARCHAR(45) NOT NULL ,
+        einsatzort          VARCHAR(45) NOT NULL ,
+        alarmierung_date    DATE NOT NULL ,
+        alarmierung_time    TIME NOT NULL ,
+        rueckkehr_date      DATE NULL ,
+        rueckkehr_time      VARCHAR(45) NULL ,
+        link_to_media       VARCHAR(255) NULL ,
+        wp_posts_ID         INT UNSIGNED NOT NULL ,
+        PRIMARY KEY  (id)
+    )
+    CHARACTER SET utf8
+    COLLATE utf8_general_ci;
+    ";
+    // KEY fk_einsaetze_wp_posts1 (wp_posts_ID ASC),
+    // CONSTRAINT fk_einsaetze_wp_posts1
+    //     FOREIGN KEY (wp_posts_ID)
+    //     REFERENCES  $table_wp_posts (ID)
+    //     ON DELETE NO ACTION
+    //     ON UPDATE NO ACTION
+
+    dbDelta( $sql_missions );
+
+    $sql_missions_has_vehicles = "CREATE TABLE IF NOT EXISTS $table_missions_has_vehicles
+    (
+        einsaetze_id        INT NOT NULL ,
+        fahrzeuge_id        INT NOT NULL ,
+        PRIMARY KEY  (einsaetze_id, fahrzeuge_id)
+    )
+    CHARACTER SET utf8
+    COLLATE utf8_general_ci;
+    ";
+    // KEY fk_einsaetze_has_fahrzeuge_fahrzeuge1 (fahrzeuge_id ASC) ,
+    // KEY fk_einsaetze_has_fahrzeuge_einsaetze (einsaetze_id ASC) ,
+    //    CONSTRAINT fk_einsaetze_has_fahrzeuge_einsaetze
+    //      FOREIGN KEY  (einsaetze_id)
+    //      REFERENCES $table_missions (id)
+    //      ON DELETE NO ACTION
+    //      ON UPDATE NO ACTION,
+    //    CONSTRAINT fk_einsaetze_has_fahrzeuge_fahrzeuge1
+    //      FOREIGN KEY  (fahrzeuge_id)
+    //      REFERENCES $table_vehicles (id)
+    //      ON DELETE NO ACTION
+    //      ON UPDATE NO ACTION
+    dbDelta( $sql_missions_has_vehicles );
+
+    // $wpdb->print_error();
+}
+
+function plugin_deactivation() {
+    flush_rewrite_rules();
+}
+
 ?>

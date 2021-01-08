@@ -54,10 +54,10 @@ class DatabaseHandler {
 
         // $query = "DELETE FROM " . $this->table->missions . " WHERE wp_posts_ID = %d";
         // $result = $this->db->query( $this->db->prepare( $query, $post_id ) );
-        $this->db->delete( 
-            $this->table->missions, 
-            array( 'wp_posts_ID' => $post_id ), 
-            array( '%d' ) 
+        $this->db->delete(
+            $this->table->missions,
+            array( 'wp_posts_ID' => $post_id ),
+            array( '%d' )
         );
 
         $this->remove_vehicles_from_mission( $mission->id );
@@ -236,7 +236,7 @@ class DatabaseHandler {
      * Vehicle Related Requests
      *
      **/
-    
+
     /**
      * Load all vehicles
      *
@@ -244,7 +244,7 @@ class DatabaseHandler {
      * @author Andre Becker
      */
     public function load_vehicles() {
-        $query = "SELECT id, description FROM " . $this->table->vehicles;
+        $query = "SELECT id, description, radio_id, location FROM " . $this->table->vehicles;
         $vehicles = $this->db->get_results( $query );
 
         return $vehicles;
@@ -258,10 +258,10 @@ class DatabaseHandler {
     public function remove_vehicles_from_mission( $mission_id ) {
         // $query = "DELETE FROM " . $this->table->missions_has_vehicles . " WHERE einsaetze_id = %d";
         // $delete = $this->db->query( $this->db->prepare( $query, $mission_id ) );
-        $this->db->delete( 
-            $this->table->missions_has_vehicles, 
-            array( 'einsaetze_id' => $mission_id ), 
-            array( '%d' ) 
+        $this->db->delete(
+            $this->table->missions_has_vehicles,
+            array( 'einsaetze_id' => $mission_id ),
+            array( '%d' )
         );
     }
 
@@ -292,15 +292,19 @@ class DatabaseHandler {
      * @param  string $description
      * @author Andre Becker
      */
-    public function admin_insert_vehicle( $description ) {
+    public function admin_insert_vehicle( $vehicle ) {
         $this->table->vehicles = $this->db->prefix . "fahrzeuge";
-
+        wp_die($vehicle);
         $this->db->insert(
             $this->table->vehicles,
             array(
-                'description' => $description
+                'description' => $vehicle['description'],
+                'radio_id' => $vehicle['radio_id'],
+                'location' => $vehicle['location']
             ),
             array(
+                '%s',
+                '%s',
                 '%s'
             )
         );

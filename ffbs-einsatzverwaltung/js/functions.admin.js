@@ -1,7 +1,7 @@
 var $ = jQuery;
 
-var deleteVehicleHandler = function(){
-    $('.tab-images').click(function() {
+var deleteVehicleHandler = function () {
+    $('.tab-images').click(function () {
         alert('Handler for .click() called.');
     });
 };
@@ -17,12 +17,12 @@ var previewfile = function (file) {
         };
         reader.readAsDataURL(file);
     } else {
-        holder.innerHTML += '<p>Uploaded ' + file.name + ' ' + (file.size ? (file.size/1024|0) + 'K' : '');
+        holder.innerHTML += '<p>Uploaded ' + file.name + ' ' + (file.size ? (file.size / 1024 | 0) + 'K' : '');
         console.log(file);
     }
 };
 
-var readfiles = function(files) {
+var readfiles = function (files) {
     // debugger;
     var formData = tests.formdata ? new FormData() : null;
     for (var i = 0; i < files.length; i++) {
@@ -34,23 +34,23 @@ var readfiles = function(files) {
     if (tests.formdata) {
         var xhr = new XMLHttpRequest();
         xhr.open('POST', '/inc/upload.inc.php');
-        xhr.onload = function() {
-        progress.value = progress.innerHTML = 100;
-    };
-
-    if (tests.progress) {
-        xhr.upload.onprogress = function (event) {
-            if (event.lengthComputable) {
-                var complete = (event.loaded / event.total * 100 | 0);
-                progress.value = progress.innerHTML = complete;
-            }
+        xhr.onload = function () {
+            progress.value = progress.innerHTML = 100;
         };
-    }
-    xhr.send(formData);
+
+        if (tests.progress) {
+            xhr.upload.onprogress = function (event) {
+                if (event.lengthComputable) {
+                    var complete = (event.loaded / event.total * 100 | 0);
+                    progress.value = progress.innerHTML = complete;
+                }
+            };
+        }
+        xhr.send(formData);
     }
 };
 
-var ddFileUpload = function(){
+var ddFileUpload = function () {
     var holder = $('.holder');
 
     var tests = {
@@ -102,36 +102,39 @@ var ddFileUpload = function(){
     }
 };
 
-var addVehicle = function(){
+var addVehicle = function () {
 
-    $('.add-vehicle').click(function(){
+    $('.add-vehicle').click(function () {
         var data = {
             action: 'add_vehicle',
             nonce: ajax_var.nonce,
-            vehicle: $('#new_vehicle').val()
+            vehicle: {
+                'description': $('#vehicle_name').val(),
+                'radio_id': $('#vehicle_radio_id').val(),
+                'location': $('#vehicle_location').val(),
+            }
         };
 
-        $.post(
-            ajaxurl,
-            data,
-            function( vehicle ) { //on success
-                // alert('Server response from the AJAX URL ' + vehicle);
+        $.post(ajaxurl, data, function (response) { //on success
+            // alert('Server response from the AJAX URL ' + vehicle);
 
-                $('#message').show();
+            $('#message').show();
 
-                $('.tab-vehicle').append('<tr>'+
-                                            '<td>'+vehicle.id+'</td>'+
-                                            '<td>'+vehicle.description+'</td>'+
-                                            '<td><img class="tab-images" src="../wp-content/plugins/einsatzverwaltung/img/admin_edit.png" /></td>'+
-                                            '<td><img class="tab-images" src="../wp-content/plugins/einsatzverwaltung/img/admin_delete.png" /></td>'+
-                                          '</tr>');
-                $('#message').fadeOut( 2000 );
+            $('.tab-vehicle').append('<tr>' +
+                '<td>' + response.id + '</td>' +
+                '<td>' + response.description + '</td>' +
+                '<td>' + response.radio_id + '</td>' +
+                '<td>' + response.location + '</td>' +
+                '<td><i class="fas fa-edit"></i></td>' +
+                '<td><i class="fas fa-trash-alt"></i>' +
+                '</tr>');
+            $('#message').fadeOut(2000);
         });
 
         return false;
     });
 };
-jQuery(document).ready(function($){
+jQuery(document).ready(function ($) {
     deleteVehicleHandler();
     addVehicle();
 });

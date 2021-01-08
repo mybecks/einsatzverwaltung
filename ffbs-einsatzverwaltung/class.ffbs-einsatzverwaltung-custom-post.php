@@ -49,7 +49,7 @@ class EinsatzverwaltungCustomPost {
             'rewrite'       => array('slug' => 'mission', 'with_front' => false),
             'menu_icon'     => plugin_dir_url( __FILE__ ).'img/blaulicht_state_hover.png',
             'register_meta_box_cb' => array( $this, 'add_custom_box' ),
-            'show_in_rest' => true
+            'show_in_rest' => false // Gutenberg support
         );
         register_post_type( 'mission', $args );
 

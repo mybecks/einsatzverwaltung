@@ -24,9 +24,11 @@ class EinsatzverwaltungAdmin {
 	public function add_admin_styles() {
 		wp_register_style( 'admin_styles', plugins_url( 'css/admin.css', __FILE__ ) );
         wp_register_style( 'admin_bootstrap', plugins_url( 'css/bootstrap.css', __FILE__ ) );
+        wp_register_style( 'admin_fa', plugins_url( 'css/all.css', __FILE__ ) );
 
         wp_enqueue_style( 'admin_styles' );
         wp_enqueue_style( 'admin_bootstrap' );
+        wp_enqueue_style( 'admin_fa' );
 	}
 
     public function add_admin_scripts( ) {
@@ -67,7 +69,7 @@ class EinsatzverwaltungAdmin {
 	public function howto() {
 	?>
 		<div class="wrap">
-            <?php screen_icon( 'edit-pages' ); ?><h2>HowTo</h2>
+            <h2>HowTo</h2>
             <div class="row">
             </div>
 		</div>
@@ -80,7 +82,7 @@ class EinsatzverwaltungAdmin {
 		$bitly_api_key = get_option( "einsatzverwaltung_settings_option_bitly_api_key" );
 		?>
 		<div class="wrap">
-		    <?php screen_icon( 'options-general' ); ?> <h2>Einstellungen</h2>
+		    <h2>Einstellungen</h2>
 		    <form method="POST" action="">
 		    	<table class="form-table">
 		    		<!-- <tbody>
@@ -159,16 +161,25 @@ class EinsatzverwaltungAdmin {
 	public function handle_vehicles() {
 		?>
 		<div class="wrap">
-			<?php screen_icon( 'edit-pages' ); ?> <h2>Fahrzeugverwaltung</h2>
+			<h2>Fahrzeugverwaltung</h2>
 			<div id="message" class="updated">Added new vehicle</div>
 
 			<?php $this->display_vehicles(); ?>
 
 			<form method="POST" action="">
+
 				<label for="new_vehicle">
-				<?php _e( "Neues Fahrzeug hinzuf&uuml;gen", 'einsatzverwaltung_textdomain' ); ?>
-				<label>
-				<input id="new_vehicle" name="add_new_vehicle" />
+				    <?php _e( "Neues Fahrzeug hinzuf&uuml;gen", 'einsatzverwaltung_textdomain' ); ?>
+                </label>
+                <input id="new_vehicle" name="add_new_vehicle" />
+
+
+                <label for="vehicle_radio_id">Funkruf Name</label>
+				<input id="vehicle_radio_id" name="vehicle_radio_id" />
+
+                <label for="vehicle_location">Abteilung</label>
+				<input id="vehicle_location" name="vehicle_location" />
+
 				<input type="submit" value="add" class="add-vehicle button-primary">
 			</form>
 		</div>
@@ -184,7 +195,7 @@ class EinsatzverwaltungAdmin {
 				<th>ID</th>
 				<th>Beschreibung</th>
 				<th>Funkruf Name</th>
-				<th>Standort</th>
+				<th>Abteilung</th>
 				<th>Edit</th>
 				<th>Delete</th>
 			</tr>
@@ -200,16 +211,16 @@ class EinsatzverwaltungAdmin {
 			echo            $vehicle->description;
 			echo '		</td>';
 			echo '		<td>';
-			echo            $vehicle->radio_call_name;
+			echo            $vehicle->radio_id;
 			echo '		</td>';
 			echo '		<td>';
 			echo            $vehicle->location;
 			echo '		</td>';
 			echo '		<td>';
-			echo '			<img class="tab-images" src='.plugin_dir_url( __FILE__ ).'img/admin_edit.png />';
+			echo '			<i class="fas fa-edit"></i>';
 			echo '		</td>';
 			echo '		<td>';
-			echo '			<img class="tab-images" src='.plugin_dir_url( __FILE__ ).'img/admin_delete.png />';
+			echo '			<i class="fas fa-trash-alt"></i>';
 			echo '		</td>';
 			echo '	</tr>';
 		}
@@ -238,14 +249,14 @@ class EinsatzverwaltungAdmin {
 		header( "Content-Type: application/json" );
 		echo $response;
 
-		die();
+		wp_die();
 	}
 
 	public function import_missions() {
 	   //http://html5demos.com/dnd-upload#view-source
     	?>
     	<div class="wrap">
-    	    <?php screen_icon( 'edit-pages' ); ?> <h2>Mass Importer ALPHA</h2>
+    	    <h2>Mass Importer ALPHA</h2>
     	    <style>
 
     		</style>
