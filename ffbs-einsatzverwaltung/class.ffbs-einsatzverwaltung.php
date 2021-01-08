@@ -1,7 +1,7 @@
 <?php
 /**
  * Main Class
- * 
+ *
  * @author Andre Becker
  */
 class Einsatzverwaltung {
@@ -411,7 +411,7 @@ EOF;
         else {
             $alarmstichwort = $mission->alarmstichwort;
         }
-        
+
         echo '<p class="open-post-info" id="' . $post->post_name . '">Details</p>';
         echo '<div class="post-info post-info-' . $post->post_name . '">';
         echo '<ul>';
