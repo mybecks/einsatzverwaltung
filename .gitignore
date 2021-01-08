@@ -4,3 +4,6 @@
 .bak
 node_modules
 /nbproject/private/
+
+akismet
+hello.php
