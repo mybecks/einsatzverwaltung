@@ -15,11 +15,11 @@ foreach( $custom_posts as $post ) {
 }
 
 //Second remove plugin specific tables
-$sql_missions_has_vehicles = "DELETE TABLE $table_missions_has_vehicles";
+$sql_missions_has_vehicles = "DROP TABLE $table_missions_has_vehicles";
 dbDelta( $sql_missions_has_vehicles );
 
-$sql_vehicles = "DELETE TABLE $table_vehicles";
+$sql_vehicles = "DROP TABLE $table_vehicles";
 dbDelta( $sql_vehicles );
 
-$sql_missions = "DELETE TABLE $table_missions";
+$sql_missions = "DROP TABLE $table_missions";
 dbDelta( $sql_missions );
