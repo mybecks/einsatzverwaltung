@@ -40,21 +40,16 @@ class EinsatzverwaltungAdmin {
 
 		add_menu_page( 'Einsatzverwaltung', 'Mission Control', 'read', 'einsatzverwaltung-admin', array($this, 'howto'), plugin_dir_url( __FILE__ ).'img/blaulicht_state_hover.png' );
 
-		add_submenu_page( 'einsatzverwaltung-admin', 'How-To', 'How-To', 'read', 'einsatzverwaltung-admin', array($this, 'howto') );
+		// add_submenu_page( 'einsatzverwaltung-admin', 'How-To', 'How-To', 'read', 'einsatzverwaltung-admin', array($this, 'howto') );
 
 		if ( current_user_can( 'edit_pages' ) ) {
 			add_submenu_page( 'einsatzverwaltung-admin', 'Vehicles', 'Fahrzeuge', 'edit_pages', 'einsatzverwaltung-admin-vehicles', array($this, 'handle_vehicles') );
 		}
 
-		if ( current_user_can( 'manage_options' ) ) {
-			//wp_die('You do not have sufficient permissions to access this page.');
-			add_submenu_page( 'einsatzverwaltung-admin', 'Mission Importer', 'Einsatz Import', 'manage_options', 'einsatzverwaltung-admin-import-missions', array($this, 'import_missions') );
-		}
-
-		if ( current_user_can( 'manage_options' ) ) {
-			//wp_die('You do not have sufficient permissions to access this page.');
-			add_submenu_page( 'einsatzverwaltung-admin', 'Settings', 'Einstellungen', 'manage_options', 'einsatzverwaltung-admin-handle-options', array($this, 'handle_options') );
-		}
+		// if ( current_user_can( 'manage_options' ) ) {
+		// 	//wp_die('You do not have sufficient permissions to access this page.');
+		// 	add_submenu_page( 'einsatzverwaltung-admin', 'Mission Importer', 'Einsatz Import', 'manage_options', 'einsatzverwaltung-admin-import-missions', array($this, 'import_missions') );
+		// }
 	}
 
     // private function is_my_plugin_screen() {
@@ -74,88 +69,6 @@ class EinsatzverwaltungAdmin {
             </div>
 		</div>
 	<?php
-	}
-
-	public function handle_options() {
-		$category_id = get_option( "einsatzverwaltung_settings_option_category_id" );
-		$bitly_user = get_option( "einsatzverwaltung_settings_option_bitly_user" );
-		$bitly_api_key = get_option( "einsatzverwaltung_settings_option_bitly_api_key" );
-		?>
-		<div class="wrap">
-		    <h2>Einstellungen</h2>
-		    <form method="POST" action="">
-		    	<table class="form-table">
-		    		<!-- <tbody>
-		    			<tr>
-		    				<th scope="rowgroup">Mapping</th>
-		    			</tr>
-		    			<tr valign="top">
-		    				<th scope="row">
-		                    <label for="category_id">
-		                        Mapping der Kategorien:
-		                    </label>
-		                </th>
-		                <td>
-		                    <input type="text" name="category_id" size="25" value="<?php echo $category_id;?>" />
-		                </td>
-		    			</tr>
-		    		</tbody> -->
-		    		<tbody>
-		    			<tr>
-		    				<th scope="rowgroup">bit.ly Einstellungen</th>
-		    			</tr>
-		    			</tr>
-		             <tr valign="top">
-		                <th scope="row">
-		                    <label for="bitly_user">
-		                        bit.ly User:
-		                    </label>
-		                </th>
-		                <td>
-		                    <input type="text" name="bitly_user" size="25" value="<?php echo $bitly_user;?>" />
-		                </td>
-		            </tr>
-		            <tr valign="top">
-		                <th scope="row">
-		                    <label for="bitly_api_key">
-		                        bit.ly API Key:
-		                    </label>
-		                </th>
-		                <td>
-		                    <input type="text" name="bitly_api_key" size="25" value="<?php echo $bitly_api_key;?>" />
-		                </td>
-		            </tr>
-		            <tr valign="top">
-		                <td colspan="2">
-		                    <div>Get your bit.ly API here: <a href="http://bitly.com/a/your_api_key" target="_blank">http://bitly.com/a/your_api_key</a></div>
-		                </td>
-		            </tr>
-		    		</tbody>
-
-
-		        </table>
-		        <input type="hidden" name="update_settings" value="Y" />
-		        <p>
-		    		<input type="submit" value="Save settings" class="button-primary"/>
-				</p>
-			</form>
-		</div>
-
-		<?php
-
-		if ( isset( $_POST["update_settings"] ) ) {
-			$bitly_user = esc_attr( $_POST["bitly_user"] );
-			update_option( "einsatzverwaltung_settings_option_bitly_user", $bitly_user );
-
-			$bitly_api_key = esc_attr( $_POST["bitly_api_key"] );
-			update_option( "einsatzverwaltung_settings_option_bitly_api_key", $bitly_api_key );
-		?>
-		    <div id="message" class="updated">Settings saved</div>
-		<?php
-			// update_category_id_value( $category_id );
-			update_values( 'bitly_user', $bitly_user );
-			update_values( 'bitly_api_key', $bitly_api_key );
-		}
 	}
 
 	public function handle_vehicles() {
@@ -238,7 +151,6 @@ class EinsatzverwaltungAdmin {
 
 		//add new vehicle to database
 		$this->db_handler->admin_insert_vehicle( $_POST['vehicle'] );
-
 		$id = $this->db_handler->get_last_insert_id();
 		$vehicle = (object) array( 'id' => $id,
 								'description' => $_POST['vehicle'] );
