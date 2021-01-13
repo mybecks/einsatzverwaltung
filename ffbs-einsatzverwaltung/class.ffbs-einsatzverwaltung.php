@@ -443,6 +443,7 @@ function plugin_activation() {
 }
 
 function plugin_deactivation() {
+    unregister_post_type( 'mission' );
     flush_rewrite_rules();
 }
 
