@@ -2,6 +2,8 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
+ffbs_einsatzverwaltung_uninstall_plugin();
+
 function ffbs_einsatzverwaltung_uninstall_plugin () {
 
     if ( ! current_user_can( 'activate_plugins' ) ) {
