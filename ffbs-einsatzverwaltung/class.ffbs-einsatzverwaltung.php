@@ -381,6 +381,7 @@ function plugin_activation() {
         description         VARCHAR(25) NOT NULL,
         radio_id            VARCHAR(10) NOT NULL,
         location            VARCHAR(14) NOT NULL,
+        media_link          STRING,
         PRIMARY KEY  (id)
     )
     CHARACTER SET utf8
@@ -402,6 +403,7 @@ function plugin_activation() {
         rueckkehr_time      VARCHAR(45) NULL ,
         link_to_media       VARCHAR(255) NULL ,
         wp_posts_ID         INT UNSIGNED NOT NULL ,
+        article_post_id     INT UNSIGNED,
         PRIMARY KEY  (id)
     )
     CHARACTER SET utf8
