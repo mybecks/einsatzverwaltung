@@ -32,6 +32,7 @@ function delete_custom_posts () {
         wp_delete_post( $post->ID, true );
     }
 
+    unregister_post_type( 'mission' );
     wp_reset_postdata();
 }
 
@@ -42,11 +43,11 @@ function drop_tables () {
     $table_missions_has_vehicles = $wpdb->prefix . "einsaetze_has_fahrzeuge";
 
     $sql_missions_has_vehicles = "DROP TABLE $table_missions_has_vehicles";
-    dbDelta( $sql_missions_has_vehicles );
+    $wpdb->query( $sql_missions_has_vehicles );
 
     $sql_vehicles = "DROP TABLE $table_vehicles";
-    dbDelta( $sql_vehicles );
+    $wpdb->query( $sql_vehicles );
 
     $sql_missions = "DROP TABLE $table_missions";
-    dbDelta( $sql_missions );
+    $wpdb->query( $sql_missions );
 }
