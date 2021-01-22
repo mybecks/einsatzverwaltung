@@ -37,17 +37,19 @@ function delete_custom_posts () {
 }
 
 function drop_tables () {
+
     global $wpdb;
+
     $table_vehicles              = $wpdb->prefix . "fahrzeuge";
     $table_missions              = $wpdb->prefix . "einsaetze";
     $table_missions_has_vehicles = $wpdb->prefix . "einsaetze_has_fahrzeuge";
 
-    $sql_missions_has_vehicles = "DROP TABLE $table_missions_has_vehicles";
+    $sql_missions_has_vehicles = "DROP TABLE IF EXISTS $table_missions_has_vehicles";
     $wpdb->query( $sql_missions_has_vehicles );
 
-    $sql_vehicles = "DROP TABLE $table_vehicles";
+    $sql_vehicles = "DROP TABLE IF EXISTS $table_vehicles";
     $wpdb->query( $sql_vehicles );
 
-    $sql_missions = "DROP TABLE $table_missions";
+    $sql_missions = "DROP TABLE IF EXISTS $table_missions";
     $wpdb->query( $sql_missions );
 }
