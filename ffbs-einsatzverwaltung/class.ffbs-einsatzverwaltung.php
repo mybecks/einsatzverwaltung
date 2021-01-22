@@ -276,6 +276,7 @@ class Einsatzverwaltung {
         $('.post-info').prependTo('.entry-content');
         $('.open-post-info').prependTo('.entry-content');
 
+
         $('.post-info').show();
         $('.open-post-info').click(function() {
             var id = $(this).attr('id');
@@ -286,6 +287,8 @@ class Einsatzverwaltung {
 
             return false;
         });
+
+        $('.included-article').prependTo('.entry-content');
     });
 </script>
 EOF;
@@ -298,7 +301,7 @@ EOF;
      *
      * @author Florian Wallburg
      * */
-    public function postinfo() {
+    public function postinfo () {
         global $post;
 
         $mission = $this->db_handler->load_mission_by_post_id( $post->ID );
@@ -352,6 +355,16 @@ EOF;
         echo    '</li>';
         echo '</ul>';
         echo '</div>';
+
+
+         echo "<div class='included-article'>".get_the_content(null, false, $mission->article_post_id)."</div>";
+
+        // // get content of article if linked
+        // if ( !isset( $mission->article_post_id ) ) {
+
+        // } else {
+        //     echo "<p>No Article linked</p>";
+        // }
     }
 }
 
@@ -381,7 +394,7 @@ function plugin_activation() {
         description         VARCHAR(25) NOT NULL,
         radio_id            VARCHAR(10) NOT NULL,
         location            VARCHAR(14) NOT NULL,
-        media_link          STRING,
+        media_link          VARCHAR(255),
         PRIMARY KEY  (id)
     )
     CHARACTER SET utf8

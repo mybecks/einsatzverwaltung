@@ -221,6 +221,7 @@ class EinsatzverwaltungCustomPost {
             $mission->rueckkehr_time = "";
             $mission->link_to_media = "";
             $mission->freitext = "";
+            $mission->article_post_id = "";
             $vehicles_by_mission = array();
         }
 
@@ -487,6 +488,14 @@ EOF;
         echo '  </tr>';
         echo '  <tr>';
         echo '      <td>';
+        echo '          <label for="article_post_id">Link to Article<label>';
+        echo '      </td>';
+        echo '      <td>';
+        echo '          <input name="article_post_id" value="' . $mission->article_post_id . '" size="50"/>';
+        echo '      </td>';
+        echo '  </tr>';
+        echo '  <tr>';
+        echo '      <td>';
         echo '          <label for="fahrzeuge">';
         _e( "Eingesetzte Fahrzeuge", TEXT_DOMAIN );
         echo '          <label>';
@@ -567,7 +576,7 @@ EOF;
         $rueckkehr_datum = $_POST['rueckkehr_datum'];
         $rueckkehr_zeit = $_POST['rueckkehr_zeit'];
         $link_zu_medien = $this->media_link_shortener( $_POST['link_zu_medien'] );
-
+        $article_post_id = $_POST['article_post_id'];
         $db_vehicles = $this->db_handler->load_vehicles();
         $vehicles = array();
 
@@ -593,7 +602,8 @@ EOF;
                     'rueckkehr_date' => $rueckkehr_datum,
                     'rueckkehr_time' => $rueckkehr_zeit,
                     'link_to_media' => $link_zu_medien,
-                    'freitext' => $freitext
+                    'freitext' => $freitext,
+                    'article_post_id' => $article_post_id
                 ),
                 array( 'id' => $mission_id )
             );
@@ -624,7 +634,8 @@ EOF;
                     'rueckkehr_date' => $rueckkehr_datum,
                     'rueckkehr_time' => $rueckkehr_zeit,
                     'link_to_media' => $link_zu_medien,
-                    'wp_posts_ID' => $post_id
+                    'wp_posts_ID' => $post_id,
+                    'article_post_id' => $article_post_id
                 ), array() );
 
             $id = $wpdb->insert_id;

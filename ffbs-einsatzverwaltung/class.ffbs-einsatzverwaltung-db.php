@@ -165,7 +165,7 @@ class DatabaseHandler {
     public function get_missions_by_year( $year ) {
         $arr_months = array();
 
-        $query = "SELECT id, art_alarmierung, alarmstichwort, alarm_art, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media, wp_posts_ID, MONTH(alarmierung_date) AS Month, freitext " .
+        $query = "SELECT id, art_alarmierung, alarmstichwort, alarm_art, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media, wp_posts_ID, MONTH(alarmierung_date) AS Month, freitext, article_post_id " .
             "FROM " . $this->table->missions .
             " WHERE YEAR(alarmierung_date) = %d" .
             " ORDER BY alarmierung_date DESC, alarmierung_time DESC";
@@ -185,8 +185,8 @@ class DatabaseHandler {
                     $tmp_arr = $arr_months[$key];
                     $arr_content = array();
                     $post = get_post( $mission->wp_posts_ID );
-
-                    if ( 0 != strlen( $post->post_content ) ) {
+                    var_dump($mission->article_post_id);
+                    if ( 0 != strlen( $post->post_content ) || $mission->article_post_id  ) {
                         $description = "Bericht";
                     } else {
                         $description = "Kurzinfo";
