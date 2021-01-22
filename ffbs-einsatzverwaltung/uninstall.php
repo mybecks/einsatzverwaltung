@@ -1,3 +1,5 @@
+<?php
+
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
@@ -16,10 +18,10 @@ function ffbs_einsatzverwaltung_uninstall_plugin () {
 
 
 function delete_custom_posts () {
-    <!-- register_post_type( 'mission' ); -->
+
     // fetch posts of type mission
     $args = array(
-        'post_type' => 'mission'
+        'post_type' => 'mission',
         'numberposts' => -1
     );
 
@@ -31,15 +33,6 @@ function delete_custom_posts () {
     }
 
     wp_reset_postdata();
-    <!-- $query = new WP_Query( $args );
-    while ( $query->have_posts() ) {
-        $query->the_post();
-        if ( 'mission' == get_post_type() ) {
-            $post_id = get_the_ID();
-            wp_delete_post( $post_id, true );
-        }
-    }
-    wp_reset_postdata(); -->
 }
 
 function drop_tables () {
