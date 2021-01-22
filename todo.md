@@ -6,3 +6,4 @@
     * Remove "Einsatz  Art" field
     * Remove "Alarm" field
     * "Freitext" should be permanent visible
+* [ ] move db table names to constants
