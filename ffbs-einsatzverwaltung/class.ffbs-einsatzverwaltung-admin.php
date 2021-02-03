@@ -16,7 +16,6 @@ class EinsatzverwaltungAdmin {
 
 		add_action( 'admin_print_styles', array( $this, 'add_admin_styles') );
         add_action( 'admin_enqueue_scripts', array( $this,'add_admin_scripts') );
-        add_action( 'admin_menu', array( $this, 'create_admin_menu' ) );
         add_action( 'wp_ajax_add_vehicle', array( $this, 'add_vehicle' ) );
 		add_action( 'wp_ajax_nopriv_add_vehicle', array( $this, 'add_vehicle' ) );
 	}
@@ -35,41 +34,6 @@ class EinsatzverwaltungAdmin {
         wp_enqueue_script( 'admin_scripts', plugins_url( 'js/functions.admin.js', __FILE__ ), array('jquery') );
         wp_localize_script('admin_scripts', 'ajax_var', array( 'nonce' => wp_create_nonce( 'ajax-nonce' ) ) );
     }
-
-	public function create_admin_menu() {
-
-		add_menu_page( 'Einsatzverwaltung', 'Mission Control', 'read', 'einsatzverwaltung-admin', array($this, 'howto'), plugin_dir_url( __FILE__ ).'img/blaulicht_state_hover.png' );
-
-		// add_submenu_page( 'einsatzverwaltung-admin', 'How-To', 'How-To', 'read', 'einsatzverwaltung-admin', array($this, 'howto') );
-
-		if ( current_user_can( 'edit_pages' ) ) {
-			add_submenu_page( 'einsatzverwaltung-admin', 'Vehicles', 'Fahrzeuge', 'edit_pages', 'einsatzverwaltung-admin-vehicles', array($this, 'handle_vehicles') );
-		}
-
-		// if ( current_user_can( 'manage_options' ) ) {
-		// 	//wp_die('You do not have sufficient permissions to access this page.');
-		// 	add_submenu_page( 'einsatzverwaltung-admin', 'Mission Importer', 'Einsatz Import', 'manage_options', 'einsatzverwaltung-admin-import-missions', array($this, 'import_missions') );
-		// }
-	}
-
-    // private function is_my_plugin_screen() {
-    //     $screen = get_current_screen();
-    //     if (is_object($screen) && ($screen->id == 'einsatzverwaltung-admin' || $screen->id == 'einsatzverwaltung-admin-vehicles' || $screen->id == 'einsatzverwaltung-admin-import-missions' || $screen->id == 'einsatzverwaltung-admin-handle-options')) {
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
-	public function howto() {
-	?>
-		<div class="wrap">
-            <h2>HowTo</h2>
-            <div class="row">
-            </div>
-		</div>
-	<?php
-	}
 
 	public function handle_vehicles() {
 		?>

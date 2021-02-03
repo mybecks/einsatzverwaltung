@@ -17,6 +17,7 @@ class EinsatzverwaltungCustomPost {
         add_filter( 'manage_edit-mission_columns', array( $this, 'edit_mission_column' ) );
         add_filter( 'manage_edit-mission_sortable_columns', array( $this, 'mission_sortable_columns' ) );
         add_filter( 'post_type_link', array( $this, 'mission_permalink' ), 10, 3 );
+        add_action( 'admin_menu', array( $this, 'add_sub_menu_pages' ) );
         $this->db_handler = DatabaseHandler::get_instance();
     }
 
@@ -92,8 +93,24 @@ class EinsatzverwaltungCustomPost {
         return $columns;
     }
 
+    public function add_sub_menu_pages() {
+        add_submenu_page(
+            'edit.php?post_type=mission',
+            __( 'Manage Vehicles', TEXT_DOMAIN ),
+            __( 'Manage Vehicles', TEXT_DOMAIN ),
+            'manage_options',
+            'manage-vehicles',
+            array( $this, 'vehicle_page_content' )
+        );
+        $this->wpEinsatzverwaltungAdmin = new EinsatzverwaltungAdmin();
+    }
+
+    public function vehicle_page_content() {
+        $this->wpEinsatzverwaltungAdmin->handle_vehicles();
+    }
+
     // http://justintadlock.com/archives/2011/06/27/custom-columns-for-custom-post-types
-    public function manage_mission_columns( $column, $post_id ){
+    public function manage_mission_columns( $column, $post_id ) {
         global $post;
 
         $mission = $this->db_handler->get_mission_details_by_post_id( $post->ID );
@@ -157,7 +174,7 @@ class EinsatzverwaltungCustomPost {
         return $permalink;
     }
 
-    private function prepare_permalink ( $permalink ){
+    private function prepare_permalink( $permalink ){
         // detect position of basis string
         $pos = strrpos($permalink, '/', -2);
         $basis = substr($permalink, 0, $pos) . '/';
