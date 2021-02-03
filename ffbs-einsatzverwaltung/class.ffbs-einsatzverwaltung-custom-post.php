@@ -433,11 +433,11 @@ EOF;
         echo '          <label>';
         echo '      </td>';
         echo '      <td>';
-        if (("Freitext" == $mission->alarmstichwort) || ("Sonstiger Brand" == $mission->alarmstichwort)) {
-            echo '          <input name="alarmstichwort_freitext" id="freitext" value="' . $mission->freitext . '"/>';
-        } else {
-            echo '          <input name="alarmstichwort_freitext" id="freitext"/>';
-        }
+        // if (("Freitext" == $mission->alarmstichwort) || ("Sonstiger Brand" == $mission->alarmstichwort)) {
+        echo '          <input name="alarmstichwort_freitext" id="freitext" value="' . $mission->freitext . '"/>';
+        // } else {
+        //     echo '          <input name="alarmstichwort_freitext" id="freitext"/>';
+        // }
         echo '      </td>';
         echo '  </tr>';
         // echo '  <tr>';
@@ -651,7 +651,7 @@ EOF;
             $wpdb->insert(
                 $table_missions,
                 array(
-                    'art_alarmierung' => $mission_type,
+                    // 'art_alarmierung' => $mission_type,
                     // 'alarmstichwort' => $alarm_stichwort,
                     // 'alarm_art' => $alarm,
                     'freitext' => $freitext,
