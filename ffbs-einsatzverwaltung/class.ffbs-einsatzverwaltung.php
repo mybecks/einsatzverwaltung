@@ -1,33 +1,39 @@
 <?php
+
 /**
  * Main Class
  *
  * @author Andre Becker
  */
-class Einsatzverwaltung {
+class Einsatzverwaltung
+{
     protected $pluginPath;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->plugin_path = dirname(__FILE__);
         $this->db_handler = DatabaseHandler::get_instance();
-        add_action( 'wp_enqueue_scripts', array( $this, 'add_styles' ) );
-        add_action( 'plugins_loaded', array( $this, 'plugin_textdomain') );
-        add_action( 'wp_footer', array( $this, 'postinfo_head' ) );
-        add_shortcode( 'einsatzverwaltung', array( $this, 'my_einsatzverwaltung_handler' ) );
+        add_action('wp_enqueue_scripts', array($this, 'add_styles'));
+        add_action('plugins_loaded', array($this, 'plugin_textdomain'));
+        add_action('wp_footer', array($this, 'postinfo_head'));
+        add_shortcode('einsatzverwaltung', array($this, 'my_einsatzverwaltung_handler'));
     }
 
-    public function add_styles() {
-    // Respects SSL, style.css is relative to the current file
-        wp_register_style( 'einsatzverwaltung-style', plugins_url( '/css/styles.css', __FILE__ ) );
-        wp_enqueue_style( 'einsatzverwaltung-style' );
-        wp_register_style( 'bootstrap-style', plugins_url( '/css/bootstrap.css', __FILE__ ) );
-        wp_enqueue_style( 'bootstrap-style' );
+    public function add_styles()
+    {
+        // Respects SSL, style.css is relative to the current file
+        wp_register_style('einsatzverwaltung-style', plugins_url('/css/styles.css', __FILE__));
+        wp_enqueue_style('einsatzverwaltung-style');
+        wp_register_style('bootstrap-style', plugins_url('/css/bootstrap.css', __FILE__));
+        wp_enqueue_style('bootstrap-style');
     }
 
-    public function add_scripts(){
+    public function add_scripts()
+    {
     }
 
-    public function my_einsatzverwaltung_handler( $atts, $content=null, $code="" ) {
+    public function my_einsatzverwaltung_handler($atts, $content = null, $code = "")
+    {
 
         ob_start();
 
@@ -40,11 +46,13 @@ class Einsatzverwaltung {
         return $output_string;
     }
 
-    public static function plugin_textdomain(){
-        load_plugin_textdomain( 'einsatzverwaltung_textdomain', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
+    public static function plugin_textdomain()
+    {
+        load_plugin_textdomain('einsatzverwaltung_textdomain', false, dirname(plugin_basename(__FILE__)) . '/lang/');
     }
 
-    public function display_missions() {
+    public function display_missions()
+    {
 
         $permalink = get_permalink();
         $years = $this->db_handler->get_mission_years();
@@ -55,7 +63,7 @@ class Einsatzverwaltung {
         echo            "<tr>Gewähltes Einsatzjahr:&nbsp;</tr>";
         echo            "<tr><select name=\"einsatzjahr\">";
 
-        foreach ( $years as $year ) {
+        foreach ($years as $year) {
             echo "  <option value=\"" . $year . "\">" . $year . "</option>";
         }
 
@@ -66,15 +74,14 @@ class Einsatzverwaltung {
         echo    "</form>";
         echo "</div>";
 
-        if ( !isset( $_POST['einsatzjahr'] ) ) {
-            $missions = $this->db_handler->get_missions_by_year( CURRENT_YEAR );
-        }
-        else {
-            $missions = $this->db_handler->get_missions_by_year( $_POST['einsatzjahr'] );
+        if (!isset($_POST['einsatzjahr'])) {
+            $missions = $this->db_handler->get_missions_by_year(CURRENT_YEAR);
+        } else {
+            $missions = $this->db_handler->get_missions_by_year($_POST['einsatzjahr']);
         }
 
-        $this->print_missions_month_overview( $missions );
-        $this->print_missions_by_year( $missions );
+        $this->print_missions_month_overview($missions);
+        $this->print_missions_by_year($missions);
     }
 
 
@@ -84,15 +91,16 @@ class Einsatzverwaltung {
      * @return array()
      * @author Andre Becker
      * */
-    public function print_missions_by_year( $arr_months ) {
+    public function print_missions_by_year($arr_months)
+    {
         // Paths
-        $arrow_up_path = plugin_dir_url( __FILE__ ) . 'img/mini-nav-top.gif';
+        $arrow_up_path = plugin_dir_url(__FILE__) . 'img/mini-nav-top.gif';
 
         // Ausgabe der Einsätze im aktuellen Jahr
-        foreach ( $arr_months as $key => $value ) {
+        foreach ($arr_months as $key => $value) {
 
-            $german_month = $this->get_german_month( $key );
-            $count = count( $arr_months[$key] );
+            $german_month = $this->get_german_month($key);
+            $count = count($arr_months[$key]);
 
             //redesign with bootstrap
             echo "<br /> <div>
@@ -121,7 +129,7 @@ class Einsatzverwaltung {
                 </tfoot>
                 <tbody>";
 
-            foreach ( $arr_months[$key] as $key => $value ) {
+            foreach ($arr_months[$key] as $key => $value) {
                 echo "
                     <tr class='row-mission'>
                         <td class='td-space-left'>$value[4]</td>
@@ -151,28 +159,30 @@ class Einsatzverwaltung {
      * @return array()
      * @author Florian Wallburg
      * */
-    public function get_german_month( $english_month_2number ) {
+    public function get_german_month($english_month_2number)
+    {
 
 
         // $dateFormat = new LocaleDateFormat('MMMM'); # Long Month Names
         // $date = new DateTime(); # Now
-     //    $month = $dateFormat->localeFormat(LOCALE, $date);
-     //    wp_die($month. ' # '. $english_month_2number);
+        //    $month = $dateFormat->localeFormat(LOCALE, $date);
+        //    wp_die($month. ' # '. $english_month_2number);
 
         $german_months = array(
-            1=>"Januar",
-            2=>"Februar",
-            3=>"M&auml;rz",
-            4=>"April",
-            5=>"Mai",
-            6=>"Juni",
-            7=>"Juli",
-            8=>"August",
-            9=>"September",
-            10=>"Oktober",
-            11=>"November",
-            12=>"Dezember" );
-        $english_month_2number = ltrim( $english_month_2number, "0" );
+            1 => "Januar",
+            2 => "Februar",
+            3 => "M&auml;rz",
+            4 => "April",
+            5 => "Mai",
+            6 => "Juni",
+            7 => "Juli",
+            8 => "August",
+            9 => "September",
+            10 => "Oktober",
+            11 => "November",
+            12 => "Dezember"
+        );
+        $english_month_2number = ltrim($english_month_2number, "0");
 
         return $german_months[$english_month_2number];
     }
@@ -182,17 +192,18 @@ class Einsatzverwaltung {
      *
      * @author Florian Wallburg, Andre Becker
      * */
-    public function print_missions_month_overview( $arr_months ) {
+    public function print_missions_month_overview($arr_months)
+    {
         // START Attributes
         $mission_year = CURRENT_YEAR;
 
-        if ( isset( $_POST['einsatzjahr'] ) )
+        if (isset($_POST['einsatzjahr']))
             $mission_year = $_POST['einsatzjahr'];
 
         $mission_year_count = 0;
 
-        foreach ( $arr_months as $key => $value ) {
-            foreach ( $arr_months[$key] as $key => $value ) {
+        foreach ($arr_months as $key => $value) {
+            foreach ($arr_months[$key] as $key => $value) {
                 $mission_year_count++;
             }
         }
@@ -201,7 +212,7 @@ class Einsatzverwaltung {
         echo '<a name="Übersicht"></a>
             <div>
                 <table class="mission-month-overview" summary="Übersicht über die Anzahl der Einsätze im Jahr ' . $mission_year . '">
-                <caption>Monatsübersicht für '. $mission_year .'</caption>
+                <caption>Monatsübersicht für ' . $mission_year . '</caption>
                 <thead>
                     <tr>
                         <th class="th-mission">Monat</th>
@@ -217,9 +228,9 @@ class Einsatzverwaltung {
                 </tfoot>
                 <tbody>';
 
-        foreach ( $arr_months as $key => $value ) {
+        foreach ($arr_months as $key => $value) {
             // START Amount of missions in the month
-            $count_missions_in_month = count( $arr_months[$key] );
+            $count_missions_in_month = count($arr_months[$key]);
             // END
 
             // START Ratio of false alarms and real missions
@@ -227,22 +238,20 @@ class Einsatzverwaltung {
             $count_technischereinsatz = 0;
             $count_sonstiges = 0;
 
-            foreach ( $value as $mission_key => $mission_value ) {
+            foreach ($value as $mission_key => $mission_value) {
 
 
-                if ( false !== strpos( $mission_value[0], 'BE' ) ) {
+                if (false !== strpos($mission_value[0], 'BE')) {
                     $count_brandeinsatz++;
-                }
-                elseif ( false !== strpos( $mission_value[0], 'TE' ) ) {
+                } elseif (false !== strpos($mission_value[0], 'TE')) {
                     $count_technischereinsatz++;
-                }
-                else {
+                } else {
                     $count_sonstiges++;
                 }
             }
 
             // OUTPUT
-            $german_month = $this->get_german_month( $key );
+            $german_month = $this->get_german_month($key);
             echo '
                 <tr>
                     <td>' . $german_month . '</td>
@@ -263,11 +272,12 @@ class Einsatzverwaltung {
      *
      * @author Florian Wallburg
      * */
-    public function postinfo_head() {
+    public function postinfo_head()
+    {
         global $post;
 
         //Check if mission category
-        if ( 'mission' !== $post->post_type )
+        if ('mission' !== $post->post_type)
             return;
 
         $script = <<< EOF
@@ -301,26 +311,26 @@ EOF;
      *
      * @author Florian Wallburg
      * */
-    public function postinfo () {
+    public function postinfo()
+    {
         global $post;
 
-        $mission = $this->db_handler->load_mission_by_post_id( $post->ID );
-        $vehicles = $this->db_handler->load_vehicles_by_mission_id( $mission->id );
+        $mission = $this->db_handler->load_mission_by_post_id($post->ID);
+        $vehicles = $this->db_handler->load_vehicles_by_mission_id($mission->id);
 
         $used_vehicles = "";
 
-        for ( $i = 0; $i < count( $vehicles ); $i++ ) {
-            if ( count( $vehicles ) -1 === $i ) {
+        for ($i = 0; $i < count($vehicles); $i++) {
+            if (count($vehicles) - 1 === $i) {
                 $used_vehicles .= $vehicles[$i]->description;
             } else {
                 $used_vehicles .= $vehicles[$i]->description . " &#x95 ";
             }
         }
 
-        if ( ( "Freitext" === $mission->alarmstichwort ) || ( "Sonstiger Brand" === $mission->alarmstichwort ) ) {
+        if (("Freitext" === $mission->alarmstichwort) || ("Sonstiger Brand" === $mission->alarmstichwort)) {
             $alarmstichwort = $mission->freitext;
-        }
-        else {
+        } else {
             $alarmstichwort = $mission->alarmstichwort;
         }
 
@@ -334,10 +344,10 @@ EOF;
         echo        "<b>Art der Alarmierung:</b> " . $mission->art_alarmierung;
         echo    '</li>';
         echo    '<li class="alarmierung">';
-        echo        "<b>Alarmierung:</b> " . strftime( "%d.%m.%Y", strtotime( $mission->alarmierung_date ) ) . " " . strftime( "%H:%M", strtotime( $mission->alarmierung_time ) );
+        echo        "<b>Alarmierung:</b> " . strftime("%d.%m.%Y", strtotime($mission->alarmierung_date)) . " " . strftime("%H:%M", strtotime($mission->alarmierung_time));
         echo    '</li>';
         echo    '<li class="rueckkehr">';
-        echo        "<b>R&uuml;ckkehr:</b> " . strftime( "%d.%m.%Y", strtotime( $mission->rueckkehr_date ) ) . " " . strftime( "%H:%M", strtotime( $mission->rueckkehr_time ) );
+        echo        "<b>R&uuml;ckkehr:</b> " . strftime("%d.%m.%Y", strtotime($mission->rueckkehr_date)) . " " . strftime("%H:%M", strtotime($mission->rueckkehr_time));
         echo    '</li>';
         echo    '<li class="einsatzort">';
         echo        "<b>Einsatzort:</b> " . $mission->einsatzort;
@@ -346,10 +356,9 @@ EOF;
         echo        "<b>Eingesetzte Fahrzeuge:</b> " . $used_vehicles;
         echo    '</li>';
         echo    '<li class="link">';
-        if ( empty( $mission->link_to_media ) ) {
+        if (empty($mission->link_to_media)) {
             echo "<b>Quelle:</b> Nicht verf&uuml;gbar";
-        }
-        else {
+        } else {
             echo "<b>Quelle:</b> <a href='$link' target='_blank'>" . $mission->link_to_media . "</a>";
         }
         echo    '</li>';
@@ -357,7 +366,7 @@ EOF;
         echo '</div>';
 
 
-         echo "<div class='included-article'>".get_the_content(null, false, $mission->article_post_id)."</div>";
+        echo "<div class='included-article'>" . get_the_content(null, false, $mission->article_post_id) . "</div>";
 
         // // get content of article if linked
         // if ( !isset( $mission->article_post_id ) ) {
@@ -368,7 +377,8 @@ EOF;
     }
 }
 
-function plugin_activation() {
+function plugin_activation()
+{
     global $wpdb;
     // https://codex.wordpress.org/Creating_Tables_with_Plugins#Adding_an_Upgrade_Function
 
@@ -388,7 +398,7 @@ function plugin_activation() {
     * No Foreign Keys: http://wordpress.stackexchange.com/questions/52783/dbdelta-support-for-foreign-key
     */
 
-    $sql_vehicles = "CREATE TABLE IF NOT EXISTS ".$table_vehicles."
+    $sql_vehicles = "CREATE TABLE IF NOT EXISTS " . $table_vehicles . "
     (
         id                  INT UNSIGNED NOT NULL AUTO_INCREMENT,
         description         VARCHAR(25) NOT NULL,
@@ -400,15 +410,13 @@ function plugin_activation() {
     CHARACTER SET utf8
     COLLATE utf8_general_ci;
     ";
-    dbDelta( $sql_vehicles );
+    dbDelta($sql_vehicles);
 
     $sql_missions = "CREATE TABLE IF NOT EXISTS $table_missions
     (
         id                  INT UNSIGNED NOT NULL AUTO_INCREMENT ,
-        art_alarmierung     VARCHAR(25) NOT NULL ,
         alarmstichwort      VARCHAR(125) NOT NULL ,
         freitext            VARCHAR(125) NULL ,
-        alarm_art           VARCHAR(45) NOT NULL ,
         einsatzort          VARCHAR(45) NOT NULL ,
         alarmierung_date    DATE NOT NULL ,
         alarmierung_time    TIME NOT NULL ,
@@ -429,7 +437,7 @@ function plugin_activation() {
     //     ON DELETE NO ACTION
     //     ON UPDATE NO ACTION
 
-    dbDelta( $sql_missions );
+    dbDelta($sql_missions);
 
     $sql_missions_has_vehicles = "CREATE TABLE IF NOT EXISTS $table_missions_has_vehicles
     (
@@ -452,14 +460,13 @@ function plugin_activation() {
     //      REFERENCES $table_vehicles (id)
     //      ON DELETE NO ACTION
     //      ON UPDATE NO ACTION
-    dbDelta( $sql_missions_has_vehicles );
+    dbDelta($sql_missions_has_vehicles);
 
     // $wpdb->print_error();
 }
 
-function plugin_deactivation() {
-    unregister_post_type( 'mission' );
+function plugin_deactivation()
+{
+    unregister_post_type('mission');
     flush_rewrite_rules();
 }
-
-?>
