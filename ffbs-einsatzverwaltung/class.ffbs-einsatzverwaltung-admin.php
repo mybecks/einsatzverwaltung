@@ -35,30 +35,40 @@ class EinsatzverwaltungAdmin {
         wp_localize_script('admin_scripts', 'ajax_var', array( 'nonce' => wp_create_nonce( 'ajax-nonce' ) ) );
     }
 
-	public function handle_vehicles() {
-		?>
+	public function handle_vehicles() { ?>
 		<div class="wrap">
 			<h2>Fahrzeugverwaltung</h2>
 			<div id="message" class="updated">Added new vehicle</div>
 
-			<?php $this->display_vehicles(); ?>
+            <div>
+			    <?php $this->display_vehicles(); ?>
+            </div>
 
 			<form method="POST" action="">
+                <div class="form-group col-sm-3">
+                    <label for="new_vehicle">
+                        <?php _e( "Neues Fahrzeug hinzuf&uuml;gen", 'einsatzverwaltung_textdomain' ); ?>
+                    </label>
+                    <input id="new_vehicle" class="form-control" name="add_new_vehicle" />
+                </div>
 
-				<label for="new_vehicle">
-				    <?php _e( "Neues Fahrzeug hinzuf&uuml;gen", 'einsatzverwaltung_textdomain' ); ?>
-                </label>
-                <input id="new_vehicle" name="add_new_vehicle" />
+                <div class="form-group col-sm-2">
+                    <label for="vehicle_radio_id">Funkruf Name</label>
+                    <input id="vehicle_radio_id" class="form-control" name="vehicle_radio_id" />
+                </div>
 
-
-                <label for="vehicle_radio_id">Funkruf Name</label>
-				<input id="vehicle_radio_id" name="vehicle_radio_id" />
-
-                <label for="vehicle_location">Abteilung</label>
-				<input id="vehicle_location" name="vehicle_location" />
-
-				<input type="submit" value="add" class="add-vehicle button-primary">
+                <div class="form-group col-sm-2">
+                    <label for="vehicle_location">Abteilung</label>
+				    <select class="form-control" id="vehicle_location">
+                        <option>Mingolsheim</option>
+                        <option>Langenbrücken</option>
+                    </select>
+                </div>
+                <div class="col-sm-1">
+				    <button type="submit" class="btn btn-primary">Add</button>
+                </div>
 			</form>
+
 		</div>
 		<?php
 	}
@@ -67,41 +77,43 @@ class EinsatzverwaltungAdmin {
 		$vehicles = $this->db_handler->load_vehicles();
 
 		?>
-		<table class="tab-vehicle" border="1">
-			<tr>
-				<th>ID</th>
-				<th>Beschreibung</th>
-				<th>Funkruf Name</th>
-				<th>Abteilung</th>
-				<th>Edit</th>
-				<th>Delete</th>
-			</tr>
-
+		<table class="tab-vehicle table">
+			<thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Beschreibung</th>
+                    <th scope="col">Funkruf Name</th>
+                    <th scope="col">Abteilung</th>
+                    <th scope="col">Edit</th>
+                    <th scope="col">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
 		<?php
 		// http://codex.wordpress.org/AJAX_in_Plugins
-		foreach ( $vehicles as $vehicle ) {
-			echo '	<tr>';
-			echo '		<td>';
-			echo            $vehicle->id;
-			echo '		</td>';
-			echo '		<td>';
-			echo            $vehicle->description;
-			echo '		</td>';
-			echo '		<td>';
-			echo            $vehicle->radio_id;
-			echo '		</td>';
-			echo '		<td>';
-			echo            $vehicle->location;
-			echo '		</td>';
-			echo '		<td>';
-			echo '			<i class="fas fa-edit"></i>';
-			echo '		</td>';
-			echo '		<td>';
-			echo '			<i class="fas fa-trash-alt"></i>';
-			echo '		</td>';
-			echo '	</tr>';
-		}
-		?>
+		foreach ( $vehicles as $vehicle ) {?>
+			<tr>
+                <td>
+                    <?php $vehicle->id; ?>
+                </td>
+                <td>
+                    <?php $vehicle->description; ?>
+                </td>
+                <td>
+                    <?php $vehicle->radio_id; ?>
+                </td>
+                <td>
+                    <?php $vehicle->location; ?>
+                </td>
+                <td>
+                    <i class="fas fa-edit"></i>
+                </td>
+                <td>
+                    <i class="fas fa-trash-alt"></i>
+                </td>
+			</tr>
+		<?php } ?>
+            </tbody>
 		</table>
 		<?php
 	}
@@ -127,43 +139,5 @@ class EinsatzverwaltungAdmin {
 
 		wp_die();
 	}
-
-	public function import_missions() {
-	   //http://html5demos.com/dnd-upload#view-source
-    	?>
-    	<div class="wrap">
-    	    <h2>Mass Importer ALPHA</h2>
-    	    <style>
-
-    		</style>
-            <div class="row">
-                <div class="col-md-6 col-md-offset-3">
-                    <div class="holder"></div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-md-offset-3">
-                    <p>Upload progress: <progress id="uploadprogress" min="0" max="100" value="0">0</progress></p>
-                </div>
-            </div>
-
-            <p id="upload" class="hidden"><label>Drag & drop not supported, but you can still upload via this input field:<br><input type="file"></label></p>
-            <p id="filereader">File API & FileReader API not supported</p>
-            <p id="formdata">XHR2's FormData is not supported</p>
-            <p id="progress">XHR2's upload progress isn't supported</p>
-    		<p>Drag an image from your desktop on to the drop zone above to see the browser both render the preview, but also upload automatically to this server.</p>
-    		<!-- </article> -->
-
-    	</div>
-    	<?php
-    }
 }
-
-$wpEinsatzverwaltungAdmin = new EinsatzverwaltungAdmin();
-
-
-/*
- * End Admin Menu
- */
-
 ?>
