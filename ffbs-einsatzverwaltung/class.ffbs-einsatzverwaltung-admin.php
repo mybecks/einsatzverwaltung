@@ -45,26 +45,30 @@ class EinsatzverwaltungAdmin {
             </div>
 
 			<form method="POST" action="">
-                <div class="form-group col-sm-3">
-                    <label for="new_vehicle">
-                        <?php _e( "Neues Fahrzeug hinzuf&uuml;gen", 'einsatzverwaltung_textdomain' ); ?>
-                    </label>
-                    <input id="new_vehicle" class="form-control" name="add_new_vehicle" />
-                </div>
-
-                <div class="form-group col-sm-2">
+                <div class="form-group col-sm-7">
                     <label for="vehicle_radio_id">Funkruf Name</label>
-                    <input id="vehicle_radio_id" class="form-control" name="vehicle_radio_id" />
+                    <input id="vehicle_radio_id" class="form-control" name="vehicle_radio_id" placeholder="Bsp. 4/42"/>
                 </div>
 
-                <div class="form-group col-sm-2">
-                    <label for="vehicle_location">Abteilung</label>
+                <div class="form-group col-sm-7">
+                    <label for="new_vehicle">Beschreibung</label>
+                    <input id="new_vehicle" class="form-control" name="add_new_vehicle" placeholder="Bsp. LF 8/10"/>
+                </div>
+
+                <div class="form-group col-sm-7">
+                    <label for="vehicle_location">Standort</label>
 				    <select class="form-control" id="vehicle_location">
                         <option>Mingolsheim</option>
                         <option>Langenbrücken</option>
                     </select>
                 </div>
-                <div class="col-sm-1">
+
+                <!-- https://wordpress.stackexchange.com/questions/235406/how-do-i-select-an-image-from-media-library-in-my-plugin -->
+                <div class="form-group col-sm-7">
+                    <label for="vehicle_image">Mediathek Bild</label>
+				    <input id="vehicle_image" class="form-control" name="vehicle_image" />
+                </div>
+                <div class="col-sm-7">
 				    <button type="submit" class="btn btn-primary">Add</button>
                 </div>
 			</form>
@@ -80,10 +84,9 @@ class EinsatzverwaltungAdmin {
 		<table class="tab-vehicle table">
 			<thead>
                 <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Beschreibung</th>
                     <th scope="col">Funkruf Name</th>
-                    <th scope="col">Abteilung</th>
+                    <th scope="col">Beschreibung</th>
+                    <th scope="col">Standort</th>
                     <th scope="col">Edit</th>
                     <th scope="col">Delete</th>
                 </tr>
@@ -93,14 +96,11 @@ class EinsatzverwaltungAdmin {
 		// http://codex.wordpress.org/AJAX_in_Plugins
 		foreach ( $vehicles as $vehicle ) {?>
 			<tr>
-                <td>
-                    <?php $vehicle->id; ?>
+                <td scope="row">
+                    <?php $vehicle->radio_id; ?>
                 </td>
                 <td>
                     <?php $vehicle->description; ?>
-                </td>
-                <td>
-                    <?php $vehicle->radio_id; ?>
                 </td>
                 <td>
                     <?php $vehicle->location; ?>
