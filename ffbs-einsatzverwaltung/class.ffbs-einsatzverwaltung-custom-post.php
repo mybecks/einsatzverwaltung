@@ -239,8 +239,6 @@ class EinsatzverwaltungCustomPost
 
             $mission = new stdClass();
             $mission->id = "";
-            // $mission->type = "";
-            // $mission->alarmstichwort = "";
             $mission->einsatzort = "";
             $mission->alarmierung_date = "";
             $mission->alarmierung_time = "";
@@ -251,20 +249,6 @@ class EinsatzverwaltungCustomPost
             $mission->article_post_id = "";
             $vehicles_by_mission = array();
         }
-
-        // if (0 !== strlen($mission->type)) {
-        //     // http://wpquicktips.wordpress.com/2012/04/25/using-php-variables-in-javascript-with-wp_localize_script/
-        //     // http://www.ronakg.com/2011/05/passing-php-array-to-javascript-using-wp_localize_script/
-        //     $this->set_selector_for_dropdown_value("#mission_type", $mission->type);
-        // }
-
-        // if (0 !== strlen($mission->alarmstichwort)) {
-        //     $this->set_selector_for_dropdown_value("#alarm_stichwort", $mission->alarmstichwort);
-        // }
-
-        // if (0 !== strlen($mission->alarm_art)) {
-        //     $this->set_selector_for_dropdown_value("#alarm", $mission->alarm_art);
-        // }
 
         if (0 !== count($vehicles_by_mission)) {
             for ($i = 0; $i < count($vehicles_by_mission); $i++) {
@@ -277,87 +261,35 @@ class EinsatzverwaltungCustomPost
         $script = <<< EOF
         <script type='text/javascript'>
             jQuery(document).ready(function($) {
-                // Needs more testing - title will not be written to db
-                // $('#title').prop('disabled', true);
-
-
-                if($('#alarm_stichwort').val() === 'Sonstiger Brand' || $('#alarm_stichwort').val() === 'Freitext'){
-                    $('#row_freitext_alarmstichwort').show();
-                    // $('#title').attr('value', $('#freitext').val());
-                }else{
-                    $('#row_freitext_alarmstichwort').hide();
-                    // $('#title').attr('value', $("#alarm_stichwort option:first").text());
-                }
-
-                var label = $('#alarm_stichwort :selected').parent().attr('label');
-
-                if(label) {
-                    switch(label){
-                        case 'Brand':
-                            $('#mission_type').val('Brandeinsatz');
-                            break;
-                        case 'Technische Hilfe':
-                            $('#mission_type').val('Technischer Einsatz');
-                            break;
-                        case 'Sonstiges':
-                            $('#mission_type').val('Sonstiger Einsatz');
-                            break;
-                        }
-                }
-
-                $('#alarm_stichwort').change(function() {
-                    // $('#title').attr('value', $("#alarm_stichwort option:selected").text());
-                    if($('#sel_so_brand').is(':selected') || $('#sel_freitext').is(':selected')) {
-                        $('#row_freitext_alarmstichwort').show();
-
-                        // $('#freitext').keyup(function(){
-                        //     $('#title').attr('value', $('#freitext').val());
-                        // });
-                    }else{
-                        $('#row_freitext_alarmstichwort').hide();
-                    }
-
-
-                    var label = $('#alarm_stichwort :selected').parent().attr('label');
-
-                    switch(label){
-                        case 'Brand':
-                            $('#mission_type').val('Brandeinsatz');
-                            break;
-                        case 'Technische Hilfe':
-                            $('#mission_type').val('Technischer Einsatz');
-                            break;
-                        case 'Sonstiges':
-                            $('#mission_type').val('Sonstiger Einsatz');
-                            break;
-                    }
-                });
 
                 $('#alarm_date').change(function(){
                     $('#alarm_end_date').val($(this).val());
                 });
 
-                var availableTags = [
+                var destinations = [
                     "Langenbrücken",
                     "Mingolsheim",
                     "Bad Schönborn",
                     "Östringen",
+                    "Odenheim",
+                    "Tiefenbach",
+                    "Eichelberg",
                     "Kraichtal",
                     "Bruchsal",
                     "Wiesental",
                     "Waghäusel",
                     "Kirrlach",
-                    "Odenheim",
                     "Kronau",
                     "Unteröwisheim",
                     "Oberöwisheim",
                     "Weiher",
                     "Ubstadt",
                     "Stettfeld",
-                    "Zeitern"];
+                    "Zeutern"
+                ];
 
                 $( "#einsatzort" ).autocomplete({
-                    source: availableTags
+                    source: destinations
                 });
 
             });
@@ -378,53 +310,6 @@ EOF;
         echo '          <input id="mission_id" name="mission_id" value="' . $mission->id . '" readonly="true" size="4"/>';
         echo '      </td>';
         echo '  </tr>';
-        // echo '  <tr>';
-        // echo '      <td>';
-        // echo '          <label for="mission_type">';
-        // _e( "Einsatz Art", TEXT_DOMAIN );
-        // echo '          <label>';
-        // echo '      </td>';
-        // echo '      <td>';
-        // echo '          <select id="mission_type" name="mission_type">';
-        // echo '              <option>Brandeinsatz</option>';
-        // echo '              <option>Technischer Einsatz</option>';
-        // echo '              <option>Sonstiger Einsatz</option>';
-        // echo '          </select>';
-        // echo '      </td>';
-        // echo '  </tr>';
-        // echo '  <tr>';
-        // echo '      <td>';
-        // echo '          <label for="alarm_stichwort">';
-        // _e("Alarmstichwort", TEXT_DOMAIN);
-        // echo '          <label>';
-        // echo '      </td>';
-        // echo '      <td>';
-        // echo '          <select id="alarm_stichwort" name="alarm_stichwort">';
-        // echo '              <optgroup label="Brand">';
-        // echo '                  <option>Brandmeldealarm</option>';
-        // echo '                  <option>Lagerhallenbrand</option>';
-        // echo '                  <option>Dachstuhlbrand</option>';
-        // echo '                  <option>Wohnungsbrand</option>';
-        // echo '                  <option>Zimmerbrand</option>';
-        // echo '                  <option>Kellerbrand</option>';
-        // echo '                  <option>Kleinbrand</option>';
-        // echo '                  <option>PKW-Brand</option>';
-        // echo '                  <option>Feuerschein</option>';
-        // echo '                  <option>Verdächtiger Rauch</option>';
-        // echo '                  <option id="sel_so_brand">Sonstiger Brand</option>';
-        // echo '              <optgroup label="Technische Hilfe">';
-        // echo '                  <option>Verkehrsunfall</option>';
-        // echo '                  <option>Person in Not</option>';
-        // echo '                  <option>Unterstützung Rettungsdienst</option>';
-        // echo '                  <option>Wasserschaden</option>';
-        // echo '              <optgroup label="Sonstiges">';
-        // echo '                  <option>Absperrmaßnahme</option>';
-        // echo '                  <option>Ölspur</option>';
-        // echo '                  <option>Drehleitereinsatz</option>';
-        // echo '                  <option>Sicherheitsdienst</option>';
-        // echo '                  <option id="sel_freitext">Freitext</option>';
-        // echo '          </select>';
-        // echo '      </td>';
         echo '  </tr>';
         echo '  <tr id="freitext_alarmstichwort">';
         echo '      <td>';
@@ -433,26 +318,9 @@ EOF;
         echo '          <label>';
         echo '      </td>';
         echo '      <td>';
-        // if (("Freitext" == $mission->alarmstichwort) || ("Sonstiger Brand" == $mission->alarmstichwort)) {
         echo '          <input name="alarmstichwort_freitext" id="freitext" value="' . $mission->freitext . '"/>';
-        // } else {
-        //     echo '          <input name="alarmstichwort_freitext" id="freitext"/>';
-        // }
         echo '      </td>';
         echo '  </tr>';
-        // echo '  <tr>';
-        // echo '      <td>';
-        // echo '          <label for="alarm">';
-        // _e( "Alarm", TEXT_DOMAIN );
-        // echo '          <label>';
-        // echo '      </td>';
-        // echo '      <td>';
-        // echo '          <select id="alarm" name="alarm">';
-        // echo '              <option>Einsatzalarm</option>';
-        // echo '              <option>Keine Tätigkeit</option>';
-        // echo '          </select>';
-        // echo '      </td>';
-        // echo '  </tr>';
         echo '  <tr>';
         echo '      <td>';
         echo '          <label for="einsatzort">';
@@ -575,29 +443,10 @@ EOF;
                 return;
         }
 
-        // $cat_id = get_the_category( $post_id );
-
-        // //Check if mission category
-        // if ( CATEGORY != $cat_id[0]->cat_ID )
-        //  return;
-
-        // OK, we're authenticated: we need to find and save the data
-
-
         $mission_id = $_POST['mission_id'];
-        $mission_type = $_POST['mission_type'];
 
-        // if (("Freitext" == $_POST['alarm_stichwort']) || ("Sonstiger Brand" == $_POST['alarm_stichwort'])) {
         $freitext = $_POST['alarmstichwort_freitext'];
-        // $pn = $freitext;
-        // } else {
-        //     $freitext = "";
-        //     $pn = $_POST['alarm_stichwort'];
-        // }
-
-        // $alarm = $_POST['alarm'];
         $einsatzort = $_POST['einsatzort'];
-        // $alarm_stichwort = $_POST['alarm_stichwort'];
         $alarmierung_datum = $_POST['alarmierung_datum'];
         $alarmierung_zeit = $_POST['alarmierung_zeit'];
         $rueckkehr_datum = $_POST['rueckkehr_datum'];
@@ -620,9 +469,6 @@ EOF;
             $wpdb->update(
                 $table_missions,
                 array(
-                    'art_alarmierung' => $mission_type,
-                    // 'alarmstichwort' => $alarm_stichwort,
-                    // 'alarm_art' => $alarm,
                     'einsatzort' => $einsatzort,
                     'alarmierung_date' => $alarmierung_datum,
                     'alarmierung_time' => $alarmierung_zeit,
@@ -651,9 +497,6 @@ EOF;
             $wpdb->insert(
                 $table_missions,
                 array(
-                    // 'art_alarmierung' => $mission_type,
-                    // 'alarmstichwort' => $alarm_stichwort,
-                    // 'alarm_art' => $alarm,
                     'freitext' => $freitext,
                     'einsatzort' => $einsatzort,
                     'alarmierung_date' => $alarmierung_datum,
@@ -725,22 +568,6 @@ EOF;
         $name = strtolower($cleaned_name);
 
         return "fahrzeuge_" . $name;
-    }
-
-    /**
-     *
-     *
-     * @author Andre Becker
-     * */
-    public function set_selector_for_dropdown_value($id, $value)
-    {
-        $script = "
-        <script type='text/javascript'>
-         jQuery(document).ready(function($) {
-            $('" . $id . "').val('" . $value . "');
-        });
-        </script>";
-        echo $script;
     }
 
     /*
