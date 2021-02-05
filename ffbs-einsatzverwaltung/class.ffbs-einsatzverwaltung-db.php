@@ -220,18 +220,30 @@ class DatabaseHandler
                     // }
 
                     // todo refactor
-                    $arr_content = array();
-                    // $arr_content[0] = $alarm_short;
-                    $arr_content[0] = $alarmstichwort;
-                    // $arr_content[2] = $mission->alarm_art;
-                    $arr_content[1] = $mission->einsatzort;
-                    $arr_content[2] = strftime("%d.%m.%Y", strtotime($mission->alarmierung_date));
-                    $arr_content[3] = strftime("%H:%M", strtotime($mission->alarmierung_time));
-                    $arr_content[4] = $mission->rueckkehr_date;
-                    $arr_content[5] = $mission->rueckkehr_time;
-                    $arr_content[6] = $mission->link_to_media;
-                    $arr_content[7] = $description;
-                    $arr_content[8] = get_permalink($mission->wp_posts_ID);
+                    // $arr_content = array();
+                    // // $arr_content[0] = $alarm_short;
+                    // $arr_content[0] = $alarmstichwort;
+                    // // $arr_content[2] = $mission->alarm_art;
+                    // $arr_content[1] = $mission->einsatzort;
+                    // $arr_content[2] = strftime("%d.%m.%Y", strtotime($mission->alarmierung_date));
+                    // $arr_content[3] = strftime("%H:%M", strtotime($mission->alarmierung_time));
+                    // $arr_content[4] = $mission->rueckkehr_date;
+                    // $arr_content[5] = $mission->rueckkehr_time;
+                    // $arr_content[6] = $mission->link_to_media;
+                    // $arr_content[7] = $description;
+                    // $arr_content[8] = get_permalink($mission->wp_posts_ID);
+
+                    $arr_content = array(
+                        "keyword" => $alarmstichwort,
+                        "location" => $mission->einsatzort,
+                        "alarm_date" => strftime("%d.%m.%Y", strtotime($mission->alarmierung_date)),
+                        "alarm_time" => strftime("%H:%M", strtotime($mission->alarmierung_time)),
+                        "return_date" => $mission->rueckkehr_date,
+                        "return_time" => $mission->rueckkehr_time,
+                        "link_to_media" =>  $mission->link_to_media,
+                        "description" => $description,
+                        "linked_post_id" => get_permalink($mission->wp_posts_ID)
+                    );
 
                     array_push($tmp_arr, $arr_content);
 
