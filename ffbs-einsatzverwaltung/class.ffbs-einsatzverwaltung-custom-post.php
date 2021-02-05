@@ -464,35 +464,8 @@ EOF;
             }
         }
 
-        if (!empty($mission_id)) {
-            //Update
-            $wpdb->update(
-                $table_missions,
-                array(
-                    'einsatzort' => $einsatzort,
-                    'alarmierung_date' => $alarmierung_datum,
-                    'alarmierung_time' => $alarmierung_zeit,
-                    'rueckkehr_date' => $rueckkehr_datum,
-                    'rueckkehr_time' => $rueckkehr_zeit,
-                    'link_to_media' => $link_zu_medien,
-                    'freitext' => $freitext,
-                    'article_post_id' => $article_post_id
-                ),
-                array('id' => $mission_id)
-            );
+        if (empty($mission_id)) {
 
-            if (function_exists("SimpleLogger")) {
-                SimpleLogger()->info("Mission updated " . $freitext);
-            }
-
-            //remove all vehicles bound to current mission!
-            $this->db_handler->remove_vehicles_from_mission($mission_id);
-
-            //insert new values:
-            foreach ($vehicles as $vehicle) {
-                $this->db_handler->insert_new_vehicle_to_mission($mission_id, $vehicle);
-            }
-        } else {
             //new mission entry
             $wpdb->insert(
                 $table_missions,
@@ -521,6 +494,34 @@ EOF;
             }
 
             add_post_meta($post_id, MISSION_ID, $id);
+        } else {
+            //Update
+            $wpdb->update(
+                $table_missions,
+                array(
+                    'einsatzort' => $einsatzort,
+                    'alarmierung_date' => $alarmierung_datum,
+                    'alarmierung_time' => $alarmierung_zeit,
+                    'rueckkehr_date' => $rueckkehr_datum,
+                    'rueckkehr_time' => $rueckkehr_zeit,
+                    'link_to_media' => $link_zu_medien,
+                    'freitext' => $freitext,
+                    'article_post_id' => $article_post_id
+                ),
+                array('id' => $mission_id)
+            );
+
+            if (function_exists("SimpleLogger")) {
+                SimpleLogger()->info("Mission updated " . $freitext);
+            }
+
+            //remove all vehicles bound to current mission!
+            $this->db_handler->remove_vehicles_from_mission($mission_id);
+
+            //insert new values:
+            foreach ($vehicles as $vehicle) {
+                $this->db_handler->insert_new_vehicle_to_mission($mission_id, $vehicle);
+            }
         }
 
         $current_post = array(

@@ -287,8 +287,9 @@ class DatabaseHandler
     {
         // $query = "DELETE FROM " . $this->table->missions_has_vehicles . " WHERE einsaetze_id = %d";
         // $delete = $this->db->query( $this->db->prepare( $query, $mission_id ) );
+
         $this->db->delete(
-            $this->table->missions_has_vehicles,
+            $this->table->mission_has_vehicles,
             array('einsaetze_id' => $mission_id),
             array('%d')
         );
