@@ -326,7 +326,8 @@ class DatabaseHandler
     public function admin_insert_vehicle($vehicle)
     {
         $this->table->vehicles = $this->db->prefix . "fahrzeuge";
-        wp_die($vehicle);
+        var_dump($_POST['vehicle']);
+        die();
         $this->db->insert(
             $this->table->vehicles,
             array(

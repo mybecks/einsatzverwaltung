@@ -75,7 +75,7 @@ class EinsatzverwaltungAdmin
                     <input id="vehicle_image" class="form-control" name="vehicle_image" />
                 </div>
                 <div class="col-sm-7">
-                    <button type="submit" class="btn btn-primary">Add</button>
+                    <button type="submit" class="add-vehicle btn btn-primary">Add</button>
                 </div>
             </form>
 
@@ -127,6 +127,7 @@ class EinsatzverwaltungAdmin
 
     public function add_vehicle()
     {
+        wp_die('here');
         $nonce = $_POST['nonce'];
 
         if (!wp_verify_nonce($nonce, 'ajax-nonce')) {
