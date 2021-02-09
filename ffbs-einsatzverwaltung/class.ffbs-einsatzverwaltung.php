@@ -404,11 +404,12 @@ function plugin_activation()
 
     $sql_vehicles = "CREATE TABLE IF NOT EXISTS " . $table_vehicles . "
     (
+        id                  VARCHAR(12) NOT NULL
         radio_id            VARCHAR(12) NOT NULL,
         description         VARCHAR(25) NOT NULL,
         location            VARCHAR(14) NOT NULL,
         media_link          VARCHAR(2083),
-        PRIMARY KEY  (radio_id)
+        PRIMARY KEY  (id)
     )
     CHARACTER SET utf8
     COLLATE utf8_general_ci;
@@ -445,7 +446,7 @@ function plugin_activation()
     $sql_missions_has_vehicles = "CREATE TABLE IF NOT EXISTS $table_missions_has_vehicles
     (
         einsaetze_id        INT NOT NULL ,
-        fahrzeuge_id        VARCHAR(8) NOT NULL ,
+        fahrzeuge_id        VARCHAR(12) NOT NULL ,
         PRIMARY KEY  (einsaetze_id, fahrzeuge_id)
     )
     CHARACTER SET utf8
