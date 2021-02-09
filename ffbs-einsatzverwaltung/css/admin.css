@@ -1,20 +1,5 @@
 /*@import url("reset.css");*/
 
-.tab-vehicle{
-	margin-top: 2em;
-	/*margin-bottom: 0.5em;*/
-}
-
-.tab-vehicle td{
-	text-align: center;
-	/*background-color: #ccc;*/
-}
-
-.tab-images{
-	width: 1.5em;
-	height: 1.5em;
-}
-
 .holder{
     width: 20em;
     min-height: 20em;

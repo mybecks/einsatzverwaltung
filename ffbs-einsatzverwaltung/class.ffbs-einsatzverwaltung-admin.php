@@ -12,6 +12,9 @@ class EinsatzverwaltungAdmin
     protected $pluginPath;
     private $db_handler;
 
+    const VENDOR = 'ffbs';
+    const ROUTE_VEHICLES = '/vehicles';
+
     public function __construct()
     {
         $this->pluginPath = dirname(__FILE__);
@@ -19,8 +22,11 @@ class EinsatzverwaltungAdmin
 
         add_action('admin_print_styles', array($this, 'add_admin_styles'));
         add_action('admin_enqueue_scripts', array($this, 'add_admin_scripts'));
-        add_action('wp_ajax_add_vehicle', array($this, 'add_vehicle'));
-        add_action('wp_ajax_nopriv_add_vehicle', array($this, 'add_vehicle'));
+
+        add_action('rest_api_init', [$this, 'ffbs_register_vehicle_routes']);
+
+        // add_action('wp_ajax_add_vehicle', array($this, 'add_vehicle'));
+        // add_action('wp_ajax_nopriv_add_vehicle', array($this, 'add_vehicle'));
     }
 
     public function add_admin_styles()
@@ -36,15 +42,46 @@ class EinsatzverwaltungAdmin
 
     public function add_admin_scripts()
     {
-        wp_enqueue_script('admin_scripts', plugins_url('js/functions.admin.js', __FILE__), array('jquery'));
+        wp_enqueue_script('admin_scripts', plugins_url('js/functions.admin.js', __FILE__), array('jquery', 'wp-api'));
         wp_localize_script(
             'admin_scripts',
-            'ajax_object',
+            'wpApiSettings',
             array(
-                'ajaxurl' => admin_url('admin-ajax.php'),
-                'nonce' => wp_create_nonce('ajax-nonce')
+                'root' => esc_url_raw(rest_url()),
+                'nonce' => wp_create_nonce('wp_rest')
             )
         );
+    }
+
+    public function ffbs_register_vehicle_routes()
+    {
+        // Here we are registering our route for a collection of products.
+        register_rest_route(self::VENDOR . '/v1', self::ROUTE_VEHICLES, array(
+            // By using this constant we ensure that when the WP_REST_Server changes our readable endpoints will work as intended.
+            'methods'  => WP_REST_Server::READABLE,
+            // Here we register our callback. The callback is fired when this endpoint is matched by the WP_REST_Server class.
+            'callback' => [$this, 'get_vehicles'],
+        ));
+        // // Here we are registering our route for single products. The (?P<id>[\d]+) is our path variable for the ID, which, in this example, can only be some form of positive number.
+        // register_rest_route(self::VENDOR . '/v1', self::ROUTE_VEHICLES . '/(?P<id>[\d]+)', array(
+        //     // By using this constant we ensure that when the WP_REST_Server changes our readable endpoints will work as intended.
+        //     'methods'  => WP_REST_Server::READABLE,
+        //     // Here we register our callback. The callback is fired when this endpoint is matched by the WP_REST_Server class.
+        //     'callback' => 'get_product',
+        // ));
+
+        register_rest_route(self::VENDOR . '/v1', self::ROUTE_VEHICLES, array(
+            // By using this constant we ensure that when the WP_REST_Server changes our readable endpoints will work as intended.
+            'methods' => WP_REST_Server::CREATABLE,
+            // Here we register our callback. The callback is fired when this endpoint is matched by the WP_REST_Server class.
+            'callback' => [$this, 'add_vehicle'],
+            'args' => array(
+                'radioId' => array(),
+                'description' => array(),
+                'location' => array(),
+                'mediaLink' => array(),
+            ),
+        ));
     }
 
     public function handle_vehicles()
@@ -87,75 +124,56 @@ class EinsatzverwaltungAdmin
             </form>
 
         </div>
-    <?php
-    }
-
-    public function display_vehicles()
-    {
-        $vehicles = $this->db_handler->load_vehicles();
-    ?>
-        <table class="tab-vehicle table">
-            <thead>
-                <tr>
-                    <th scope="col">Funkruf Name</th>
-                    <th scope="col">Beschreibung</th>
-                    <th scope="col">Standort</th>
-                    <th scope="col">Edit</th>
-                    <th scope="col">Delete</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                // http://codex.wordpress.org/AJAX_in_Plugins
-                foreach ($vehicles as $vehicle) { ?>
-                    <tr>
-                        <td scope="row">
-                            <?php echo $vehicle->radio_id; ?>
-                        </td>
-                        <td>
-                            <?php echo $vehicle->description; ?>
-                        </td>
-                        <td>
-                            <?php echo $vehicle->location; ?>
-                        </td>
-                        <td>
-                            <i class="fas fa-edit"></i>
-                        </td>
-                        <td>
-                            <i class="fas fa-trash-alt"></i>
-                        </td>
-                    </tr>
-                <?php } ?>
-            </tbody>
-        </table>
 <?php
     }
 
-    public function add_vehicle()
+    public function get_vehicles()
     {
-        // var_dump($_POST);
-        // die();
+        $vehicles = $this->db_handler->load_vehicles();
+        return rest_ensure_response($vehicles);
+    }
 
-        $nonce = $_POST['nonce'];
+    public function add_vehicle($request)
+    {
+        $body = $request->get_json_params();
 
-        if (!wp_verify_nonce($nonce, 'ajax-nonce')) {
-            die('Busted!');
+        $vehicle = [
+            'radioId' => $body['radioId'],
+            'description' => $body['description'],
+            'location' => $body['location'],
+            'mediaLink' => $body['mediaLink']
+        ];
+
+
+        $result = $this->db_handler->admin_insert_vehicle($vehicle);
+
+        if ($result == 1) {
+            return new WP_REST_Response(null, 201);
+        } else {
+            return new WP_Error('cant-create', $result, array('status' => 400));
         }
 
+        // $nonce = $_POST['nonce'];
 
-        //add new vehicle to database
-        $this->db_handler->admin_insert_vehicle($_POST['vehicle']);
-        $id = $this->db_handler->get_last_insert_id();
-        $vehicle = (object) array(
-            'id' => $id,
-            'description' => $_POST['vehicle']
-        );
+        // if (!wp_verify_nonce($nonce, 'ajax-nonce')) {
+        //     die('Busted!');
+        // }
 
-        $response = json_encode($vehicle);
 
-        // response output -> sent back to javascript file
-        // header("Content-Type: application/json");
-        wp_send_json($response);
+        // //add new vehicle to database
+        // $this->db_handler->admin_insert_vehicle($_POST['vehicle']);
+        // $id = $this->db_handler->get_last_insert_id();
+        // $vehicle = array(
+        //     'id' => $id,
+        //     'description' => $_POST['vehicle']
+        // );
+
+        // // $response = json_encode($vehicle);
+
+        // // response output -> sent back to javascript file
+        // // header("Content-Type: application/json");
+        // wp_send_json($vehicle);
     }
 }
+$wpEinsatzverwaltungAdmin = new EinsatzverwaltungAdmin();
 ?>

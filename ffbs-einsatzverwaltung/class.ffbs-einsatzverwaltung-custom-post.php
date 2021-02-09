@@ -109,12 +109,84 @@ class EinsatzverwaltungCustomPost
             'manage-vehicles',
             array($this, 'vehicle_page_content')
         );
-        $this->wpEinsatzverwaltungAdmin = new EinsatzverwaltungAdmin();
     }
 
     public function vehicle_page_content()
     {
-        $this->wpEinsatzverwaltungAdmin->handle_vehicles();
+        $vehicles = $this->db_handler->load_vehicles();
+?>
+        <div class="wrap">
+            <h2>Fahrzeugverwaltung</h2>
+            <div id="message" class="updated">Added new vehicle</div>
+
+            <div>
+                <table class="table tab-vehicle">
+                    <thead>
+                        <tr>
+                            <th scope="col">Funkruf Name</th>
+                            <th scope="col">Beschreibung</th>
+                            <th scope="col">Standort</th>
+                            <th scope="col">Edit</th>
+                            <th scope="col">Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        // http://codex.wordpress.org/AJAX_in_Plugins
+                        foreach ($vehicles as $vehicle) { ?>
+                            <tr>
+                                <th scope="row">
+                                    <?php echo $vehicle->radio_id; ?>
+                                </th>
+                                <td scope="row">
+                                    <?php echo $vehicle->description; ?>
+                                </td>
+                                <td scope="row">
+                                    <?php echo $vehicle->location; ?>
+                                </td>
+                                <td scope="row">
+                                    <i class="fas fa-edit"></i>
+                                </td>
+                                <td scope="row">
+                                    <i class="fas fa-trash-alt"></i>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <form method="POST" action="">
+                <div class="form-group col-sm-7">
+                    <label for="vehicle_radio_id">Funkruf Name</label>
+                    <input id="vehicle_radio_id" class="form-control" name="vehicle_radio_id" placeholder="Bsp. BS 2/42" />
+                </div>
+
+                <div class="form-group col-sm-7">
+                    <label for="vehicle_description">Beschreibung</label>
+                    <input id="vehicle_description" class="form-control" name="vehicle_description" placeholder="Bsp. LF 8/10" />
+                </div>
+
+                <div class="form-group col-sm-7">
+                    <label for="vehicle_location">Standort</label>
+                    <select class="form-control" id="vehicle_location">
+                        <option>Mingolsheim</option>
+                        <option>Langenbrücken</option>
+                    </select>
+                </div>
+
+                <!-- https://wordpress.stackexchange.com/questions/235406/how-do-i-select-an-image-from-media-library-in-my-plugin -->
+                <div class="form-group col-sm-7">
+                    <label for="vehicle_image">Mediathek Bild</label>
+                    <input id="vehicle_image" class="form-control" name="vehicle_image" />
+                </div>
+                <div class="col-sm-7">
+                    <button type="submit" class="btn btn-primary add-vehicle">Add</button>
+                </div>
+            </form>
+
+        </div>
+    <?php
     }
 
     // http://justintadlock.com/archives/2011/06/27/custom-columns-for-custom-post-types
@@ -299,7 +371,7 @@ class EinsatzverwaltungCustomPost
 EOF;
 
         // Refactor to Bootstrap Forms
-?>
+    ?>
         <table border="1">
             <tr>
                 <td>

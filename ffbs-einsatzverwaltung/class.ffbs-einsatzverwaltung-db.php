@@ -12,6 +12,11 @@ class DatabaseHandler
     private static $instance = null;
     private $table;
 
+    const TABLE_MISSIONS = 'einsaetze';
+    const TABLE_VEHICLES = 'fahrzeuge';
+    const TABLE_MISSION_VEHICLES = 'einsaetze_has_fahrzeuge';
+
+
     /**
      * Creates or returns an instance of this class.
      *
@@ -272,7 +277,7 @@ class DatabaseHandler
      */
     public function load_vehicles()
     {
-        $query = "SELECT id, description, radio_id, location FROM " . $this->table->vehicles;
+        $query = "SELECT radio_id, description, location, media_link FROM " . $this->table->vehicles;
         $vehicles = $this->db->get_results($query);
 
         return $vehicles;
@@ -320,31 +325,41 @@ class DatabaseHandler
     /**
      * Insert a new vehicle in the database
      *
-     * @param  string $description
+     * @param  array $vehicle
      * @author Andre Becker
      */
     public function admin_insert_vehicle($vehicle)
     {
-        $this->table->vehicles = $this->db->prefix . "fahrzeuge";
-        var_dump($_POST['vehicle']);
-        die();
-        $this->db->insert(
+        $result = $this->db->insert(
             $this->table->vehicles,
             array(
                 'description' => $vehicle['description'],
-                'radio_id' => $vehicle['radio_id'],
-                'location' => $vehicle['location']
+                'radio_id' => $vehicle['radioId'],
+                'location' => $vehicle['location'],
+                'media_link' => $vehicle['mediaLink'],
             ),
             array(
                 '%s',
                 '%s',
-                '%s'
+                '%s',
+                '%s',
             )
         );
+
+        if (empty($result)) {
+            return $this->get_last_error();
+        }
+
+        return $result;
     }
 
     public function get_last_insert_id()
     {
         return $this->db->insert_id;
+    }
+
+    public function get_last_error()
+    {
+        return $this->db->last_error;
     }
 }
