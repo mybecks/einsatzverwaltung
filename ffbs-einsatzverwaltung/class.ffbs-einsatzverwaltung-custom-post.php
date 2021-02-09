@@ -15,8 +15,6 @@ class EinsatzverwaltungCustomPost
         add_action('publish_mission', array($this, 'save_data'));
         // add_action( 'trash_mission', array($this, 'trash_mission') ); //to set a flag that the mission is not shown any more
         add_action('before_delete_post', array($this, 'delete_mission')); //deltes the mission data
-        add_action('admin_enqueue_scripts', array($this, 'add_admin_scripts'));
-        add_action('admin_print_styles', array($this, 'add_admin_styles'));
         add_action('manage_mission_posts_custom_column', array($this, 'manage_mission_columns'), 10, 2);
         add_filter('post_updated_messages', array($this, 'mission_updated_messages'));
         add_filter('manage_edit-mission_columns', array($this, 'edit_mission_column'));
@@ -25,32 +23,6 @@ class EinsatzverwaltungCustomPost
         add_action('admin_menu', array($this, 'add_sub_menu_pages'));
         $this->db_handler = DatabaseHandler::get_instance();
     }
-
-    public function add_admin_styles()
-    {
-        wp_register_style('admin_styles', plugins_url('css/admin.css', __FILE__));
-        wp_register_style('admin_bootstrap', plugins_url('css/bootstrap.css', __FILE__));
-        wp_register_style('admin_fa', plugins_url('css/all.css', __FILE__));
-
-        wp_enqueue_style('admin_styles');
-        wp_enqueue_style('admin_bootstrap');
-        wp_enqueue_style('admin_fa');
-    }
-    public function add_admin_scripts()
-    {
-        wp_enqueue_script('jquery-ui-autocomplete');
-
-        wp_enqueue_script('admin_scripts', plugins_url('js/functions.admin.js', __FILE__), array('jquery', 'wp-api'));
-        wp_localize_script(
-            'admin_scripts',
-            'wpApiSettings',
-            array(
-                'root' => esc_url_raw(rest_url()),
-                'nonce' => wp_create_nonce('wp_rest')
-            )
-        );
-    }
-
 
     public function custom_post_mission()
     {

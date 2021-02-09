@@ -47,7 +47,7 @@ let addVehicle = function () {
 
 let autocompleteDestinations = function () {
 
-    var destinations = [
+    let destinations = [
         "Langenbrücken",
         "Mingolsheim",
         "Bad Schönborn",
@@ -75,6 +75,10 @@ let autocompleteDestinations = function () {
 
 }
 
+let validateVehicleInput = function () {
+
+}
+
 let setEndDateEqStartDate = function () {
     $('#alarm_date').change(function () {
         $('#alarm_end_date').val($(this).val());
@@ -82,8 +86,12 @@ let setEndDateEqStartDate = function () {
 }
 
 jQuery(document).ready(function ($) {
+    // Vehicle Subpage
     deleteVehicleHandler();
     addVehicle();
+    validateVehicleInput();
+
+    // Custom Post Box
     setEndDateEqStartDate();
     autocompleteDestinations();
 });

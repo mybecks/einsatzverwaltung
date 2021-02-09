@@ -16,20 +16,53 @@ class Einsatzverwaltung
         add_action('wp_enqueue_scripts', array($this, 'add_styles'));
         add_action('plugins_loaded', array($this, 'plugin_textdomain'));
         add_action('wp_footer', array($this, 'postinfo_head'));
+
+        // Backend Styles & Scripts
+        add_action('admin_print_styles', array($this, 'add_admin_styles'));
+        add_action('admin_enqueue_scripts', array($this, 'add_admin_scripts'));
+
+        // Shortcodes
         add_shortcode('einsatzverwaltung', array($this, 'my_einsatzverwaltung_handler'));
     }
 
     public function add_styles()
     {
-        // Respects SSL, style.css is relative to the current file
+        // Custom CSS styling
         wp_register_style('einsatzverwaltung-style', plugins_url('/css/styles.css', __FILE__));
         wp_enqueue_style('einsatzverwaltung-style');
+
+        // Bootstrap CSS styling
         wp_register_style('bootstrap-style', plugins_url('/css/bootstrap.css', __FILE__));
         wp_enqueue_style('bootstrap-style');
     }
 
-    public function add_scripts()
+    public function add_admin_styles()
     {
+        // Custom CSS styling
+        wp_register_style('admin_styles', plugins_url('css/admin.css', __FILE__));
+        wp_enqueue_style('admin_styles');
+
+        // Custom Bootstrap styling
+        wp_register_style('bootstrap-style', plugins_url('/css/bootstrap.css', __FILE__));
+        wp_enqueue_style('bootstrap-style');
+
+        // FontAwesome Styles
+        wp_register_style('admin_fa', plugins_url('css/all.css', __FILE__));
+        wp_enqueue_style('admin_fa');
+    }
+
+    public function add_admin_scripts()
+    {
+        // Load JS Script for backend functions
+        wp_enqueue_script('admin_scripts', plugins_url('js/functions.admin.js', __FILE__), array('jquery', 'wp-api'));
+        wp_localize_script(
+            'admin_scripts',
+            'wpApiSettings',
+            array(
+                'root' => esc_url_raw(rest_url()),
+                'nonce' => wp_create_nonce('wp_rest')
+            )
+        );
     }
 
     public function my_einsatzverwaltung_handler($atts, $content = null, $code = "")
