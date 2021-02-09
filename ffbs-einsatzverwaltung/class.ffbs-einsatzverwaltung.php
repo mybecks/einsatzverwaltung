@@ -102,53 +102,54 @@ class Einsatzverwaltung
             $german_month = $this->get_german_month($key);
             $count = count($arr_months[$key]);
 
-            ?>
+?>
 
-            <br /> <div>
-            <a name='<?php echo $german_month; ?>'></a>
-            <div class='table-responsive'>
-            <table class='table mission-month' summary='Einsatzliste im Monat $german_month' border='0'>
-                <caption class='mission-month-header'><?php echo $german_month; ?>
-                    <a href='#Übersicht'>
-                        <img src='<?php echo $arrow_up_path; ?>' class='overview'/>
-                    </a>
-                </caption>
-                <thead>
-                    <tr>
-                        <th scope='col' class='th-mission td-space-left'>Datum</th>
-                        <th scope='col' class='th-mission'>Zeit</th>
-                        <th scope='col' class='th-mission'>Alarmstichwort</th>
-                        <th scope='col' class='th-mission'>Einsatzort</th>
-                        <th scope='col' class='th-mission'>Bericht</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <td colspan='6'>Anzahl der Eins&auml;tze im Monat: <b><?php echo $count; ?></b></td>
-                    </tr>
-                </tfoot>
-                <tbody>
+            <br />
+            <div>
+                <a name='<?php echo $german_month; ?>'></a>
+                <div class='table-responsive'>
+                    <table class='table mission-month' summary='Einsatzliste im Monat $german_month' border='0'>
+                        <caption class='mission-month-header'><?php echo $german_month; ?>
+                            <a href='#Übersicht'>
+                                <img src='<?php echo $arrow_up_path; ?>' class='overview' />
+                            </a>
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th scope='col' class='th-mission td-space-left'>Datum</th>
+                                <th scope='col' class='th-mission'>Zeit</th>
+                                <th scope='col' class='th-mission'>Alarmstichwort</th>
+                                <th scope='col' class='th-mission'>Einsatzort</th>
+                                <th scope='col' class='th-mission'>Bericht</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <td colspan='6'>Anzahl der Eins&auml;tze im Monat: <b><?php echo $count; ?></b></td>
+                            </tr>
+                        </tfoot>
+                        <tbody>
 
-            <?php foreach ($arr_months[$key] as $key => $value) {?>
+                            <?php foreach ($arr_months[$key] as $key => $value) { ?>
 
-                <tr class='row-mission'>
-                    <td class='td-space-left'><?php echo $value['alarm_date']; ?></td>
-                    <td class='td-text-center'><?php echo $value['alarm_time']; ?></td>
-                    <td class='td-mission-keyword'><?php echo $value['keyword']; ?></td>
-                    <td><?php echo $value['location']; ?></td>
-                    <td><a href="<?php echo $value['linked_post_id']; ?>"><?php echo $value['description']; ?></a></td>
-                </tr>
-            <?php } ?>
-                </tbody>
-                </table>
+                                <tr class='row-mission'>
+                                    <td class='td-space-left'><?php echo $value['alarm_date']; ?></td>
+                                    <td class='td-text-center'><?php echo $value['alarm_time']; ?></td>
+                                    <td class='td-mission-keyword'><?php echo $value['keyword']; ?></td>
+                                    <td><?php echo $value['location']; ?></td>
+                                    <td><a href="<?php echo $value['linked_post_id']; ?>"><?php echo $value['description']; ?></a></td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
                 </div>
-                    <div class='footer-legend'>
-                        BE - Brandeinsatz &#x95
-                        TE - Technischer Einsatz &#x95
-                        SE - Sonstiger Einsatz
-                    </div>
+                <div class='footer-legend'>
+                    BE - Brandeinsatz &#x95
+                    TE - Technischer Einsatz &#x95
+                    SE - Sonstiger Einsatz
                 </div>
-            <?php
+            </div>
+        <?php
         }
     }
 
@@ -211,60 +212,60 @@ class Einsatzverwaltung
         <a name="Übersicht"></a>
         <div>
             <table class="mission-month-overview" summary="Übersicht über die Anzahl der Einsätze im Jahr <?php echo $mission_year; ?>">
-            <caption>Monatsübersicht für <?php echo $mission_year; ?></caption>
-            <thead>
-                <tr>
-                    <th class="th-mission">Monat</th>
-                    <th class="th-mission-center">Einsätze</th>
-                    <!-- <th class="th-mission-center">BE/TE/SE</th> -->
-                    <th class="th-mission-center">Übersicht</th>
-                </tr>
-            </thead>
-            <tfoot>
-                <tr>
-                    <td colspan="5">Anzahl der Einsätze im Jahr: <b> <?php echo $mission_year_count; ?></b></td>
-                </tr>
-            </tfoot>
-            <tbody>
-        <?php
-        foreach ($arr_months as $key => $value) {
-            // START Amount of missions in the month
-            $count_missions_in_month = count($arr_months[$key]);
-            // END
+                <caption>Monatsübersicht für <?php echo $mission_year; ?></caption>
+                <thead>
+                    <tr>
+                        <th class="th-mission">Monat</th>
+                        <th class="th-mission-center">Einsätze</th>
+                        <!-- <th class="th-mission-center">BE/TE/SE</th> -->
+                        <th class="th-mission-center">Übersicht</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <td colspan="5">Anzahl der Einsätze im Jahr: <b> <?php echo $mission_year_count; ?></b></td>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    <?php
+                    foreach ($arr_months as $key => $value) {
+                        // START Amount of missions in the month
+                        $count_missions_in_month = count($arr_months[$key]);
+                        // END
 
-            // START Ratio of false alarms and real missions
-            // $count_brandeinsatz = 0;
-            // $count_technischereinsatz = 0;
-            // $count_sonstiges = 0;
+                        // START Ratio of false alarms and real missions
+                        // $count_brandeinsatz = 0;
+                        // $count_technischereinsatz = 0;
+                        // $count_sonstiges = 0;
 
-            // foreach ($value as $mission_key => $mission_value) {
+                        // foreach ($value as $mission_key => $mission_value) {
 
 
-            //     if (false !== strpos($mission_value[0], 'BE')) {
-            //         $count_brandeinsatz++;
-            //     } elseif (false !== strpos($mission_value[0], 'TE')) {
-            //         $count_technischereinsatz++;
-            //     } else {
-            //         $count_sonstiges++;
-            //     }
-            // }
+                        //     if (false !== strpos($mission_value[0], 'BE')) {
+                        //         $count_brandeinsatz++;
+                        //     } elseif (false !== strpos($mission_value[0], 'TE')) {
+                        //         $count_technischereinsatz++;
+                        //     } else {
+                        //         $count_sonstiges++;
+                        //     }
+                        // }
 
-            // OUTPUT
-            $german_month = $this->get_german_month($key);
-            ?>
-                <tr>
-                    <td><?php echo $german_month; ?></td>
-                    <td class="td-text-center"><?php echo $count_missions_in_month; ?></td>
-                    <!-- <td class="td-text-center">$count_brandeinsatz . '/' . $count_technischereinsatz . '/' . $count_sonstiges . '</td> -->
-                    <td class="td-text-center"><a href="#<?php echo $german_month; ?>">Link</a></td>
-                </tr>
-            <?php
-        } ?>
+                        // OUTPUT
+                        $german_month = $this->get_german_month($key);
+                    ?>
+                        <tr>
+                            <td><?php echo $german_month; ?></td>
+                            <td class="td-text-center"><?php echo $count_missions_in_month; ?></td>
+                            <!-- <td class="td-text-center">$count_brandeinsatz . '/' . $count_technischereinsatz . '/' . $count_sonstiges . '</td> -->
+                            <td class="td-text-center"><a href="#<?php echo $german_month; ?>">Link</a></td>
+                        </tr>
+                    <?php
+                    } ?>
 
                 </tbody>
             </table>
         </div>
-        <?php
+<?php
     }
     /*
      * Begin Postinfo
@@ -403,12 +404,11 @@ function plugin_activation()
 
     $sql_vehicles = "CREATE TABLE IF NOT EXISTS " . $table_vehicles . "
     (
-        id                  INT UNSIGNED NOT NULL AUTO_INCREMENT,
+        radio_id            VARCHAR(12) NOT NULL,
         description         VARCHAR(25) NOT NULL,
-        radio_id            VARCHAR(10) NOT NULL,
         location            VARCHAR(14) NOT NULL,
-        media_link          VARCHAR(255),
-        PRIMARY KEY  (id)
+        media_link          VARCHAR(2083),
+        PRIMARY KEY  (radio_id)
     )
     CHARACTER SET utf8
     COLLATE utf8_general_ci;
@@ -445,7 +445,7 @@ function plugin_activation()
     $sql_missions_has_vehicles = "CREATE TABLE IF NOT EXISTS $table_missions_has_vehicles
     (
         einsaetze_id        INT NOT NULL ,
-        fahrzeuge_id        INT NOT NULL ,
+        fahrzeuge_id        VARCHAR(8) NOT NULL ,
         PRIMARY KEY  (einsaetze_id, fahrzeuge_id)
     )
     CHARACTER SET utf8
