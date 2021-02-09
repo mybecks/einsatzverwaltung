@@ -37,7 +37,14 @@ class EinsatzverwaltungAdmin
     public function add_admin_scripts()
     {
         wp_enqueue_script('admin_scripts', plugins_url('js/functions.admin.js', __FILE__), array('jquery'));
-        wp_localize_script('admin_scripts', 'ajax_var', array('nonce' => wp_create_nonce('ajax-nonce')));
+        wp_localize_script(
+            'admin_scripts',
+            'ajax_object',
+            array(
+                'ajaxurl' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('ajax-nonce')
+            )
+        );
     }
 
     public function handle_vehicles()
@@ -57,8 +64,8 @@ class EinsatzverwaltungAdmin
                 </div>
 
                 <div class="form-group col-sm-7">
-                    <label for="new_vehicle">Beschreibung</label>
-                    <input id="new_vehicle" class="form-control" name="add_new_vehicle" placeholder="Bsp. LF 8/10" />
+                    <label for="vehicle_description">Beschreibung</label>
+                    <input id="vehicle_description" class="form-control" name="vehicle_description" placeholder="Bsp. LF 8/10" />
                 </div>
 
                 <div class="form-group col-sm-7">
@@ -75,7 +82,7 @@ class EinsatzverwaltungAdmin
                     <input id="vehicle_image" class="form-control" name="vehicle_image" />
                 </div>
                 <div class="col-sm-7">
-                    <button type="submit" class="add-vehicle btn btn-primary">Add</button>
+                    <button type="submit" class="btn btn-primary add-vehicle">Add</button>
                 </div>
             </form>
 
@@ -86,7 +93,6 @@ class EinsatzverwaltungAdmin
     public function display_vehicles()
     {
         $vehicles = $this->db_handler->load_vehicles();
-
     ?>
         <table class="tab-vehicle table">
             <thead>
@@ -104,13 +110,13 @@ class EinsatzverwaltungAdmin
                 foreach ($vehicles as $vehicle) { ?>
                     <tr>
                         <td scope="row">
-                            <?php $vehicle->radio_id; ?>
+                            <?php echo $vehicle->radio_id; ?>
                         </td>
                         <td>
-                            <?php $vehicle->description; ?>
+                            <?php echo $vehicle->description; ?>
                         </td>
                         <td>
-                            <?php $vehicle->location; ?>
+                            <?php echo $vehicle->location; ?>
                         </td>
                         <td>
                             <i class="fas fa-edit"></i>
@@ -127,12 +133,15 @@ class EinsatzverwaltungAdmin
 
     public function add_vehicle()
     {
-        wp_die('here');
+        // var_dump($_POST);
+        // die();
+
         $nonce = $_POST['nonce'];
 
         if (!wp_verify_nonce($nonce, 'ajax-nonce')) {
             die('Busted!');
         }
+
 
         //add new vehicle to database
         $this->db_handler->admin_insert_vehicle($_POST['vehicle']);
@@ -145,10 +154,8 @@ class EinsatzverwaltungAdmin
         $response = json_encode($vehicle);
 
         // response output -> sent back to javascript file
-        header("Content-Type: application/json");
-        echo $response;
-
-        wp_die();
+        // header("Content-Type: application/json");
+        wp_send_json($response);
     }
 }
 ?>

@@ -16,6 +16,13 @@ Wordpress Einsatz Plugin der FF Bad Schönborn
 
     `docker-compose exec wordpress bash`
 
+* Debugg Settings in wp-config.php
+    ```php
+    define( 'WP_DEBUG', true );
+    define( 'SCRIPT_DEBUG', true );
+    define( 'SAVEQUERIES', true );
+    ```
+
 # How to enable the plugin
 
 After activation you can use the shortcode on any page or post

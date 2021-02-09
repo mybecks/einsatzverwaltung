@@ -7,6 +7,7 @@
  **/
 class EinsatzverwaltungCustomPost
 {
+    private $wpEinsatzverwaltungAdmin;
 
     public function __construct()
     {
