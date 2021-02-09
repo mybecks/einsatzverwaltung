@@ -121,9 +121,7 @@ class DatabaseHandler
     {
         $query = "SELECT id, alarmstichwort, freitext, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media FROM "
             . $this->table->missions . " WHERE wp_posts_ID = %d";
-        $mission = $this->db->get_results($this->db->prepare($query, $post_id));
-
-        return $mission;
+        return $this->db->get_results($this->db->prepare($query, $post_id));
     }
 
     /**
@@ -136,9 +134,7 @@ class DatabaseHandler
     public function load_mission_by_id($id)
     {
         $query = "SELECT * FROM " . $this->table->missions . " WHERE id = %d";
-        $mission_details = $this->db->get_row($this->db->prepare($query, $id));
-
-        return $mission_details;
+        return $this->db->get_row($this->db->prepare($query, $id));
     }
 
     /**
@@ -150,12 +146,10 @@ class DatabaseHandler
      */
     public function load_vehicles_by_mission_id($mission_id)
     {
-        $query = "SELECT f.description FROM " . $this->table->vehicles .
-            " as f, " . $this->table->mission_has_vehicles . " as h WHERE f.id = h.fahrzeuge_id AND h.einsaetze_id = %d";
+        $query = "SELECT v.id, v.description FROM " . $this->table->vehicles .
+            " as v, " . $this->table->mission_has_vehicles . " as mv WHERE v.id = mv.fahrzeuge_id AND mv.einsaetze_id = %d";
 
-        $vehicles = $this->db->get_results($this->db->prepare($query, $mission_id));
-
-        return $vehicles;
+        return $this->db->get_results($this->db->prepare($query, $mission_id));
     }
 
     /**
@@ -277,7 +271,7 @@ class DatabaseHandler
      */
     public function load_vehicles()
     {
-        $query = "SELECT radio_id, description, location, media_link FROM " . $this->table->vehicles;
+        $query = "SELECT id, radio_id, description, location, media_link FROM " . $this->table->vehicles;
         $vehicles = $this->db->get_results($query);
 
         return $vehicles;
@@ -304,7 +298,7 @@ class DatabaseHandler
      * Insert new vehicles to mission
      *
      * @param int $mission_id
-     * @param int $vehicle_id
+     * @param string $vehicle_id
      * @author Andre Becker
      */
     public function insert_new_vehicle_to_mission($mission_id, $vehicle_id)
@@ -317,7 +311,7 @@ class DatabaseHandler
             ),
             array(
                 '%d',
-                '%d'
+                '%s'
             )
         );
     }
@@ -330,9 +324,16 @@ class DatabaseHandler
      */
     public function admin_insert_vehicle($vehicle)
     {
+        $sanitized_radio_id = str_replace(' ', '', $vehicle['radioId']);
+        $sanitized_radio_id = str_replace('/', '', $sanitized_radio_id);
+        $sanitized_radio_id = str_replace('-', '', $sanitized_radio_id);
+        $sanitized_radio_id = strtolower($sanitized_radio_id);
+
+
         $result = $this->db->insert(
             $this->table->vehicles,
             array(
+                'id' => $sanitized_radio_id,
                 'description' => $vehicle['description'],
                 'radio_id' => $vehicle['radioId'],
                 'location' => $vehicle['location'],

@@ -44,7 +44,46 @@ let addVehicle = function () {
         });
     });
 };
+
+let autocompleteDestinations = function () {
+
+    var destinations = [
+        "Langenbrücken",
+        "Mingolsheim",
+        "Bad Schönborn",
+        "Östringen",
+        "Odenheim",
+        "Tiefenbach",
+        "Eichelberg",
+        "Kraichtal",
+        "Bruchsal",
+        "Wiesental",
+        "Waghäusel",
+        "Kirrlach",
+        "Kronau",
+        "Unteröwisheim",
+        "Oberöwisheim",
+        "Weiher",
+        "Ubstadt",
+        "Stettfeld",
+        "Zeutern"
+    ];
+
+    $("#einsatzort").autocomplete({
+        source: destinations
+    });
+
+}
+
+let setEndDateEqStartDate = function () {
+    $('#alarm_date').change(function () {
+        $('#alarm_end_date').val($(this).val());
+    });
+}
+
 jQuery(document).ready(function ($) {
     deleteVehicleHandler();
     addVehicle();
+    setEndDateEqStartDate();
+    autocompleteDestinations();
 });

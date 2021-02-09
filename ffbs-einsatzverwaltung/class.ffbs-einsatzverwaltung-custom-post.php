@@ -15,7 +15,8 @@ class EinsatzverwaltungCustomPost
         add_action('publish_mission', array($this, 'save_data'));
         // add_action( 'trash_mission', array($this, 'trash_mission') ); //to set a flag that the mission is not shown any more
         add_action('before_delete_post', array($this, 'delete_mission')); //deltes the mission data
-        add_action('admin_enqueue_scripts', array($this, 'add_scripts'));
+        add_action('admin_enqueue_scripts', array($this, 'add_admin_scripts'));
+        add_action('admin_print_styles', array($this, 'add_admin_styles'));
         add_action('manage_mission_posts_custom_column', array($this, 'manage_mission_columns'), 10, 2);
         add_filter('post_updated_messages', array($this, 'mission_updated_messages'));
         add_filter('manage_edit-mission_columns', array($this, 'edit_mission_column'));
@@ -24,6 +25,32 @@ class EinsatzverwaltungCustomPost
         add_action('admin_menu', array($this, 'add_sub_menu_pages'));
         $this->db_handler = DatabaseHandler::get_instance();
     }
+
+    public function add_admin_styles()
+    {
+        wp_register_style('admin_styles', plugins_url('css/admin.css', __FILE__));
+        wp_register_style('admin_bootstrap', plugins_url('css/bootstrap.css', __FILE__));
+        wp_register_style('admin_fa', plugins_url('css/all.css', __FILE__));
+
+        wp_enqueue_style('admin_styles');
+        wp_enqueue_style('admin_bootstrap');
+        wp_enqueue_style('admin_fa');
+    }
+    public function add_admin_scripts()
+    {
+        wp_enqueue_script('jquery-ui-autocomplete');
+
+        wp_enqueue_script('admin_scripts', plugins_url('js/functions.admin.js', __FILE__), array('jquery', 'wp-api'));
+        wp_localize_script(
+            'admin_scripts',
+            'wpApiSettings',
+            array(
+                'root' => esc_url_raw(rest_url()),
+                'nonce' => wp_create_nonce('wp_rest')
+            )
+        );
+    }
+
 
     public function custom_post_mission()
     {
@@ -159,12 +186,12 @@ class EinsatzverwaltungCustomPost
             <form method="POST" action="">
                 <div class="form-group col-sm-7">
                     <label for="vehicle_radio_id">Funkruf Name</label>
-                    <input id="vehicle_radio_id" class="form-control" name="vehicle_radio_id" placeholder="Bsp. BS 2/42" />
+                    <input id="vehicle_radio_id" class="form-control" name="vehicle_radio_id" placeholder="Bsp. BS 2/42" required />
                 </div>
 
                 <div class="form-group col-sm-7">
                     <label for="vehicle_description">Beschreibung</label>
-                    <input id="vehicle_description" class="form-control" name="vehicle_description" placeholder="Bsp. LF 8/10" />
+                    <input id="vehicle_description" class="form-control" name="vehicle_description" placeholder="Bsp. LF 8/10" required />
                 </div>
 
                 <div class="form-group col-sm-7">
@@ -274,11 +301,6 @@ class EinsatzverwaltungCustomPost
         return $columns;
     }
 
-    public function add_scripts()
-    {
-        wp_enqueue_script('jquery-ui-autocomplete');
-    }
-
     /**
      * Add Custom Box to Category
      *
@@ -324,51 +346,11 @@ class EinsatzverwaltungCustomPost
         }
 
         if (0 !== count($vehicles_by_mission)) {
+
             for ($i = 0; $i < count($vehicles_by_mission); $i++) {
-                $name = $this->rename_db_vehicle_name($vehicles_by_mission[$i]->description);
-                $this->set_selector_for_checkbox_value($name);
+                $this->set_selector_for_checkbox_value($vehicles_by_mission[$i]->id);
             }
         }
-
-        // todo refactor and outsource into seperate
-        $script = <<< EOF
-        <script type='text/javascript'>
-            jQuery(document).ready(function($) {
-
-                $('#alarm_date').change(function(){
-                    $('#alarm_end_date').val($(this).val());
-                });
-
-                var destinations = [
-                    "Langenbrücken",
-                    "Mingolsheim",
-                    "Bad Schönborn",
-                    "Östringen",
-                    "Odenheim",
-                    "Tiefenbach",
-                    "Eichelberg",
-                    "Kraichtal",
-                    "Bruchsal",
-                    "Wiesental",
-                    "Waghäusel",
-                    "Kirrlach",
-                    "Kronau",
-                    "Unteröwisheim",
-                    "Oberöwisheim",
-                    "Weiher",
-                    "Ubstadt",
-                    "Stettfeld",
-                    "Zeutern"
-                ];
-
-                $( "#einsatzort" ).autocomplete({
-                    source: destinations
-                });
-
-            });
-
-        </script>
-EOF;
 
         // Refactor to Bootstrap Forms
     ?>
@@ -386,7 +368,7 @@ EOF;
                 <td>
                     <label for="alarmstichwort_freitext">
                         <?php _e("Alarmstichwort (Freitext)", TEXT_DOMAIN); ?>
-                        <label>
+                    </label>
                 </td>
                 <td>
                     <input name="alarmstichwort_freitext" id="freitext" value="<?php echo $mission->freitext; ?>" />
@@ -397,7 +379,7 @@ EOF;
                 <td>
                     <label for="einsatzort">
                         <?php _e("Einsatzort", TEXT_DOMAIN); ?>
-                        <label>
+                    </label>
                 </td>
                 <td>
                     <input id="einsatzort" name="einsatzort" value="<?php echo $mission->einsatzort; ?>" />
@@ -407,7 +389,7 @@ EOF;
                 <td>
                     <label for="alarmierung_datum">
                         <?php _e("Alarmierung (Datum)", TEXT_DOMAIN); ?>
-                        <label>
+                    </label>
                 </td>
                 <td>
                     <input id="alarm_date" name="alarmierung_datum" type="date" value="<?php echo $mission->alarmierung_date; ?>" />
@@ -417,7 +399,7 @@ EOF;
                 <td>
                     <label for="alarmierung_zeit">
                         <?php _e("Alarmierung (Uhrzeit)", TEXT_DOMAIN); ?>
-                        <label>
+                    </label>
                 </td>
                 <td>
                     <input name="alarmierung_zeit" type="time" value="<?php echo $mission->alarmierung_time; ?>" />
@@ -427,7 +409,7 @@ EOF;
                 <td>
                     <label for="rueckkehr_datum">
                         <?php _e("R&uuml;ckkehr (Datum)", TEXT_DOMAIN); ?>
-                        <label>
+                    </label>
                 </td>
                 <td>
                     <input id="alarm_end_date" name="rueckkehr_datum" type="date" value="<?php echo $mission->rueckkehr_date; ?>" />
@@ -437,7 +419,7 @@ EOF;
                 <td>
                     <label for="rueckkehr_zeit">
                         <?php _e("R&uuml;ckkehr (Uhrzeit)", TEXT_DOMAIN); ?>
-                        <label>
+                    </label>
                 </td>
                 <td>
                     <input name="rueckkehr_zeit" type="time" value="<?php echo $mission->rueckkehr_time; ?>" />
@@ -447,7 +429,7 @@ EOF;
                 <td>
                     <label for="link_zu_medien">
                         <?php _e("Link zu weiterf&uuml;hrenden Medien", TEXT_DOMAIN); ?>
-                        <label>
+                    </label>
                 </td>
                 <td>
                     <input name="link_zu_medien" type="url" value="<?php echo $mission->link_to_media; ?>" size="50" />
@@ -455,7 +437,7 @@ EOF;
             </tr>
             <tr>
                 <td>
-                    <label for="article_post_id">Link to Article<label>
+                    <label for="article_post_id">Link to Article</label>
                 </td>
                 <td>
                     <input name="article_post_id" value="<?php echo $mission->article_post_id; ?>" size="50" />
@@ -465,14 +447,25 @@ EOF;
                 <td>
                     <label for="fahrzeuge">
                         <?php _e("Eingesetzte Fahrzeuge", TEXT_DOMAIN); ?>
-                        <label>
+                    </label>
                 </td>
                 <td>
                     <?php
                     if (0 < count($vehicles)) {
                         for ($i = 0; $i < count($vehicles); $i++) {
-                            $name = $this->rename_db_vehicle_name($vehicles[$i]->description); ?>
-                            <label for="<?php echo $name; ?>"> <input name="<?php echo $name; ?>" type="checkbox" /> <?php echo $vehicles[$i]->description; ?></label>
+
+                            // $name = $this->rename_db_vehicle_name($vehicles[$i]->description);
+                    ?>
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="<?php echo $vehicles[$i]->id; ?>" value="<?php echo $vehicles[$i]->radio_id; ?>" id="<?php echo $vehicles[$i]->id; ?>">
+                                <label class="form-check-label" for="<?php echo $vehicles[$i]->id; ?>">
+                                    <?php echo $vehicles[$i]->radio_id . ' - ' . $vehicles[$i]->description; ?>
+                                </label>
+                            </div>
+
+
+
                         <?php }
                     } else { ?>
                         <p>
@@ -531,13 +524,10 @@ EOF;
         $vehicles = array();
 
         for ($i = 0; $i < count($db_vehicles); $i++) {
-            $name = $this->rename_db_vehicle_name($db_vehicles[$i]->description);
-
-            if (isset($_POST[$name])) {
+            if (isset($_POST[$db_vehicles[$i]->id])) {
                 $vehicles[] = $db_vehicles[$i]->id;
             }
         }
-
         if (empty($mission_id)) {
 
             //new mission entry
@@ -559,12 +549,8 @@ EOF;
 
             $id = $wpdb->insert_id;
 
-            if (function_exists("SimpleLogger")) {
-                SimpleLogger()->info("Mission " . $freitext . " created");
-            }
-
-            foreach ($vehicles as $vehicle) {
-                $this->db_handler->insert_new_vehicle_to_mission($id, $vehicle);
+            foreach ($vehicles as $vehicle_id) {
+                $this->db_handler->insert_new_vehicle_to_mission($id, $vehicle_id);
             }
 
             add_post_meta($post_id, MISSION_ID, $id);
@@ -585,16 +571,12 @@ EOF;
                 array('id' => $mission_id)
             );
 
-            if (function_exists("SimpleLogger")) {
-                SimpleLogger()->info("Mission updated " . $freitext);
-            }
-
             //remove all vehicles bound to current mission!
             $this->db_handler->remove_vehicles_from_mission($mission_id);
 
             //insert new values:
-            foreach ($vehicles as $vehicle) {
-                $this->db_handler->insert_new_vehicle_to_mission($mission_id, $vehicle);
+            foreach ($vehicles as $vehicle_id) {
+                $this->db_handler->insert_new_vehicle_to_mission($mission_id, $vehicle_id);
             }
         }
 
@@ -628,23 +610,6 @@ EOF;
         }
     }
 
-    /**
-     *
-     *
-     * @author Andre Becker
-     * */
-    public function rename_db_vehicle_name($name)
-    {
-
-        if ("DLK 23/12" == $name)
-            $name = "dlk";
-
-        $cleaned_name = str_replace(' ', '', $name);
-        $name = strtolower($cleaned_name);
-
-        return "fahrzeuge_" . $name;
-    }
-
     /*
      *
      *
@@ -654,9 +619,9 @@ EOF;
     {
         $script = "
         <script type='text/javascript'>
-         jQuery(document).ready(function($) {
-            $('input[name=" . $value . "]').attr('checked', true);
-        });
+            jQuery(document).ready(function($) {
+                $('input[name=" . $value . "]').attr('checked', true);
+            });
         </script>";
         echo $script;
     }
