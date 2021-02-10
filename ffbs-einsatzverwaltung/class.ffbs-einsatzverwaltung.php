@@ -437,7 +437,7 @@ function plugin_activation()
 
     $sql_vehicles = "CREATE TABLE IF NOT EXISTS " . $table_vehicles . "
     (
-        id                  VARCHAR(12) NOT NULL
+        id                  VARCHAR(12) NOT NULL,
         radio_id            VARCHAR(12) NOT NULL,
         description         VARCHAR(25) NOT NULL,
         location            VARCHAR(14) NOT NULL,
