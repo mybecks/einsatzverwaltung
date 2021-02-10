@@ -47,6 +47,13 @@ class EinsatzverwaltungAdmin
                 'mediaLink' => array(),
             ),
         ));
+
+        register_rest_route(self::VENDOR . '/v1', self::ROUTE_VEHICLES . '/(?P<vehicle_id>\w+\/?\d+)', array(
+            // By using this constant we ensure that when the WP_REST_Server changes our readable endpoints will work as intended.
+            'methods'  => WP_REST_Server::DELETABLE,
+            // Here we register our callback. The callback is fired when this endpoint is matched by the WP_REST_Server class.
+            'callback' => [$this, 'delete_vehicle'],
+        ));
     }
 
     public function get_vehicles()
@@ -57,7 +64,7 @@ class EinsatzverwaltungAdmin
 
     public function add_vehicle($request)
     {
-        $body = $request->get_json_params();
+        $body = $request->get_url_params();
 
         $vehicle = [
             'radioId' => $body['radioId'],
@@ -74,27 +81,18 @@ class EinsatzverwaltungAdmin
         } else {
             return new WP_Error('cant-create', $result, array('status' => 400));
         }
+    }
 
-        // $nonce = $_POST['nonce'];
+    public function delete_vehicle($request)
+    {
+        $params = $request->get_params();
 
-        // if (!wp_verify_nonce($nonce, 'ajax-nonce')) {
-        //     die('Busted!');
-        // }
-
-
-        // //add new vehicle to database
-        // $this->db_handler->admin_insert_vehicle($_POST['vehicle']);
-        // $id = $this->db_handler->get_last_insert_id();
-        // $vehicle = array(
-        //     'id' => $id,
-        //     'description' => $_POST['vehicle']
-        // );
-
-        // // $response = json_encode($vehicle);
-
-        // // response output -> sent back to javascript file
-        // // header("Content-Type: application/json");
-        // wp_send_json($vehicle);
+        $result = $this->db_handler->delete_vehicle($params['vehicle_id']);
+        if ($result == 1) {
+            return new WP_REST_Response(null, 204);
+        } else {
+            return new WP_Error('cant-create', $result, array('status' => 400));
+        }
     }
 }
 $wpEinsatzverwaltungAdmin = new EinsatzverwaltungAdmin();

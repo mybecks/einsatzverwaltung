@@ -1,11 +1,5 @@
 var $ = jQuery;
 
-var deleteVehicleHandler = function () {
-    $('.tab-images').click(function () {
-        alert('Handler for .click() called.');
-    });
-};
-
 let addVehicle = function () {
 
     $('.add-vehicle').click(function () {
@@ -35,7 +29,7 @@ let addVehicle = function () {
                     '<td><i class="fas fa-edit"></i></td>' +
                     '<td><i class="fas fa-trash-alt"></i></td>' +
                     '</tr>');
-                $('#message').fadeOut(2000);
+                $('#message').fadeOut(5000);
             },
             error: function (MLHttpRequest, textStatus, errorThrown) {
                 console.log(MLHttpRequest.status + ' ' + MLHttpRequest.responseText);
@@ -44,6 +38,33 @@ let addVehicle = function () {
         });
     });
 };
+
+let deleteVehicle = function () {
+
+    $(".tab-vehicle").on("click", "#delete", function () {
+        var tr = $(this).closest("tr");
+        let radioId = tr[0].cells[0].outerText;
+        let id = radioId.replace(' ', '').replace('/', '').toLowerCase();
+
+        let url = wpApiSettings.root + 'ffbs/v1/vehicles/' + id;
+        $.ajax({
+            type: 'DELETE',
+            url: url,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('X-WP-Nonce', wpApiSettings.nonce);
+            },
+            success: function (data, textStatus, XMLHttpRequest) {
+                $('#message').html(radioId + ' successfully removed').show();
+                tr.remove();
+                $('#message').fadeOut(5000);
+            },
+            error: function (MLHttpRequest, textStatus, errorThrown) {
+                console.log(MLHttpRequest.status + ' ' + MLHttpRequest.responseText);
+                $('#message').html(MLHttpRequest.status + ' ' + MLHttpRequest.responseText).show();
+            }
+        });
+    });
+}
 
 let autocompleteDestinations = function () {
 
@@ -69,17 +90,28 @@ let autocompleteDestinations = function () {
         "Zeutern"
     ];
 
-    $("#einsatzort").autocomplete({
-        source: destinations
-    });
+    if ($('#einsatzort').length > 0) {
+        $("#einsatzort").autocomplete({
+            source: destinations
+        });
+    }
+
 
 }
 
 let validateVehicleInput = function () {
 
+    if ($('#vehicle_radio_id').val() == '') {
+        $('.add-vehicle').attr("disabled", true);
+    }
+
+    $('#vehicle_radio_id').on('input', function () {
+        $('.add-vehicle').attr("disabled", false);
+    });
 }
 
 let setEndDateEqStartDate = function () {
+
     $('#alarm_date').change(function () {
         $('#alarm_end_date').val($(this).val());
     });
@@ -87,8 +119,8 @@ let setEndDateEqStartDate = function () {
 
 jQuery(document).ready(function ($) {
     // Vehicle Subpage
-    deleteVehicleHandler();
     addVehicle();
+    deleteVehicle();
     validateVehicleInput();
 
     // Custom Post Box

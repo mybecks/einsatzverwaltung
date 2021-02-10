@@ -37,3 +37,7 @@ progress:after {
 #message {
 	display : none;
 }
+
+.pointer {
+    cursor: pointer;
+}

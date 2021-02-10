@@ -144,10 +144,10 @@ class EinsatzverwaltungCustomPost
                                     <?php echo $vehicle->location; ?>
                                 </td>
                                 <td scope="row">
-                                    <i class="fas fa-edit"></i>
+                                    <i class="fas fa-edit pointer" id="modify"></i>
                                 </td>
                                 <td scope="row">
-                                    <i class="fas fa-trash-alt"></i>
+                                    <i class="fas fa-trash-alt pointer" id="delete"></i>
                                 </td>
                             </tr>
                         <?php } ?>

@@ -1,12 +1,37 @@
 # Todos
+
+## Backend
+### go live
 * [ x ] Fix uninstall of plugin
 * [ X ] Vehicles: extend creation with an additional field for a image from the media gallery
-* [ ] Implement Mediathek chooser: https://wordpress.stackexchange.com/questions/235406/how-do-i-select-an-image-from-media-library-in-my-plugin
 * [ x ] Custom Post: Extend with possibility to link a post (wp_get_content on frontend)
 * [ x ] Refactor tables:
     * Remove "Einsatz  Art" field
     * Remove "Alarm" field
     * "Freitext" should be permanent visible
-* [ ] Fix "update" of custom post
+* [ x ] Fix "update" of custom post
+* [ ] refactor ..-admin.php to extend from WP_REST_Controller
+* [ ] Dropdown with post from specific category in custom post
+* [ ] refactor selector_for_dropdown function to just include once
+
+## Database
+* [ ] rename table names to eng
 * [ ] move db table names to constants
-* [ ] restructure UI components
+* [ ] refactor db handler
+* [ ] move creation of tables to db handler
+
+## UI Parts
+* [ ] restructure UI components e.g. create partials
+
+## Vehicles Page
+* [ ] extend db with retierement option
+* [ ] modify
+* [ x ] delete
+* [ x ] validate input
+* [ ] Implement Mediathek chooser: https://wordpress.stackexchange.com/questions/235406/how-do-i-select-an-image-from-media-library-in-my-plugin
+
+## Misc
+* [ ] add ffbs_ prefix to all custom functions ...
+* [ ] restructure plugin
+
+## Frontend

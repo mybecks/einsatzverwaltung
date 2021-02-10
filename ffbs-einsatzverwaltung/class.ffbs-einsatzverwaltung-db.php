@@ -354,6 +354,21 @@ class DatabaseHandler
         return $result;
     }
 
+    public function delete_vehicle($id)
+    {
+        $result = $this->db->delete(
+            $this->table->vehicles,
+            array('id' => $id),
+            array('%s')
+        );
+
+        if (empty($result)) {
+            return $this->get_last_error();
+        }
+
+        return $result;
+    }
+
     public function get_last_insert_id()
     {
         return $this->db->insert_id;
