@@ -421,6 +421,17 @@ class EinsatzverwaltungCustomPost
             </tr>
             <tr>
                 <td>
+                    <label for="article_post_id2">DropDown to Article</label>
+                </td>
+                <td>
+                    <select class="form-control" id="article_post_id2" name="article_post_id2">
+                        <option>Mingolsheim</option>
+                        <option>Langenbrücken</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
                     <label for="fahrzeuge">
                         <?php _e("Eingesetzte Fahrzeuge", TEXT_DOMAIN); ?>
                     </label>

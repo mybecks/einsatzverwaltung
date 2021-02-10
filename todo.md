@@ -16,8 +16,8 @@
 * [ ] permalink: /mission/2021/02/2021_02_th-hoelle-friert-zu/ -> /einsatz/2021/02/th-hoelle-friert-zu/* [ ] disable auto-draft in custom post
 
 ## Database
-* [ x ] rename table names to en
-* [ ] rename columns of tables to en
+* [ x ] rename table names to `en`
+* [ ] rename columns of tables to `en`
     * [ ] ffbs_mission
     * [ x ] ffbs_vehicles
     * [ x ] ffbs_moved_out_vehicles

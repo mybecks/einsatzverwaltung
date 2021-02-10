@@ -118,6 +118,14 @@ let setEndDateEqStartDate = function () {
     });
 }
 
+let fillLinkToPostDropdown = function () {
+    if ($('#article_post_id2').length > 0) {
+        let url = wpApiSettings.root + 'wp/v2/posts/?filter[category_name]=einsaetze'
+
+        // posts.get
+    }
+}
+
 jQuery(document).ready(function ($) {
     // Vehicle Subpage
     addVehicle();
@@ -127,4 +135,5 @@ jQuery(document).ready(function ($) {
     // Custom Post Box
     setEndDateEqStartDate();
     autocompleteDestinations();
+    fillLinkToPostDropdown();
 });
