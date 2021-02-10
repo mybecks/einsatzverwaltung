@@ -422,9 +422,9 @@ function plugin_activation()
     flush_rewrite_rules();
 
     // $wpdb->show_errors();
-    $table_vehicles =     $wpdb->prefix . "fahrzeuge";
-    $table_missions =     $wpdb->prefix . "einsaetze";
-    $table_missions_has_vehicles = $wpdb->prefix . "einsaetze_has_fahrzeuge";
+    $table_vehicles =     $wpdb->prefix . "ffbs_vehicles";
+    $table_missions =     $wpdb->prefix . "ffbs_missions";
+    $table_moved_out_vehicles = $wpdb->prefix . "ffbs_moved_out_vehicles";
     $table_wp_posts =    $wpdb->prefix . "posts";
 
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
@@ -441,6 +441,7 @@ function plugin_activation()
         radio_id            VARCHAR(12) NOT NULL,
         description         VARCHAR(25) NOT NULL,
         location            VARCHAR(14) NOT NULL,
+        status              VARCHAR(2) DEFAULT 'S2' NOT NULL,
         media_link          VARCHAR(2083),
         PRIMARY KEY  (id)
     )
@@ -452,8 +453,7 @@ function plugin_activation()
     $sql_missions = "CREATE TABLE IF NOT EXISTS $table_missions
     (
         id                  INT UNSIGNED NOT NULL AUTO_INCREMENT ,
-        alarmstichwort      VARCHAR(125) NOT NULL ,
-        freitext            VARCHAR(125) NULL ,
+        freitext            VARCHAR(255) NOT NULL ,
         einsatzort          VARCHAR(45) NOT NULL ,
         alarmierung_date    DATE NOT NULL ,
         alarmierung_time    TIME NOT NULL ,
@@ -476,11 +476,11 @@ function plugin_activation()
 
     dbDelta($sql_missions);
 
-    $sql_missions_has_vehicles = "CREATE TABLE IF NOT EXISTS $table_missions_has_vehicles
+    $sql_missions_has_vehicles = "CREATE TABLE IF NOT EXISTS $table_moved_out_vehicles
     (
-        einsaetze_id        INT NOT NULL ,
-        fahrzeuge_id        VARCHAR(12) NOT NULL ,
-        PRIMARY KEY  (einsaetze_id, fahrzeuge_id)
+        mission_id        INT NOT NULL ,
+        vehicle_id        VARCHAR(12) NOT NULL ,
+        PRIMARY KEY  (mission_id, vehicle_id)
     )
     CHARACTER SET utf8
     COLLATE utf8_general_ci;

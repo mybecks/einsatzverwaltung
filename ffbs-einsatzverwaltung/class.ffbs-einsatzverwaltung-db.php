@@ -41,9 +41,9 @@ class DatabaseHandler
         global $wpdb;
         $this->db = $wpdb;
         $this->table = (object) array(
-            "missions" => $this->db->prefix . "einsaetze",
-            "mission_has_vehicles" => $this->db->prefix . "einsaetze_has_fahrzeuge",
-            "vehicles" => $this->db->prefix . "fahrzeuge"
+            "missions" => $this->db->prefix . "ffbs_missions",
+            "moved_out_vehicles" => $this->db->prefix . "ffbs_moved_out_vehicles",
+            "vehicles" => $this->db->prefix . "ffbs_vehicles"
         );
     }
 
@@ -119,7 +119,7 @@ class DatabaseHandler
      */
     public function get_mission_details_by_post_id($post_id)
     {
-        $query = "SELECT id, alarmstichwort, freitext, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media FROM "
+        $query = "SELECT id, freitext, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media FROM "
             . $this->table->missions . " WHERE wp_posts_ID = %d";
         return $this->db->get_results($this->db->prepare($query, $post_id));
     }
@@ -147,7 +147,7 @@ class DatabaseHandler
     public function load_vehicles_by_mission_id($mission_id)
     {
         $query = "SELECT v.id, v.description FROM " . $this->table->vehicles .
-            " as v, " . $this->table->mission_has_vehicles . " as mv WHERE v.id = mv.fahrzeuge_id AND mv.einsaetze_id = %d";
+            " as v, " . $this->table->moved_out_vehicles . " as mv WHERE v.id = mv.vehicle_id AND mv.mission_id = %d";
 
         return $this->db->get_results($this->db->prepare($query, $mission_id));
     }
@@ -177,7 +177,7 @@ class DatabaseHandler
     {
         $arr_months = array();
 
-        $query = "SELECT id, alarmstichwort, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media, wp_posts_ID, MONTH(alarmierung_date) AS Month, freitext, article_post_id " .
+        $query = "SELECT id, freitext, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media, wp_posts_ID, MONTH(alarmierung_date) AS Month, article_post_id " .
             "FROM " . $this->table->missions .
             " WHERE YEAR(alarmierung_date) = %d" .
             " ORDER BY alarmierung_date DESC, alarmierung_time DESC";
@@ -204,11 +204,11 @@ class DatabaseHandler
                         $description = "Kurzinfo";
                     }
 
-                    if ('Freitext' == $mission->alarmstichwort || 'Sonstiger Brand' == $mission->alarmstichwort) {
-                        $alarmstichwort = $mission->freitext;
-                    } else {
-                        $alarmstichwort = $mission->alarmstichwort;
-                    }
+                    // if ('Freitext' == $mission->alarmstichwort || 'Sonstiger Brand' == $mission->alarmstichwort) {
+                    //     $alarmstichwort = $mission->freitext;
+                    // } else {
+                    //     $alarmstichwort = $mission->alarmstichwort;
+                    // }
 
                     // if (false !== strpos($mission->art_alarmierung, 'Brandeinsatz')) {
                     //     $alarm_short = 'BE';
@@ -218,22 +218,8 @@ class DatabaseHandler
                     //     $alarm_short = 'SE';
                     // }
 
-                    // todo refactor
-                    // $arr_content = array();
-                    // // $arr_content[0] = $alarm_short;
-                    // $arr_content[0] = $alarmstichwort;
-                    // // $arr_content[2] = $mission->alarm_art;
-                    // $arr_content[1] = $mission->einsatzort;
-                    // $arr_content[2] = strftime("%d.%m.%Y", strtotime($mission->alarmierung_date));
-                    // $arr_content[3] = strftime("%H:%M", strtotime($mission->alarmierung_time));
-                    // $arr_content[4] = $mission->rueckkehr_date;
-                    // $arr_content[5] = $mission->rueckkehr_time;
-                    // $arr_content[6] = $mission->link_to_media;
-                    // $arr_content[7] = $description;
-                    // $arr_content[8] = get_permalink($mission->wp_posts_ID);
-
                     $arr_content = array(
-                        "keyword" => $alarmstichwort,
+                        "keyword" => $mission->freitext, //freitext
                         "location" => $mission->einsatzort,
                         "alarm_date" => strftime("%d.%m.%Y", strtotime($mission->alarmierung_date)),
                         "alarm_time" => strftime("%H:%M", strtotime($mission->alarmierung_time)),
@@ -271,7 +257,7 @@ class DatabaseHandler
      */
     public function load_vehicles()
     {
-        $query = "SELECT id, radio_id, description, location, media_link FROM " . $this->table->vehicles;
+        $query = "SELECT id, radio_id, description, location, status, media_link FROM " . $this->table->vehicles;
         $vehicles = $this->db->get_results($query);
 
         return $vehicles;
@@ -284,12 +270,9 @@ class DatabaseHandler
      */
     public function remove_vehicles_from_mission($mission_id)
     {
-        // $query = "DELETE FROM " . $this->table->missions_has_vehicles . " WHERE einsaetze_id = %d";
-        // $delete = $this->db->query( $this->db->prepare( $query, $mission_id ) );
-
         $this->db->delete(
-            $this->table->mission_has_vehicles,
-            array('einsaetze_id' => $mission_id),
+            $this->table->moved_out_vehicles,
+            array('mission_id' => $mission_id),
             array('%d')
         );
     }
@@ -304,10 +287,10 @@ class DatabaseHandler
     public function insert_new_vehicle_to_mission($mission_id, $vehicle_id)
     {
         $this->db->insert(
-            $this->table->mission_has_vehicles,
+            $this->table->moved_out_vehicles,
             array(
-                'einsaetze_id' => $mission_id,
-                'fahrzeuge_id' => $vehicle_id
+                'mission_id' => $mission_id,
+                'vehicle_id' => $vehicle_id
             ),
             array(
                 '%d',
@@ -337,12 +320,15 @@ class DatabaseHandler
                 'description' => $vehicle['description'],
                 'radio_id' => $vehicle['radioId'],
                 'location' => $vehicle['location'],
+                // 'status' => $vehicle['status'],
                 'media_link' => $vehicle['mediaLink'],
             ),
             array(
                 '%s',
                 '%s',
                 '%s',
+                '%s',
+                // '%s',
                 '%s',
             )
         );

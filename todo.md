@@ -12,11 +12,16 @@
 * [ x ] Fix "update" of custom post
 * [ ] refactor ..-admin.php to extend from WP_REST_Controller `$ffbs_rest_controler = new RestContller(); $ffbs_rest_controller->register_routes();` in `add_action('rest_api_init', array(....));`
 * [ ] Dropdown with post from specific category in custom post
-* [ ] refactor selector_for_dropdown function to just include once
-* [ ] permalink: /mission/2021/02/2021_02_th-hoelle-friert-zu/ -> /einsatz/2021/02/th-hoelle-friert-zu/
+* [ x ] refactor selector_for_dropdown function to just include once
+* [ ] permalink: /mission/2021/02/2021_02_th-hoelle-friert-zu/ -> /einsatz/2021/02/th-hoelle-friert-zu/* [ ] disable auto-draft in custom post
 
 ## Database
-* [ ] rename table names to eng
+* [ x ] rename table names to en
+* [ ] rename columns of tables to en
+    * [ ] ffbs_mission
+    * [ x ] ffbs_vehicles
+    * [ x ] ffbs_moved_out_vehicles
+* [ x ] prefix tables with `ffbs_`
 * [ ] move db table names to constants
 * [ ] refactor db handler
 * [ ] move creation of tables to db handler
@@ -25,7 +30,7 @@
 * [ ] restructure UI components e.g. create partials
 
 ## Vehicles Page
-* [ ] extend db with retierement option
+* [ x ] extend db with retierement option
 * [ ] modify
 * [ x ] delete
 * [ x ] validate input

@@ -125,6 +125,7 @@ class EinsatzverwaltungCustomPost
                             <th scope="col">Funkruf Name</th>
                             <th scope="col">Beschreibung</th>
                             <th scope="col">Standort</th>
+                            <th scope="col">Status</th>
                             <th scope="col">Edit</th>
                             <th scope="col">Delete</th>
                         </tr>
@@ -142,6 +143,9 @@ class EinsatzverwaltungCustomPost
                                 </td>
                                 <td scope="row">
                                     <?php echo $vehicle->location; ?>
+                                </td>
+                                <td scope="row">
+                                    <?php echo $vehicle->status; ?>
                                 </td>
                                 <td scope="row">
                                     <i class="fas fa-edit pointer" id="modify"></i>
@@ -319,9 +323,9 @@ class EinsatzverwaltungCustomPost
 
         if (0 !== count($vehicles_by_mission)) {
 
-            for ($i = 0; $i < count($vehicles_by_mission); $i++) {
-                $this->set_selector_for_checkbox_value($vehicles_by_mission[$i]->id);
-            }
+            // for ($i = 0; $i < count($vehicles_by_mission); $i++) {
+            $this->set_selector_for_checkbox_value($vehicles_by_mission);
+            // }
         }
 
         // Refactor to Bootstrap Forms
@@ -336,14 +340,14 @@ class EinsatzverwaltungCustomPost
                 </td>
             </tr>
             </tr>
-            <tr id="freitext_alarmstichwort">
+            <tr id="freitext">
                 <td>
-                    <label for="alarmstichwort_freitext">
+                    <label for="freitext">
                         <?php _e("Alarmstichwort (Freitext)", TEXT_DOMAIN); ?>
                     </label>
                 </td>
                 <td>
-                    <input name="alarmstichwort_freitext" id="freitext" value="<?php echo $mission->freitext; ?>" />
+                    <input name="freitext" id="freitext" value="<?php echo $mission->freitext; ?>" />
                     <small id="emailHelp" class="form-text text-muted">Beispiel: B - Auslösung einer BMA</small>
                 </td>
             </tr>
@@ -460,7 +464,7 @@ class EinsatzverwaltungCustomPost
     {
         global $wpdb;
 
-        $table_missions = $wpdb->prefix . "einsaetze";
+        $table_missions = $wpdb->prefix . "ffbs_missions";
 
 
         // verify if this is an auto save routine.
@@ -484,7 +488,7 @@ class EinsatzverwaltungCustomPost
 
         $mission_id = $_POST['mission_id'];
 
-        $freitext = $_POST['alarmstichwort_freitext'];
+        $freitext = $_POST['freitext'];
         $einsatzort = $_POST['einsatzort'];
         $alarmierung_datum = $_POST['alarmierung_datum'];
         $alarmierung_zeit = $_POST['alarmierung_zeit'];
@@ -587,14 +591,16 @@ class EinsatzverwaltungCustomPost
      *
      * @author Andre Becker
      **/
-    public function set_selector_for_checkbox_value($value)
+    public function set_selector_for_checkbox_value($vehicles_by_mission)
     {
-        $script = "
-        <script type='text/javascript'>
-            jQuery(document).ready(function($) {
-                $('input[name=" . $value . "]').attr('checked', true);
-            });
-        </script>";
+        $script = "<script type='text/javascript'>";
+
+        for ($i = 0; $i < count($vehicles_by_mission); $i++) {
+            $script .= "jQuery(document).ready(function($) {
+                            $('input[name=" . $vehicles_by_mission[$i]->id . "]').attr('checked', true);
+                        });";
+        }
+        $script .= "</script>";
         echo $script;
     }
 }

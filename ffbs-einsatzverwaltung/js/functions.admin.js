@@ -26,6 +26,7 @@ let addVehicle = function () {
                     '<td>' + data.radioId + '</td>' +
                     '<td>' + data.description + '</td>' +
                     '<td>' + data.location + '</td>' +
+                    '<td>' + data.status + '</td>' +
                     '<td><i class="fas fa-edit"></i></td>' +
                     '<td><i class="fas fa-trash-alt"></i></td>' +
                     '</tr>');
