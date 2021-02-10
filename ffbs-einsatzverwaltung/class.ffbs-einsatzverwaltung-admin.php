@@ -64,7 +64,7 @@ class EinsatzverwaltungAdmin
 
     public function add_vehicle($request)
     {
-        $body = $request->get_url_params();
+        $body = $request->get_json_params();
 
         $vehicle = [
             'radioId' => $body['radioId'],
