@@ -350,8 +350,10 @@ class EinsatzverwaltungCustomPost
                     </label>
                 </td>
                 <td>
-                    <input name="freitext" id="freitext" value="<?php echo $mission->freitext; ?>" />
-                    <small id="emailHelp" class="form-text text-muted">Beispiel: B - Auslösung einer BMA</small>
+                    <div class="form-check">
+                        <input class="form-check-input" name="freitext" id="freitext" value="<?php echo $mission->freitext; ?>" />
+                        <small id="emailHelp" class="form-text text-muted">Beispiel: B - Auslösung einer BMA</small>
+                    </div>
                 </td>
             </tr>
             <tr>
