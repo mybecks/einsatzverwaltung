@@ -21,7 +21,6 @@ function ffbs_einsatzverwaltung_uninstall_plugin()
 
 function delete_custom_posts()
 {
-
     // fetch posts of type mission
     $args = array(
         'post_type' => 'mission',
@@ -43,8 +42,8 @@ function drop_tables_old()
 {
     global $wpdb;
 
-    $table_vehicles              = $wpdb->prefix . "fahrzeuge";
-    $table_missions              = $wpdb->prefix . "einsaetze";
+    $table_vehicles = $wpdb->prefix . "fahrzeuge";
+    $table_missions = $wpdb->prefix . "einsaetze";
     $table_missions_has_vehicles = $wpdb->prefix . "einsaetze_has_fahrzeuge";
 
     $sql_missions_has_vehicles = "DROP TABLE IF EXISTS $table_missions_has_vehicles";
@@ -61,8 +60,8 @@ function drop_tables()
 {
     global $wpdb;
 
-    $table_vehicles              = $wpdb->prefix . "ffbs_vehicles";
-    $table_missions              = $wpdb->prefix . "ffbs_missions";
+    $table_vehicles = $wpdb->prefix . "ffbs_vehicles";
+    $table_missions = $wpdb->prefix . "ffbs_missions";
     $table_moved_out_vehicles = $wpdb->prefix . "ffbs_moved_out_vehicles";
 
     $sql_missions_has_vehicles = "DROP TABLE IF EXISTS $table_moved_out_vehicles";

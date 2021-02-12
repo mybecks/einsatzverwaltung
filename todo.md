@@ -11,7 +11,7 @@
     * "Freitext" should be permanent visible
 * [ x ] Fix "update" of custom post
 * [ ] refactor ..-admin.php to extend from WP_REST_Controller `$ffbs_rest_controler = new RestContller(); $ffbs_rest_controller->register_routes();` in `add_action('rest_api_init', array(....));`
-* [ ] Dropdown with post from specific category in custom post
+* [ x ] Dropdown with post from specific category in custom post
 * [ x ] refactor selector_for_dropdown function to just include once
 * [ ] permalink: /mission/2021/02/2021_02_th-hoelle-friert-zu/ -> /einsatz/2021/02/th-hoelle-friert-zu/* [ ] disable auto-draft in custom post
 

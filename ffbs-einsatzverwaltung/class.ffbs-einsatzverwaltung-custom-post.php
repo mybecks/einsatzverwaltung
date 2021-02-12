@@ -328,6 +328,9 @@ class EinsatzverwaltungCustomPost
             // }
         }
 
+        if (0 != $mission->article_post_id) {
+            $this->set_selector_for_dropdown_value($mission->article_post_id);
+        }
         // Refactor to Bootstrap Forms
     ?>
         <table border="1">
@@ -416,17 +419,9 @@ class EinsatzverwaltungCustomPost
                     <label for="article_post_id">Link to Article</label>
                 </td>
                 <td>
-                    <input name="article_post_id" value="<?php echo $mission->article_post_id; ?>" size="50" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="article_post_id2">DropDown to Article</label>
-                </td>
-                <td>
-                    <select class="form-control" id="article_post_id2" name="article_post_id2">
-                        <option>Mingolsheim</option>
-                        <option>Langenbrücken</option>
+                    <select class="form-control" id="article_post_id" name="article_post_id">
+                        <option value="0">Kein Beitrag</option>
+                        <?php echo $this->get_article_options(); ?>
                     </select>
                 </td>
             </tr>
@@ -613,6 +608,40 @@ class EinsatzverwaltungCustomPost
         }
         $script .= "</script>";
         echo $script;
+    }
+
+    public function set_selector_for_dropdown_value($value)
+    {
+        $script = "
+        <script type='text/javascript'>
+         jQuery(document).ready(function($) {
+            $('#article_post_id').val('" . $value . "');
+        });
+        </script>";
+        echo $script;
+    }
+
+    public function get_posts_by_category($category_slug)
+    {
+        $args = array(
+            'category' => $category_slug,
+            'numberposts' => -1,
+            'orderby'    => 'post_date',
+            'sort_order' => 'asc'
+        );
+        $posts = get_posts($args);
+        wp_reset_postdata();
+        return $posts;
+    }
+
+    public function get_article_options()
+    {
+        $posts = $this->get_posts_by_category('einsaetze');
+        $options = '';
+        foreach ($posts as $post) {
+            $options .= "<option value=" . $post->ID . ">" . $post->post_title . " (" . $post->post_date . ")" . "</option>";
+        }
+        return $options;
     }
 }
 
