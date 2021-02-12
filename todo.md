@@ -14,6 +14,7 @@
 * [ x ] Dropdown with post from specific category in custom post
 * [ x ] refactor selector_for_dropdown function to just include once
 * [ ] permalink: /mission/2021/02/2021_02_th-hoelle-friert-zu/ -> /einsatz/2021/02/th-hoelle-friert-zu/* [ ] disable auto-draft in custom post
+* [ ] customize article category for "link to article"
 
 ## Database
 * [ x ] rename table names to `en`
