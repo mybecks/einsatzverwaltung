@@ -624,7 +624,7 @@ class EinsatzverwaltungCustomPost
     public function get_posts_by_category($category_slug)
     {
         $args = array(
-            'category' => $category_slug,
+            'category_name' => $category_slug,
             'numberposts' => -1,
             'orderby'    => 'post_date',
             'sort_order' => 'asc'
