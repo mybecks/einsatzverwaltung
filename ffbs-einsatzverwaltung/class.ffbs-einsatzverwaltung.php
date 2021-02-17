@@ -140,10 +140,10 @@ class Einsatzverwaltung
             <br />
             <div>
                 <a name='<?php echo $german_month; ?>'></a>
+                <h2>
+                    <?php echo $german_month; ?>
+                </h2>
                 <div class='table-responsive'>
-                    <h2>
-                        <?php echo $german_month; ?>
-                    </h2>
                     <table class='table table-striped' summary='Einsatzliste im Monat $german_month' border='0'>
                         <thead>
                             <tr>
@@ -239,8 +239,8 @@ class Einsatzverwaltung
 
         ?>
         <a name="Übersicht"></a>
+        <h2>Monatsübersicht für <?php echo $mission_year; ?></h2>
         <div class='table-responsive'>
-            <h2>Monatsübersicht für <?php echo $mission_year; ?></h2>
             <table class="table table-striped" summary="Übersicht über die Anzahl der Einsätze im Jahr <?php echo $mission_year; ?>">
                 <thead>
                     <tr>

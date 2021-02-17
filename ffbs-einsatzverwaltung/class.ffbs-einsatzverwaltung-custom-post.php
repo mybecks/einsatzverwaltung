@@ -331,134 +331,107 @@ class EinsatzverwaltungCustomPost
         if (0 != $mission->article_post_id) {
             $this->set_selector_for_dropdown_value($mission->article_post_id);
         }
-        // Refactor to Bootstrap Forms
     ?>
-        <table border="1">
-            <tr>
-                <td>
-                    <label for="mission_id"><?php _e("Einsatz Nr.", TEXT_DOMAIN); ?><label>
-                </td>
-                <td>
-                    <input id="mission_id" name="mission_id" value="<?php echo $mission->id; ?>" readonly="true" size="4" />
-                </td>
-            </tr>
-            </tr>
-            <tr id="freitext">
-                <td>
-                    <label for="freitext">
-                        <?php _e("Alarmstichwort (Freitext)", TEXT_DOMAIN); ?>
-                    </label>
-                </td>
-                <td>
-                    <div class="form-check">
-                        <input class="form-check-input" name="freitext" id="freitext" value="<?php echo $mission->freitext; ?>" />
-                        <small id="emailHelp" class="form-text text-muted">Beispiel: B - Auslösung einer BMA</small>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="einsatzort">
-                        <?php _e("Einsatzort", TEXT_DOMAIN); ?>
-                    </label>
-                </td>
-                <td>
-                    <input id="einsatzort" name="einsatzort" value="<?php echo $mission->einsatzort; ?>" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="alarmierung_datum">
-                        <?php _e("Alarmierung (Datum)", TEXT_DOMAIN); ?>
-                    </label>
-                </td>
-                <td>
-                    <input id="alarm_date" name="alarmierung_datum" type="date" value="<?php echo $mission->alarmierung_date; ?>" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="alarmierung_zeit">
-                        <?php _e("Alarmierung (Uhrzeit)", TEXT_DOMAIN); ?>
-                    </label>
-                </td>
-                <td>
-                    <input name="alarmierung_zeit" type="time" value="<?php echo $mission->alarmierung_time; ?>" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="rueckkehr_datum">
-                        <?php _e("R&uuml;ckkehr (Datum)", TEXT_DOMAIN); ?>
-                    </label>
-                </td>
-                <td>
-                    <input id="alarm_end_date" name="rueckkehr_datum" type="date" value="<?php echo $mission->rueckkehr_date; ?>" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="rueckkehr_zeit">
-                        <?php _e("R&uuml;ckkehr (Uhrzeit)", TEXT_DOMAIN); ?>
-                    </label>
-                </td>
-                <td>
-                    <input name="rueckkehr_zeit" type="time" value="<?php echo $mission->rueckkehr_time; ?>" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="link_zu_medien">
-                        <?php _e("Link zu weiterf&uuml;hrenden Medien", TEXT_DOMAIN); ?>
-                    </label>
-                </td>
-                <td>
-                    <input name="link_zu_medien" type="url" value="<?php echo $mission->link_to_media; ?>" size="50" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="article_post_id">Link to Article</label>
-                </td>
-                <td>
-                    <select class="form-control" id="article_post_id" name="article_post_id">
-                        <option value="0">Kein Beitrag</option>
-                        <?php echo $this->get_article_options(); ?>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="fahrzeuge">
-                        <?php _e("Eingesetzte Fahrzeuge", TEXT_DOMAIN); ?>
-                    </label>
-                </td>
-                <td>
-                    <?php
-                    if (0 < count($vehicles)) {
-                        for ($i = 0; $i < count($vehicles); $i++) {
+        <div class="form-group row">
+            <label for="freitext" class="col-sm-2 col-form-label"><?php _e("Alarmstichwort (Freitext)", TEXT_DOMAIN); ?></label>
+            <div class="col-sm-10">
+                <input class="form-control form-check-input" name="freitext" id="freitext" value="<?php echo $mission->freitext; ?>" />
+                <small id="emailHelp" class="form-text text-muted">Beispiel: B - Auslösung einer BMA</small>
+            </div>
+        </div>
 
-                            // $name = $this->rename_db_vehicle_name($vehicles[$i]->description);
-                    ?>
+        <div class="form-group row">
+            <label for="einsatzort" class="col-sm-2 col-form-label">
+                <?php _e("Einsatzort", TEXT_DOMAIN); ?>
+            </label>
+            <div class="col-sm-10">
+                <input class="form-control" id="einsatzort" name="einsatzort" value="<?php echo $mission->einsatzort; ?>" />
+            </div>
+        </div>
 
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="<?php echo $vehicles[$i]->id; ?>" value="<?php echo $vehicles[$i]->radio_id; ?>" id="<?php echo $vehicles[$i]->id; ?>">
-                                <label class="form-check-label" for="<?php echo $vehicles[$i]->id; ?>">
-                                    <?php echo $vehicles[$i]->radio_id . ' - ' . $vehicles[$i]->description; ?>
-                                </label>
-                            </div>
+        <div class="form-group row">
+            <label for="alarm_date" class="col-sm-2 col-form-label">
+                <?php _e("Alarmierung (Datum)", TEXT_DOMAIN); ?>
+            </label>
+            <div class="col-sm-10">
+                <input class="form-control" id="alarm_date" name="alarmierung_datum" type="date" value="<?php echo $mission->alarmierung_date; ?>" />
+            </div>
+        </div>
 
+        <div class="form-group row">
+            <label for="alarm_time" class="col-sm-2 col-form-label">
+                <?php _e("Alarmierung (Uhrzeit)", TEXT_DOMAIN); ?>
+            </label>
+            <div class="col-sm-10">
+                <input class="form-control" id="alarm_time" name="alarmierung_zeit" type="time" value="<?php echo $mission->alarmierung_time; ?>" />
+            </div>
+        </div>
 
+        <div class="form-group row">
+            <label for="alarm_end_date" class="col-sm-2 col-form-label">
+                <?php _e("R&uuml;ckkehr (Datum)", TEXT_DOMAIN); ?>
+            </label>
+            <div class="col-sm-10">
+                <input class="form-control" id="alarm_end_date" name="rueckkehr_datum" type="date" value="<?php echo $mission->rueckkehr_date; ?>" />
+            </div>
+        </div>
 
-                        <?php }
-                    } else { ?>
-                        <p>
-                            <?php _e("Keine Fahrzeuge in der Datenbank gefunden!", TEXT_DOMAIN); ?>
-                        </p>
-                    <?php } ?>
-                </td>
-            </tr>
-        </table>
+        <div class="form-group row">
+            <label for="rueckkehr_zeit" class="col-sm-2 col-form-label">
+                <?php _e("R&uuml;ckkehr (Uhrzeit)", TEXT_DOMAIN); ?>
+            </label>
+            <div class="col-sm-10">
+                <input id="rueckkehr_zeit" class="form-control" name="rueckkehr_zeit" type="time" value="<?php echo $mission->rueckkehr_time; ?>" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="link_zu_medien" class="col-sm-2 col-form-label">
+                <?php _e("Link zu weiterf&uuml;hrenden Medien", TEXT_DOMAIN); ?>
+            </label>
+            <div class="col-sm-10">
+                <input id="link_zu_medien" class="form-control" name="link_zu_medien" type="url" value="<?php echo $mission->link_to_media; ?>" size="50" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="article_post_id" class="col-sm-2 col-form-label">
+                <?php _e("Link zur News", TEXT_DOMAIN); ?>
+            </label>
+            <div class="col-sm-10">
+                <select class="form-control" id="article_post_id" name="article_post_id">
+                    <option value="0">Kein Beitrag</option>
+                    <?php echo $this->get_article_options(); ?>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="article_post_id" class="col-sm-2 col-form-label">
+                <?php _e("Eingesetzte Fahrzeuge", TEXT_DOMAIN); ?>
+            </label>
+            <div class="col-sm-10">
+                <?php
+                if (0 < count($vehicles)) {
+                    for ($i = 0; $i < count($vehicles); $i++) {
+
+                        // $name = $this->rename_db_vehicle_name($vehicles[$i]->description);
+                        ?>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="<?php echo $vehicles[$i]->id; ?>" value="<?php echo $vehicles[$i]->radio_id; ?>" id="<?php echo $vehicles[$i]->id; ?>">
+                            <label class="form-check-label" for="<?php echo $vehicles[$i]->id; ?>">
+                                <?php echo $vehicles[$i]->radio_id . ' - ' . $vehicles[$i]->description; ?>
+                            </label>
+                        </div>
+                    <?php }
+                } else { ?>
+                    <p>
+                        <?php _e("Keine Fahrzeuge in der Datenbank gefunden!", TEXT_DOMAIN); ?>
+                    </p>
+                <?php } ?>
+            </div>
+        </div>
+
 <?php
     }
 
