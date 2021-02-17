@@ -227,7 +227,8 @@ class DatabaseHandler
                         "return_time" => $mission->rueckkehr_time,
                         "link_to_media" =>  $mission->link_to_media,
                         "description" => $description,
-                        "linked_post_id" => get_permalink($mission->wp_posts_ID)
+                        "linked_post_id" => get_permalink($mission->wp_posts_ID),
+                        "mission_id" => $mission->id
                     );
 
                     array_push($tmp_arr, $arr_content);

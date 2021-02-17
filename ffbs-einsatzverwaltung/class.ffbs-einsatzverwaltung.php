@@ -90,10 +90,10 @@ class Einsatzverwaltung
         $permalink = get_permalink();
         $years = $this->db_handler->get_mission_years();
 
-        echo "<div>";
+        echo "<div style='margin-bottom: 2.5rem;'>";
         echo    "<form action=\"$permalink\" method=\"post\">";
         echo        "<table>";
-        echo            "<tr>Gewähltes Einsatzjahr:&nbsp;</tr>";
+        echo            "<tr>Einsatzjahr:&nbsp;</tr>";
         echo            "<tr><select name=\"einsatzjahr\">";
 
         foreach ($years as $year) {
@@ -101,7 +101,7 @@ class Einsatzverwaltung
         }
 
         echo                "</select>";
-        echo                "<input type=\"submit\" value=\"Anzeigen\" />";
+        echo                "<input type=\"submit\" value=\"Anzeigen\" style=\"margin-left: 1rem;\" />";
         echo            "</tr>";
         echo        "</table>";
         echo    "</form>";
@@ -141,34 +141,32 @@ class Einsatzverwaltung
             <div>
                 <a name='<?php echo $german_month; ?>'></a>
                 <div class='table-responsive'>
-                    <table class='table mission-month' summary='Einsatzliste im Monat $german_month' border='0'>
-                        <caption class='mission-month-header'><?php echo $german_month; ?>
-                            <a href='#Übersicht'>
-                                <img src='<?php echo $arrow_up_path; ?>' class='overview' />
-                            </a>
-                        </caption>
+                    <h2>
+                        <?php echo $german_month; ?>
+                    </h2>
+                    <table class='table table-striped' summary='Einsatzliste im Monat $german_month' border='0'>
                         <thead>
                             <tr>
-                                <th scope='col' class='th-mission td-space-left'>Datum</th>
-                                <th scope='col' class='th-mission'>Zeit</th>
-                                <th scope='col' class='th-mission'>Alarmstichwort</th>
-                                <th scope='col' class='th-mission'>Einsatzort</th>
-                                <th scope='col' class='th-mission'>Bericht</th>
+                                <th scope='col'>Datum</th>
+                                <th scope='col'>Zeit</th>
+                                <th scope='col'>Alarmstichwort</th>
+                                <th scope='col'>Einsatzort</th>
+                                <th scope='col'>Bericht</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
-                                <td colspan='6'>Anzahl der Eins&auml;tze im Monat: <b><?php echo $count; ?></b></td>
+                                <td colspan='5'>Anzahl der Eins&auml;tze im Monat: <b><?php echo $count; ?></b></td>
                             </tr>
                         </tfoot>
                         <tbody>
 
                             <?php foreach ($arr_months[$key] as $key => $value) { ?>
 
-                                <tr class='row-mission'>
-                                    <td class='td-space-left'><?php echo $value['alarm_date']; ?></td>
-                                    <td class='td-text-center'><?php echo $value['alarm_time']; ?></td>
-                                    <td class='td-mission-keyword'><?php echo $value['keyword']; ?></td>
+                                <tr>
+                                    <td><?php echo $value['alarm_date']; ?></td>
+                                    <td><?php echo $value['alarm_time']; ?></td>
+                                    <td><?php echo $value['keyword']; ?></td>
                                     <td><?php echo $value['location']; ?></td>
                                     <td><a href="<?php echo $value['linked_post_id']; ?>"><?php echo $value['description']; ?></a></td>
                                 </tr>
@@ -176,10 +174,8 @@ class Einsatzverwaltung
                         </tbody>
                     </table>
                 </div>
-                <div class='footer-legend'>
-                    BE - Brandeinsatz &#x95
-                    TE - Technischer Einsatz &#x95
-                    SE - Sonstiger Einsatz
+                <div>
+                    B: Brandeinsatz - TH: Technischer Einsatz - S: Sonstiger Einsatz
                 </div>
             </div>
         <?php
@@ -243,20 +239,20 @@ class Einsatzverwaltung
 
         ?>
         <a name="Übersicht"></a>
-        <div>
-            <table class="mission-month-overview" summary="Übersicht über die Anzahl der Einsätze im Jahr <?php echo $mission_year; ?>">
-                <caption>Monatsübersicht für <?php echo $mission_year; ?></caption>
+        <div class='table-responsive'>
+            <h2>Monatsübersicht für <?php echo $mission_year; ?></h2>
+            <table class="table table-striped" summary="Übersicht über die Anzahl der Einsätze im Jahr <?php echo $mission_year; ?>">
                 <thead>
                     <tr>
-                        <th class="th-mission">Monat</th>
-                        <th class="th-mission-center">Einsätze</th>
-                        <!-- <th class="th-mission-center">BE/TE/SE</th> -->
-                        <th class="th-mission-center">Übersicht</th>
+                        <th>Monat</th>
+                        <th>Einsätze</th>
+                        <!-- <th>BE/TE/SE</th> -->
+                        <th>Übersicht</th>
                     </tr>
                 </thead>
                 <tfoot>
                     <tr>
-                        <td colspan="5">Anzahl der Einsätze im Jahr: <b> <?php echo $mission_year_count; ?></b></td>
+                        <td colspan="3">Anzahl der Einsätze im Jahr: <b> <?php echo $mission_year_count; ?></b></td>
                     </tr>
                 </tfoot>
                 <tbody>
@@ -288,9 +284,9 @@ class Einsatzverwaltung
                     ?>
                         <tr>
                             <td><?php echo $german_month; ?></td>
-                            <td class="td-text-center"><?php echo $count_missions_in_month; ?></td>
-                            <!-- <td class="td-text-center">$count_brandeinsatz . '/' . $count_technischereinsatz . '/' . $count_sonstiges . '</td> -->
-                            <td class="td-text-center"><a href="#<?php echo $german_month; ?>">Link</a></td>
+                            <td><?php echo $count_missions_in_month; ?></td>
+                            <!-- <td>$count_brandeinsatz . '/' . $count_technischereinsatz . '/' . $count_sonstiges . '</td> -->
+                            <td><a href="#<?php echo $german_month; ?>">Link</a></td>
                         </tr>
                     <?php
                     } ?>

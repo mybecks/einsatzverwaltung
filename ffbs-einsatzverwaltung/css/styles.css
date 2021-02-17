@@ -36,56 +36,6 @@
     vertical-align: middle;
 }
 
-.mission-month{
-    font-size: 10pt;
-    width: 100%;
-}
-
-.mission-month-header{
-    font-size: 12pt;
-}
-
-
-.footer-legend{
-    font-size: 8pt;
-    margin-top: -1.5em;
-}
-
-.th-mission{
-    padding: 0;
-    margin: 0;
-    /*background-color: green;  */
-}
-
-.th-mission-center{
-    padding: 0;
-    margin: 0;
-    text-align: center;
-}
-
-.td-text-center{
-    text-align: center;
-}
-
-.td-mission-keyword{
-    width: 175px;
-}
-
-.td-space-left{
-    padding-left: 0.2rem !important;
-}
-
-.row-mission:hover{
-    cursor: pointer;
-    color: white;
-    background-color: #e51b1b;
-    /*background-color: #B22222;*/
-}
-
-.row-mission:hover a{
-    color: silver;
-}
-
 @-moz-document url-prefix() {
     fieldset {
         display: table-cell;
