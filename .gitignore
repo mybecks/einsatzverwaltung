@@ -6,3 +6,4 @@ node_modules
 /nbproject/private/
 .db_data
 *.zip
+.idea
