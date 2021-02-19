@@ -223,12 +223,13 @@ class DatabaseHandler
                         "location" => $mission->einsatzort,
                         "alarm_date" => strftime("%d.%m.%Y", strtotime($mission->alarmierung_date)),
                         "alarm_time" => strftime("%H:%M", strtotime($mission->alarmierung_time)),
-                        "return_date" => $mission->rueckkehr_date,
-                        "return_time" => $mission->rueckkehr_time,
+                        "return_date" => strftime("%d.%m.%Y", strtotime($mission->rueckkehr_date)),
+                        "return_time" => strftime("%H:%M", strtotime($mission->rueckkehr_time)),
                         "link_to_media" =>  $mission->link_to_media,
                         "description" => $description,
                         "linked_post_id" => get_permalink($mission->wp_posts_ID),
-                        "mission_id" => $mission->id
+                        "mission_id" => $mission->id,
+                        "post_content" => do_shortcode($post->post_content)
                     );
 
                     array_push($tmp_arr, $arr_content);

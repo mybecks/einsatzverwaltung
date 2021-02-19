@@ -168,7 +168,36 @@ class Einsatzverwaltung
                                     <td><?php echo $value['alarm_time']; ?></td>
                                     <td><?php echo $value['keyword']; ?></td>
                                     <td><?php echo $value['location']; ?></td>
-                                    <td><a href="<?php echo $value['linked_post_id']; ?>"><?php echo $value['description']; ?></a></td>
+                                    <!--<td><a href="<?php echo $value['linked_post_id']; ?>"><?php echo $value['description']; ?></a></td>-->
+                                    <td><a href="javascript:jQuery('#missionDetails<?= $value['mission_id'] ?>').toggle();">Details</a></td>
+                                </tr>
+                                <tr id="missionDetails<?= $value['mission_id'] ?>" style="display:none;">
+                                    <td colspan="5">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <strong>Alarmierung:</strong> <?php echo $value['alarm_date']; ?>, <?php echo $value['alarm_time']; ?> Uhr
+                                                </div>
+                                                <div class="col">
+                                                    <strong>Rückkehr:</strong> <?php echo $value['return_date']; ?>, <?php echo $value['return_time']; ?> Uhr
+                                                </div>
+                                                <div class="col">
+                                                    <strong>Fahrzeuge:</strong> Fehlt noch
+                                                </div>
+                                            </div>
+                                            <?php
+                                            if($value['post_content']) {
+                                                ?>
+                                                <div class="row mt-5 mb-3">
+                                                    <div class="col">
+                                                        <?php echo $value['post_content']; ?>
+                                                    </div>
+                                                </div>
+                                                <?php
+                                            }
+                                            ?>
+                                        </div>
+                                    </td>
                                 </tr>
                             <?php } ?>
                         </tbody>
