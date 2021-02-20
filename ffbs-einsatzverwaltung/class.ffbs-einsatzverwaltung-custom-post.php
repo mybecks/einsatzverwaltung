@@ -332,6 +332,7 @@ class EinsatzverwaltungCustomPost
             $this->set_selector_for_dropdown_value($mission->article_post_id);
         }
     ?>
+        <input type="hidden" id="mission_id" name="mission_id" value="<?php echo $mission->id; ?>">
         <div class="form-group row">
             <label for="freitext" class="col-sm-2 col-form-label"><?php _e("Alarmstichwort (Freitext)", TEXT_DOMAIN); ?></label>
             <div class="col-sm-10">
@@ -416,7 +417,7 @@ class EinsatzverwaltungCustomPost
                     for ($i = 0; $i < count($vehicles); $i++) {
 
                         // $name = $this->rename_db_vehicle_name($vehicles[$i]->description);
-                        ?>
+                ?>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="<?php echo $vehicles[$i]->id; ?>" value="<?php echo $vehicles[$i]->radio_id; ?>" id="<?php echo $vehicles[$i]->id; ?>">
                             <label class="form-check-label" for="<?php echo $vehicles[$i]->id; ?>">
