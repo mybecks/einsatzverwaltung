@@ -134,8 +134,7 @@ class Einsatzverwaltung
 
             $german_month = $this->get_german_month($key);
             $count = count($arr_months[$key]);
-
-?>
+            ?>
 
             <br />
             <div>
@@ -161,8 +160,18 @@ class Einsatzverwaltung
                         </tfoot>
                         <tbody>
 
-                            <?php foreach ($arr_months[$key] as $key => $value) { ?>
-
+                            <?php foreach ($arr_months[$key] as $key => $value) {
+                                $vehicles = "";
+                                foreach($this->db_handler->load_vehicles_by_mission_id($value['mission_id']) as $vehicle) {
+                                    if($vehicles) {
+                                        $vehicles .= ", ";
+                                    }
+                                    $vehicles .= $vehicle->description . " " . $vehicle->location;
+                                }
+                                if(!$vehicles) {
+                                    $vehicles = "-";
+                                }
+                                ?>
                                 <tr>
                                     <td><?php echo $value['alarm_date']; ?></td>
                                     <td><?php echo $value['alarm_time']; ?></td>
@@ -173,22 +182,24 @@ class Einsatzverwaltung
                                 </tr>
                                 <tr id="missionDetails<?= $value['mission_id'] ?>" style="display:none;">
                                     <td colspan="5">
-                                        <div class="container">
-                                            <div class="row">
+                                        <div>
+                                            <div class="row mt-3">
                                                 <div class="col">
                                                     <strong>Alarmierung:</strong> <?php echo $value['alarm_date']; ?>, <?php echo $value['alarm_time']; ?> Uhr
                                                 </div>
                                                 <div class="col">
                                                     <strong>Rückkehr:</strong> <?php echo $value['return_date']; ?>, <?php echo $value['return_time']; ?> Uhr
                                                 </div>
+                                            </div>
+                                            <div class="row mt-4 mb-3">
                                                 <div class="col">
-                                                    <strong>Fahrzeuge:</strong> Fehlt noch
+                                                    <strong>Fahrzeuge:</strong> <?= $vehicles ?>
                                                 </div>
                                             </div>
                                             <?php
                                             if($value['post_content']) {
                                                 ?>
-                                                <div class="row mt-5 mb-3">
+                                                <div class="row mt-1 mb-3">
                                                     <div class="col">
                                                         <?php echo $value['post_content']; ?>
                                                     </div>

@@ -146,8 +146,9 @@ class DatabaseHandler
      */
     public function load_vehicles_by_mission_id($mission_id)
     {
-        $query = "SELECT v.id, v.description FROM " . $this->table->vehicles .
-            " as v, " . $this->table->moved_out_vehicles . " as mv WHERE v.id = mv.vehicle_id AND mv.mission_id = %d";
+        $query = "SELECT v.id, v.description, v.location FROM " . $this->table->vehicles .
+                " as v, " . $this->table->moved_out_vehicles . " as mv WHERE v.id = mv.vehicle_id AND mv.mission_id = %d
+                ORDER BY v.location DESC, v.radio_id ASC";
 
         return $this->db->get_results($this->db->prepare($query, $mission_id));
     }
