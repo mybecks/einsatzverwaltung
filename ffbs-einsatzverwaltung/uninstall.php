@@ -13,9 +13,10 @@ function ffbs_einsatzverwaltung_uninstall_plugin()
         return;
     }
 
-    delete_custom_posts();
-    drop_tables();
-    drop_tables_old();
+    //Prevent accidental deletion of content
+    //delete_custom_posts();
+    //drop_tables();
+    //drop_tables_old();
 }
 
 
