@@ -1,5 +1,9 @@
 <?php
 
+define('MISSIONS_PLUGIN_DIR', plugin_dir_path(__FILE__));
+
+require_once(MISSIONS_PLUGIN_DIR . 'partials/page.ffbs.settings.php');
+
 /**
  * Custom Post Type for Einsatzverwaltung
  *
@@ -21,8 +25,17 @@ class EinsatzverwaltungCustomPost
         add_filter('manage_edit-mission_sortable_columns', array($this, 'mission_sortable_columns'));
         add_filter('post_type_link', array($this, 'mission_permalink'), 10, 3);
         add_action('admin_menu', array($this, 'add_sub_menu_pages'));
+        // add_filter('block_editor_settings', 'ffbs_block_editor_settings', 10, 2);
         $this->db_handler = DatabaseHandler::get_instance();
+        $this->settings_page =
+            FFBSEinsatzverwaltungSettingsPage::get_instance();
     }
+
+    // public function ffbs_block_editor_settings($editor_settings, $post)
+    // {
+    //     $editor_settings['autosaveInterval'] = 3600;
+    //     return $editor_settings;
+    // }
 
     public function custom_post_mission()
     {
@@ -108,6 +121,15 @@ class EinsatzverwaltungCustomPost
             'manage-vehicles',
             array($this, 'vehicle_page_content')
         );
+
+        add_submenu_page(
+            'edit.php?post_type=mission',
+            __('Settings', TEXT_DOMAIN),
+            __('Settings', TEXT_DOMAIN),
+            'manage_options',
+            'settings',
+            array($this, 'ffbs_settings_page_content')
+        );
     }
 
     public function vehicle_page_content()
@@ -190,6 +212,11 @@ class EinsatzverwaltungCustomPost
 
         </div>
     <?php
+    }
+
+    public function ffbs_settings_page_content()
+    {
+        echo $this->settings_page->display();
     }
 
     // http://justintadlock.com/archives/2011/06/27/custom-columns-for-custom-post-types
@@ -541,7 +568,8 @@ class EinsatzverwaltungCustomPost
         $current_post = array(
             'ID' => $post_id,
             'post_title' => $freitext,
-            'post_name' => date("Y_m", strtotime($alarmierung_datum)) . '_' . $freitext,
+            // 'post_name' => date("Y_m", strtotime($alarmierung_datum)) . '_' . $freitext,
+            'post_name' => $freitext,
             'post_date' => date($alarmierung_datum . ' ' . $alarmierung_zeit),
             'post_date_gmt' => date($alarmierung_datum . ' ' . $alarmierung_zeit)
         );

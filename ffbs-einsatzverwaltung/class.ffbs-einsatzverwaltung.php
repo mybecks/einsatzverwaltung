@@ -134,7 +134,7 @@ class Einsatzverwaltung
 
             $german_month = $this->get_german_month($key);
             $count = count($arr_months[$key]);
-            ?>
+?>
 
             <br />
             <div>
@@ -162,16 +162,16 @@ class Einsatzverwaltung
 
                             <?php foreach ($arr_months[$key] as $key => $value) {
                                 $vehicles = "";
-                                foreach($this->db_handler->load_vehicles_by_mission_id($value['mission_id']) as $vehicle) {
-                                    if($vehicles) {
+                                foreach ($this->db_handler->load_vehicles_by_mission_id($value['mission_id']) as $vehicle) {
+                                    if ($vehicles) {
                                         $vehicles .= ", ";
                                     }
                                     $vehicles .= $vehicle->description . " " . $vehicle->location;
                                 }
-                                if(!$vehicles) {
+                                if (!$vehicles) {
                                     $vehicles = "-";
                                 }
-                                ?>
+                            ?>
                                 <tr>
                                     <td><?php echo $value['alarm_date']; ?></td>
                                     <td><?php echo $value['alarm_time']; ?></td>
@@ -197,14 +197,14 @@ class Einsatzverwaltung
                                                 </div>
                                             </div>
                                             <?php
-                                            if($value['post_content']) {
-                                                ?>
+                                            if ($value['post_content']) {
+                                            ?>
                                                 <div class="row mt-1 mb-3">
                                                     <div class="col">
                                                         <?php echo $value['post_content']; ?>
                                                     </div>
                                                 </div>
-                                                <?php
+                                            <?php
                                             }
                                             ?>
                                         </div>
@@ -458,10 +458,11 @@ function plugin_activation()
     flush_rewrite_rules();
 
     // $wpdb->show_errors();
-    $table_vehicles =     $wpdb->prefix . "ffbs_vehicles";
-    $table_missions =     $wpdb->prefix . "ffbs_missions";
+    $table_vehicles = $wpdb->prefix . "ffbs_vehicles";
+    $table_missions = $wpdb->prefix . "ffbs_missions";
     $table_moved_out_vehicles = $wpdb->prefix . "ffbs_moved_out_vehicles";
-    $table_wp_posts =    $wpdb->prefix . "posts";
+    $table_settings = $wpdb->prefix . "ffbs_settings";
+    $table_wp_posts = $wpdb->prefix . "posts";
 
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
@@ -536,6 +537,17 @@ function plugin_activation()
     dbDelta($sql_missions_has_vehicles);
 
     // $wpdb->print_error();
+
+    $sql_settings = "CREATE TABLE IF NOT EXISTS $table_settings
+    (
+        id VARCHAR(255) NOT NULL ,
+        value VARCHAR(2083) NOT NULL ,
+        PRIMARY KEY  (id)
+    )
+    CHARACTER SET utf8
+    COLLATE utf8_general_ci;
+    ";
+    dbDelta($sql_settings);
 }
 
 function plugin_deactivation()

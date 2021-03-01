@@ -12,11 +12,6 @@ class DatabaseHandler
     private static $instance = null;
     private $table;
 
-    const TABLE_MISSIONS = 'einsaetze';
-    const TABLE_VEHICLES = 'fahrzeuge';
-    const TABLE_MISSION_VEHICLES = 'einsaetze_has_fahrzeuge';
-
-
     /**
      * Creates or returns an instance of this class.
      *
@@ -43,7 +38,8 @@ class DatabaseHandler
         $this->table = (object) array(
             "missions" => $this->db->prefix . "ffbs_missions",
             "moved_out_vehicles" => $this->db->prefix . "ffbs_moved_out_vehicles",
-            "vehicles" => $this->db->prefix . "ffbs_vehicles"
+            "vehicles" => $this->db->prefix . "ffbs_vehicles",
+            "settings" => $this->db->prefix . "ffbs_settings"
         );
     }
 
@@ -147,7 +143,7 @@ class DatabaseHandler
     public function load_vehicles_by_mission_id($mission_id)
     {
         $query = "SELECT v.id, v.description, v.location FROM " . $this->table->vehicles .
-                " as v, " . $this->table->moved_out_vehicles . " as mv WHERE v.id = mv.vehicle_id AND mv.mission_id = %d
+            " as v, " . $this->table->moved_out_vehicles . " as mv WHERE v.id = mv.vehicle_id AND mv.mission_id = %d
                 ORDER BY v.location DESC, v.radio_id ASC";
 
         return $this->db->get_results($this->db->prepare($query, $mission_id));
@@ -366,5 +362,41 @@ class DatabaseHandler
     public function get_last_error()
     {
         return $this->db->last_error;
+    }
+
+    public function get_settings($id)
+    {
+        $query = "SELECT id, value FROM " . $this->table->settings;
+        $settings = null;
+
+        if (!empty($id)) {
+            $query .= " WHERE id = %s";
+            $settings = $this->db->get_row($this->db->prepare($query, $id));
+        } else {
+            $settings = $this->db->get_results($query);
+        }
+
+        return $settings;
+    }
+
+    public function add_setting($id, $value)
+    {
+        $result = $this->db->insert(
+            $this->table->settings,
+            array(
+                'id' => $id,
+                'value' => $value
+            ),
+            array(
+                '%s',
+                '%s'
+            )
+        );
+
+        if (empty($result)) {
+            return $this->get_last_error();
+        }
+
+        return $result;
     }
 }
