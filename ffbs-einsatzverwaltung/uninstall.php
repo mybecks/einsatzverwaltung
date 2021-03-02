@@ -14,9 +14,9 @@ function ffbs_einsatzverwaltung_uninstall_plugin()
     }
 
     //Prevent accidental deletion of content
-    //delete_custom_posts();
-    //drop_tables();
-    //drop_tables_old();
+    delete_custom_posts();
+    drop_tables();
+    drop_tables_old();
 }
 
 
@@ -64,6 +64,7 @@ function drop_tables()
     $table_vehicles = $wpdb->prefix . "ffbs_vehicles";
     $table_missions = $wpdb->prefix . "ffbs_missions";
     $table_moved_out_vehicles = $wpdb->prefix . "ffbs_moved_out_vehicles";
+    $table_settings = $wpdb->prefix . "ffbs_settings";
 
     $sql_missions_has_vehicles = "DROP TABLE IF EXISTS $table_moved_out_vehicles";
     $wpdb->query($sql_missions_has_vehicles);
@@ -73,4 +74,7 @@ function drop_tables()
 
     $sql_missions = "DROP TABLE IF EXISTS $table_missions";
     $wpdb->query($sql_missions);
+
+    $sql_settings = "DROP TABLE IF EXISTS $table_settings";
+    $wpdb->query($sql_settings);
 }
