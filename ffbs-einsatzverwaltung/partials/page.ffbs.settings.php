@@ -38,10 +38,13 @@ final class FFBSEinsatzverwaltungSettingsPage
 
     public function display()
     {
-        $categories = get_categories();
+        $args = array(
+            'hide_empty' => false
+        );
 
-        $cat_id = $this->db_handler->get_settings('cat_id');
-        // $this->set_selector_for_dropdown_value($cat_id);
+        $categories = get_categories($args);
+        $setting = $this->db_handler->get_settings('cat_id');
+        $this->set_selector_for_dropdown_value($setting->value);
 ?>
         <div class="wrap">
             <h2>Settings</h2>
@@ -68,7 +71,7 @@ final class FFBSEinsatzverwaltungSettingsPage
         $script = "
         <script type='text/javascript'>
          jQuery(document).ready(function($) {
-            $('#article_post_id').val('" . $value . "');
+            $('#category').val(" . $value . ");
         });
         </script>";
         echo $script;

@@ -126,6 +126,43 @@ let fillLinkToPostDropdown = function () {
     }
 }
 
+let addSetting = function () {
+    $('.save-cat').click(function () {
+        let data = {
+            id: 'cat_id',
+            value: $('#category option:selected').val(),
+        };
+        let url = wpApiSettings.root + 'ffbs/v1/settings';
+        $.ajax({
+            type: 'POST',
+            url: url,
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            dataType: 'json',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('X-WP-Nonce', wpApiSettings.nonce);
+            },
+            success: function (data, textStatus, XMLHttpRequest) {
+                // $('#message').show();
+
+                // $('.tab-vehicle').append('<tr>' +
+                //     '<td>' + data.radioId + '</td>' +
+                //     '<td>' + data.description + '</td>' +
+                //     '<td>' + data.location + '</td>' +
+                //     '<td>' + data.status + '</td>' +
+                //     '<td><i class="fas fa-edit"></i></td>' +
+                //     '<td><i class="fas fa-trash-alt"></i></td>' +
+                //     '</tr>');
+                // $('#message').fadeOut(5000);
+            },
+            error: function (MLHttpRequest, textStatus, errorThrown) {
+                console.log(MLHttpRequest.status + ' ' + MLHttpRequest.responseText);
+                // $('#message').html(MLHttpRequest.status + ' ' + MLHttpRequest.responseText).show();
+            }
+        });
+    });
+}
+
 jQuery(document).ready(function ($) {
     // Vehicle Subpage
     addVehicle();
@@ -136,4 +173,7 @@ jQuery(document).ready(function ($) {
     setEndDateEqStartDate();
     autocompleteDestinations();
     fillLinkToPostDropdown();
+
+    // Settings Subpage
+    addSetting();
 });

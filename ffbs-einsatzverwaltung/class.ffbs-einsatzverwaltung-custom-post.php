@@ -264,11 +264,11 @@ class EinsatzverwaltungCustomPost
 
             $date = explode(" ", date('Y m d H i s', $unixtime));
 
-            list($year, $month, $postname) = explode('_', $post->post_name);
+            // list($year, $month, $postname) = explode('_', $post->post_name);
             $rewritereplace = array(
                 $date[0],
                 $date[1],
-                $postname,
+                $post->post_name,
             );
 
             $permalink = str_replace($rewritecode, $rewritereplace, $permalink);
@@ -622,14 +622,17 @@ class EinsatzverwaltungCustomPost
         echo $script;
     }
 
-    public function get_posts_by_category($category_slug)
+    public function get_posts_by_category($cat_id)
     {
+
+
         $args = array(
-            'category_name' => $category_slug,
+            'cat' => $cat_id,
             'numberposts' => -1,
             'orderby'    => 'post_date',
             'sort_order' => 'asc'
         );
+
         $posts = get_posts($args);
         wp_reset_postdata();
         return $posts;
@@ -637,7 +640,9 @@ class EinsatzverwaltungCustomPost
 
     public function get_article_options()
     {
-        $posts = $this->get_posts_by_category('einsaetze');
+        $settings = $this->db_handler->get_settings('cat_id');
+
+        $posts = $this->get_posts_by_category($settings->value);
         $options = '';
         foreach ($posts as $post) {
             $options .= "<option value=" . $post->ID . ">" . $post->post_title . " (" . $post->post_date . ")" . "</option>";
