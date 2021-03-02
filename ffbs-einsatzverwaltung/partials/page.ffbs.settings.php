@@ -43,8 +43,12 @@ final class FFBSEinsatzverwaltungSettingsPage
         );
 
         $categories = get_categories($args);
-        $setting = $this->db_handler->get_settings('cat_id');
-        $this->set_selector_for_dropdown_value($setting->value);
+        $settings = $this->db_handler->get_settings('cat_id');
+
+        if (isset($settings)) {
+            $this->set_selector_for_dropdown_value($settings->value);
+        }
+
 ?>
         <div class="wrap">
             <h2>Settings</h2>

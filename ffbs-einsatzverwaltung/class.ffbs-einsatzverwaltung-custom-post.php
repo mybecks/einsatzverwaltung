@@ -641,12 +641,15 @@ class EinsatzverwaltungCustomPost
     public function get_article_options()
     {
         $settings = $this->db_handler->get_settings('cat_id');
-
-        $posts = $this->get_posts_by_category($settings->value);
         $options = '';
-        foreach ($posts as $post) {
-            $options .= "<option value=" . $post->ID . ">" . $post->post_title . " (" . $post->post_date . ")" . "</option>";
+        if(isset($settings)){
+            $posts = $this->get_posts_by_category($settings->value);
+
+            foreach ($posts as $post) {
+                $options .= "<option value=" . $post->ID . ">" . $post->post_title . " (" . $post->post_date . ")" . "</option>";
+            }
         }
+
         return $options;
     }
 }
