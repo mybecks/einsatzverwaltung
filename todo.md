@@ -3,7 +3,7 @@
 ## Backend
 ### go live
 * [ x ] Fix uninstall of plugin
-* [ X ] Vehicles: extend creation with an additional field for a image from the media gallery
+* [ x ] Vehicles: extend creation with an additional field for a image from the media gallery
 * [ x ] Custom Post: Extend with possibility to link a post (wp_get_content on frontend)
 * [ x ] Refactor tables:
     * Remove "Einsatz  Art" field
@@ -14,8 +14,8 @@
 * [ x ] Dropdown with post from specific category in custom post
 * [ x ] refactor selector_for_dropdown function to just include once
 * [ x ] permalink: /mission/2021/02/2021_02_th-hoelle-friert-zu/ -> /einsatz/2021/02/th-hoelle-friert-zu/* [ ] disable auto-draft in custom post
-* [ ] customize article category for "link to article"
-* [ X ] Replace table in custom box with bootstrap coding
+* [ x ] customize article category for "link to article"
+* [ x ] Replace table in custom box with bootstrap coding
 
 ## Database
 * [ x ] rename table names to `en`
@@ -30,6 +30,7 @@
 
 ## UI Parts
 * [ ] restructure UI components e.g. create partials
+    * [ x ] settings page
 
 ## Vehicles Page
 * [ x ] extend db with retierement option
@@ -42,5 +43,6 @@
 * [ ] add ffbs_ prefix to all custom functions ...
 * [ ] restructure plugin
 * [ ] translate
+* [ ] check for auto-draft
 
 ## Frontend
