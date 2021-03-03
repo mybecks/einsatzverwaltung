@@ -334,43 +334,58 @@ class EinsatzverwaltungCustomPost
 
             $mission = new stdClass();
             $mission->id = "";
-            $mission->einsatzort = "";
-            $mission->alarmierung_date = "";
-            $mission->alarmierung_time = "";
-            $mission->rueckkehr_date = "";
-            $mission->rueckkehr_time = "";
+            $mission->destination = "";
+            $mission->alarm_date = "";
+            $mission->alarm_time = "";
+            $mission->return_date = "";
+            $mission->return_time = "";
             $mission->link_to_media = "";
-            $mission->freitext = "";
+            $mission->keyword = "";
+            $mission->category = "";
             $mission->article_post_id = "";
             $vehicles_by_mission = array();
         }
 
         if (0 !== count($vehicles_by_mission)) {
-
-            // for ($i = 0; $i < count($vehicles_by_mission); $i++) {
             $this->set_selector_for_checkbox_value($vehicles_by_mission);
-            // }
         }
 
         if (0 != $mission->article_post_id) {
-            $this->set_selector_for_dropdown_value($mission->article_post_id);
+            $this->set_selector_for_dropdown_value('#article_post_id', $mission->article_post_id);
+        }
+
+        if (!empty($mission->category)) {
+            $this->set_selector_for_dropdown_value('#category', $mission->category);
         }
     ?>
         <input type="hidden" id="mission_id" name="mission_id" value="<?php echo $mission->id; ?>">
+
         <div class="form-group row">
-            <label for="freitext" class="col-sm-2 col-form-label"><?php _e("Alarmstichwort (Freitext)", TEXT_DOMAIN); ?></label>
+            <label for="category" class="col-sm-2 col-form-label">Kategorie</label>
             <div class="col-sm-10">
-                <input class="form-control form-check-input" name="freitext" id="freitext" value="<?php echo $mission->freitext; ?>" />
-                <small id="emailHelp" class="form-text text-muted">Beispiel: B - Auslösung einer BMA</small>
+                <select class="form-control" id="category" name="category">
+                    <option>Wähle eine Kategorie</option>
+                    <option value="BE">Brandeinsatz</option>
+                    <option value="TH">Technische Hilfeleistung</option>
+                    <option value="S">Sonstiges</option>
+                </select>
             </div>
         </div>
 
         <div class="form-group row">
-            <label for="einsatzort" class="col-sm-2 col-form-label">
+            <label for="keyword" class="col-sm-2 col-form-label"><?php _e("Alarmstichwort (Freitext)", TEXT_DOMAIN); ?></label>
+            <div class="col-sm-10">
+                <input class="form-control form-check-input" name="keyword" id="keyword" value="<?php echo $mission->keyword; ?>" />
+                <small id="emailHelp" class="form-text text-muted">Beispiel: Auslösung einer BMA</small>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="destination" class="col-sm-2 col-form-label">
                 <?php _e("Einsatzort", TEXT_DOMAIN); ?>
             </label>
             <div class="col-sm-10">
-                <input class="form-control" id="einsatzort" name="einsatzort" value="<?php echo $mission->einsatzort; ?>" />
+                <input class="form-control" id="destination" name="destination" value="<?php echo $mission->destination; ?>" />
             </div>
         </div>
 
@@ -379,7 +394,7 @@ class EinsatzverwaltungCustomPost
                 <?php _e("Alarmierung (Datum)", TEXT_DOMAIN); ?>
             </label>
             <div class="col-sm-10">
-                <input class="form-control" id="alarm_date" name="alarmierung_datum" type="date" value="<?php echo $mission->alarmierung_date; ?>" />
+                <input class="form-control" id="alarm_date" name="alarm_date" type="date" value="<?php echo $mission->alarm_date; ?>" />
             </div>
         </div>
 
@@ -388,34 +403,34 @@ class EinsatzverwaltungCustomPost
                 <?php _e("Alarmierung (Uhrzeit)", TEXT_DOMAIN); ?>
             </label>
             <div class="col-sm-10">
-                <input class="form-control" id="alarm_time" name="alarmierung_zeit" type="time" value="<?php echo $mission->alarmierung_time; ?>" />
+                <input class="form-control" id="alarm_time" name="alarm_time" type="time" value="<?php echo $mission->alarm_time; ?>" />
             </div>
         </div>
 
         <div class="form-group row">
-            <label for="alarm_end_date" class="col-sm-2 col-form-label">
+            <label for="return_date" class="col-sm-2 col-form-label">
                 <?php _e("R&uuml;ckkehr (Datum)", TEXT_DOMAIN); ?>
             </label>
             <div class="col-sm-10">
-                <input class="form-control" id="alarm_end_date" name="rueckkehr_datum" type="date" value="<?php echo $mission->rueckkehr_date; ?>" />
+                <input class="form-control" id="return_date" name="return_date" type="date" value="<?php echo $mission->return_date; ?>" />
             </div>
         </div>
 
         <div class="form-group row">
-            <label for="rueckkehr_zeit" class="col-sm-2 col-form-label">
+            <label for="return_time" class="col-sm-2 col-form-label">
                 <?php _e("R&uuml;ckkehr (Uhrzeit)", TEXT_DOMAIN); ?>
             </label>
             <div class="col-sm-10">
-                <input id="rueckkehr_zeit" class="form-control" name="rueckkehr_zeit" type="time" value="<?php echo $mission->rueckkehr_time; ?>" />
+                <input id="return_time" class="form-control" name="return_time" type="time" value="<?php echo $mission->return_time; ?>" />
             </div>
         </div>
 
         <div class="form-group row">
-            <label for="link_zu_medien" class="col-sm-2 col-form-label">
+            <label for="link_to_media" class="col-sm-2 col-form-label">
                 <?php _e("Link zu weiterf&uuml;hrenden Medien", TEXT_DOMAIN); ?>
             </label>
             <div class="col-sm-10">
-                <input id="link_zu_medien" class="form-control" name="link_zu_medien" type="url" value="<?php echo $mission->link_to_media; ?>" size="50" />
+                <input id="link_to_media" class="form-control" name="link_to_media" type="url" value="<?php echo $mission->link_to_media; ?>" size="50" />
             </div>
         </div>
 
@@ -432,7 +447,7 @@ class EinsatzverwaltungCustomPost
         </div>
 
         <div class="form-group row">
-            <label for="article_post_id" class="col-sm-2 col-form-label">
+            <label for="vehicles" class="col-sm-2 col-form-label">
                 <?php _e("Eingesetzte Fahrzeuge", TEXT_DOMAIN); ?>
             </label>
             <div class="col-sm-10">
@@ -442,7 +457,7 @@ class EinsatzverwaltungCustomPost
 
                         // $name = $this->rename_db_vehicle_name($vehicles[$i]->description);
                 ?>
-                        <div class="form-check">
+                        <div class="form-check" id="vehicles">
                             <input class="form-check-input" type="checkbox" name="<?php echo $vehicles[$i]->id; ?>" value="<?php echo $vehicles[$i]->radio_id; ?>" id="<?php echo $vehicles[$i]->id; ?>">
                             <label class="form-check-label" for="<?php echo $vehicles[$i]->id; ?>">
                                 <?php echo $vehicles[$i]->radio_id . ' - ' . $vehicles[$i]->description; ?>
@@ -493,13 +508,13 @@ class EinsatzverwaltungCustomPost
         }
 
         $mission_id = $_POST['mission_id'];
-
-        $freitext = $_POST['freitext'];
-        $einsatzort = $_POST['einsatzort'];
-        $alarmierung_datum = $_POST['alarmierung_datum'];
-        $alarmierung_zeit = $_POST['alarmierung_zeit'];
-        $rueckkehr_datum = $_POST['rueckkehr_datum'];
-        $rueckkehr_zeit = $_POST['rueckkehr_zeit'];
+        $category = $_POST['category'];
+        $keyword = $_POST['keyword'];
+        $destination = $_POST['destination'];
+        $alarm_date = $_POST['alarm_date'];
+        $alarm_time = $_POST['alarm_time'];
+        $return_date = $_POST['return_date'];
+        $return_time = $_POST['return_time'];
         $link_zu_medien = $_POST['link_zu_medien'];
         $article_post_id = $_POST['article_post_id'];
         $db_vehicles = $this->db_handler->load_vehicles();
@@ -516,12 +531,13 @@ class EinsatzverwaltungCustomPost
             $wpdb->insert(
                 $table_missions,
                 array(
-                    'freitext' => $freitext,
-                    'einsatzort' => $einsatzort,
-                    'alarmierung_date' => $alarmierung_datum,
-                    'alarmierung_time' => $alarmierung_zeit,
-                    'rueckkehr_date' => $rueckkehr_datum,
-                    'rueckkehr_time' => $rueckkehr_zeit,
+                    'category' => $category,
+                    'keyword' => $keyword,
+                    'destination' => $destination,
+                    'alarm_date' => $alarm_date,
+                    'alarm_time' => $alarm_time,
+                    'return_date' => $return_date,
+                    'return_time' => $return_time,
                     'link_to_media' => $link_zu_medien,
                     'wp_posts_ID' => $post_id,
                     'article_post_id' => $article_post_id
@@ -541,13 +557,14 @@ class EinsatzverwaltungCustomPost
             $wpdb->update(
                 $table_missions,
                 array(
-                    'einsatzort' => $einsatzort,
-                    'alarmierung_date' => $alarmierung_datum,
-                    'alarmierung_time' => $alarmierung_zeit,
-                    'rueckkehr_date' => $rueckkehr_datum,
-                    'rueckkehr_time' => $rueckkehr_zeit,
+                    'category' => $category,
+                    'keyword' => $keyword,
+                    'destination' => $destination,
+                    'alarm_date' => $alarm_date,
+                    'alarm_time' => $alarm_time,
+                    'return_date' => $return_date,
+                    'return_time' => $return_time,
                     'link_to_media' => $link_zu_medien,
-                    'freitext' => $freitext,
                     'article_post_id' => $article_post_id
                 ),
                 array('id' => $mission_id)
@@ -564,11 +581,10 @@ class EinsatzverwaltungCustomPost
 
         $current_post = array(
             'ID' => $post_id,
-            'post_title' => $freitext,
-            // 'post_name' => date("Y_m", strtotime($alarmierung_datum)) . '_' . $freitext,
-            'post_name' => $freitext,
-            'post_date' => date($alarmierung_datum . ' ' . $alarmierung_zeit),
-            'post_date_gmt' => date($alarmierung_datum . ' ' . $alarmierung_zeit)
+            'post_title' => $keyword,
+            'post_name' => $keyword,
+            'post_date' => date($alarm_date . ' ' . $alarm_time),
+            'post_date_gmt' => date($alarm_date . ' ' . $alarm_time)
         );
 
         remove_action('publish_mission', array($this, 'save_data'));
@@ -611,12 +627,12 @@ class EinsatzverwaltungCustomPost
         echo $script;
     }
 
-    public function set_selector_for_dropdown_value($value)
+    public function set_selector_for_dropdown_value($attribut, $value)
     {
         $script = "
         <script type='text/javascript'>
          jQuery(document).ready(function($) {
-            $('#article_post_id').val('" . $value . "');
+            $('" . $attribut . "').val('" . $value . "');
         });
         </script>";
         echo $script;
@@ -642,7 +658,7 @@ class EinsatzverwaltungCustomPost
     {
         $settings = $this->db_handler->get_settings('cat_id');
         $options = '';
-        if(isset($settings)){
+        if (isset($settings)) {
             $posts = $this->get_posts_by_category($settings->value);
 
             foreach ($posts as $post) {

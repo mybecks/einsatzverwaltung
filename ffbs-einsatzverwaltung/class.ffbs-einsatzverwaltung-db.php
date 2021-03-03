@@ -59,9 +59,6 @@ class DatabaseHandler
     public function delete_mission_by_post_id($post_id)
     {
         $mission = $this->load_mission_by_post_id($post_id);
-
-        // $query = "DELETE FROM " . $this->table->missions . " WHERE wp_posts_ID = %d";
-        // $result = $this->db->query( $this->db->prepare( $query, $post_id ) );
         $this->db->delete(
             $this->table->missions,
             array('wp_posts_ID' => $post_id),
@@ -91,7 +88,7 @@ class DatabaseHandler
     {
         $array = array();
 
-        $query = "SELECT YEAR(alarmierung_date) AS Year FROM " . $this->table->missions . " GROUP BY Year DESC";
+        $query = "SELECT YEAR(alarm_date) AS Year FROM " . $this->table->missions . " GROUP BY Year DESC";
         $years = $this->db->get_results($query);
 
         foreach ($years as $year) {
@@ -115,7 +112,7 @@ class DatabaseHandler
      */
     public function get_mission_details_by_post_id($post_id)
     {
-        $query = "SELECT id, freitext, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media FROM "
+        $query = "SELECT id, category, keyword, destination, alarm_date, alarm_time, return_date, return_time, link_to_media FROM "
             . $this->table->missions . " WHERE wp_posts_ID = %d";
         return $this->db->get_results($this->db->prepare($query, $post_id));
     }
@@ -174,10 +171,10 @@ class DatabaseHandler
     {
         $arr_months = array();
 
-        $query = "SELECT id, freitext, einsatzort, alarmierung_date, alarmierung_time, rueckkehr_date, rueckkehr_time, link_to_media, wp_posts_ID, MONTH(alarmierung_date) AS Month, article_post_id " .
+        $query = "SELECT id, category, keyword, destination, alarm_date, alarm_time, return_date, return_time, link_to_media, wp_posts_ID, MONTH(alarmierung_date) AS Month, article_post_id " .
             "FROM " . $this->table->missions .
-            " WHERE YEAR(alarmierung_date) = %d" .
-            " ORDER BY alarmierung_date DESC, alarmierung_time DESC";
+            " WHERE YEAR(alarm_date) = %d" .
+            " ORDER BY alarm_date DESC, alarm_time DESC";
 
         $missions = $this->db->get_results($this->db->prepare($query, $year));
 
@@ -201,12 +198,6 @@ class DatabaseHandler
                         $description = "Kurzinfo";
                     }
 
-                    // if ('Freitext' == $mission->alarmstichwort || 'Sonstiger Brand' == $mission->alarmstichwort) {
-                    //     $alarmstichwort = $mission->freitext;
-                    // } else {
-                    //     $alarmstichwort = $mission->alarmstichwort;
-                    // }
-
                     // if (false !== strpos($mission->art_alarmierung, 'Brandeinsatz')) {
                     //     $alarm_short = 'BE';
                     // } else if (false !== strpos($mission->art_alarmierung, 'Technischer Einsatz')) {
@@ -216,12 +207,13 @@ class DatabaseHandler
                     // }
 
                     $arr_content = array(
-                        "keyword" => $mission->freitext, //freitext
-                        "location" => $mission->einsatzort,
-                        "alarm_date" => strftime("%d.%m.%Y", strtotime($mission->alarmierung_date)),
-                        "alarm_time" => strftime("%H:%M", strtotime($mission->alarmierung_time)),
-                        "return_date" => strftime("%d.%m.%Y", strtotime($mission->rueckkehr_date)),
-                        "return_time" => strftime("%H:%M", strtotime($mission->rueckkehr_time)),
+                        "keyword" => $mission->keyword,
+                        "category" => $mission->category,
+                        "location" => $mission->destination,
+                        "alarm_date" => strftime("%d.%m.%Y", strtotime($mission->alarm_date)),
+                        "alarm_time" => strftime("%H:%M", strtotime($mission->alarm_time)),
+                        "return_date" => strftime("%d.%m.%Y", strtotime($mission->return_date)),
+                        "return_time" => strftime("%H:%M", strtotime($mission->return_time)),
                         "link_to_media" =>  $mission->link_to_media,
                         "description" => $description,
                         "linked_post_id" => get_permalink($mission->wp_posts_ID),
