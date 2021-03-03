@@ -19,8 +19,8 @@
 
 ## Database
 * [ x ] rename table names to `en`
-* [ ] rename columns of tables to `en`
-    * [ ] ffbs_mission
+* [ x ] rename columns of tables to `en`
+    * [ x ] ffbs_mission
     * [ x ] ffbs_vehicles
     * [ x ] ffbs_moved_out_vehicles
 * [ x ] prefix tables with `ffbs_`
