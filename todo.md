@@ -16,6 +16,7 @@
 * [ x ] permalink: /mission/2021/02/2021_02_th-hoelle-friert-zu/ -> /einsatz/2021/02/th-hoelle-friert-zu/* [ ] disable auto-draft in custom post
 * [ x ] customize article category for "link to article"
 * [ x ] Replace table in custom box with bootstrap coding
+* [ ] Widget with last x missions
 
 ## Database
 * [ x ] rename table names to `en`
