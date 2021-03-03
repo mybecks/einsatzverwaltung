@@ -91,8 +91,8 @@ let autocompleteDestinations = function () {
         "Zeutern"
     ];
 
-    if ($('#einsatzort').length > 0) {
-        $("#einsatzort").autocomplete({
+    if ($('#destination').length > 0) {
+        $("#destination").autocomplete({
             source: destinations
         });
     }
@@ -114,7 +114,7 @@ let validateVehicleInput = function () {
 let setEndDateEqStartDate = function () {
 
     $('#alarm_date').change(function () {
-        $('#alarm_end_date').val($(this).val());
+        $('#return_date').val($(this).val());
     });
 }
 
@@ -130,7 +130,7 @@ let addSetting = function () {
     $('.save-cat').click(function () {
         let data = {
             id: 'cat_id',
-            value: $('#category option:selected').val(),
+            value: $('#set_category option:selected').val(),
         };
         let url = wpApiSettings.root + 'ffbs/v1/settings';
         $.ajax({

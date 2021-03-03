@@ -228,10 +228,10 @@ class EinsatzverwaltungCustomPost
                 echo $mission[0]->id;
                 break;
             case 'alarmdate':
-                echo $mission[0]->alarmierung_date;
+                echo $mission[0]->alarm_date;
                 break;
             case 'alarmtime':
-                $date = new DateTime($mission[0]->alarmierung_time);
+                $date = new DateTime($mission[0]->alarm_time);
                 echo $date->format('H:i');
                 break;
             case 'lastedit':
@@ -364,7 +364,6 @@ class EinsatzverwaltungCustomPost
             <label for="category" class="col-sm-2 col-form-label">Kategorie</label>
             <div class="col-sm-10">
                 <select class="form-control" id="category" name="category">
-                    <option>Wähle eine Kategorie</option>
                     <option value="BE">Brandeinsatz</option>
                     <option value="TH">Technische Hilfeleistung</option>
                     <option value="S">Sonstiges</option>
@@ -525,6 +524,7 @@ class EinsatzverwaltungCustomPost
                 $vehicles[] = $db_vehicles[$i]->id;
             }
         }
+
         if (empty($mission_id)) {
 
             //new mission entry

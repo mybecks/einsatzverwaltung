@@ -54,8 +54,8 @@ final class FFBSEinsatzverwaltungSettingsPage
             <h2>Settings</h2>
             <form method="POST" action="">
                 <div class="form-group">
-                    <label for="categorie">Kategorie</label>
-                    <select class="custom-select mr-sm-2" id="category">
+                    <label for="set_category">Kategorie</label>
+                    <select class="custom-select mr-sm-2" id="set_category">
                         <option value="0" selected>Kategorien...</option>
                         <?php foreach ($categories as $category) { ?>
                             <option value="<?php echo $category->cat_ID; ?>"><?php echo $category->name; ?></option>
@@ -75,7 +75,7 @@ final class FFBSEinsatzverwaltungSettingsPage
         $script = "
         <script type='text/javascript'>
          jQuery(document).ready(function($) {
-            $('#category').val(" . $value . ");
+            $('#set_category').val(" . $value . ");
         });
         </script>";
         echo $script;
