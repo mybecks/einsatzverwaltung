@@ -171,7 +171,7 @@ class DatabaseHandler
     {
         $arr_months = array();
 
-        $query = "SELECT id, category, keyword, destination, alarm_date, alarm_time, return_date, return_time, link_to_media, wp_posts_ID, MONTH(alarmierung_date) AS Month, article_post_id " .
+        $query = "SELECT id, category, keyword, destination, alarm_date, alarm_time, return_date, return_time, link_to_media, wp_posts_ID, MONTH(alarm_date) AS Month, article_post_id " .
             "FROM " . $this->table->missions .
             " WHERE YEAR(alarm_date) = %d" .
             " ORDER BY alarm_date DESC, alarm_time DESC";
@@ -217,6 +217,7 @@ class DatabaseHandler
                         "link_to_media" =>  $mission->link_to_media,
                         "description" => $description,
                         "linked_post_id" => get_permalink($mission->wp_posts_ID),
+                        "article_post" => $mission->article_post_id ? get_permalink($mission->article_post_id) : null,
                         "mission_id" => $mission->id,
                         "post_content" => do_shortcode($post->post_content)
                     );

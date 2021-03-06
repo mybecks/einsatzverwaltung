@@ -55,7 +55,7 @@ class Einsatzverwaltung_Widget extends WP_Widget {
 
 		$table_missions = $wpdb->prefix . "einsaetze";
 
-		$sql = "SELECT count(id) FROM ".$table_missions." WHERE YEAR(alarmierung_date) = Year(CURDATE())";
+		$sql = "SELECT count(id) FROM ".$table_missions." WHERE YEAR(alarm_date) = Year(CURDATE())";
 		$count = $wpdb->get_var($sql);
 
 		$html = "<div class=\"center-mission-count\">".$count."</div>";

@@ -3,7 +3,7 @@ require('./wp-load.php');
 ?>
 <pre>
 <?php
-  $wpdb->show_errors(); 
+  $wpdb->show_errors();
   // require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 
@@ -26,10 +26,10 @@ for($i=0; $i<70; $i++){
         'comment_status' => 'closed',
         'ping_status' => 'closed'
     );
-    
+
     $post_id = wp_insert_post($new_post);
     print('Inserted post id: '.$post_id.' # ');
-    
+
     $wpdb->insert(
                 $table_name_missions,
                 array(
@@ -37,8 +37,8 @@ for($i=0; $i<70; $i++){
                     'alarmstichwort' => "Wasserschaden",
                     'alarm_art' => "Technischer Einsatz",
                     'einsatzort' => "Langenbrücken",
-                    'alarmierung_date' => "2013-08-06",
-                    'alarmierung_time' => "15:31",
+                    'alarm_date' => "2013-08-06",
+                    'alarm_time' => "15:31",
                     'rueckkehr_date' => "2013-08-06",
                     'rueckkehr_time' => "21:56",
                     'link_to_media' => "",

@@ -130,11 +130,11 @@ class Einsatzverwaltung
         $arrow_up_path = plugin_dir_url(__FILE__) . 'img/mini-nav-top.gif';
 
         // Ausgabe der Einsätze im aktuellen Jahr
-        foreach ($arr_months as $key => $value) {
+        foreach ($arr_months as $monthKey => $monthValue) {
 
-            $german_month = $this->get_german_month($key);
-            $count = count($arr_months[$key]);
-?>
+            $german_month = $this->get_german_month($monthKey);
+            $count = count($arr_months[$monthKey]);
+            ?>
 
             <br />
             <div>
@@ -160,7 +160,7 @@ class Einsatzverwaltung
                         </tfoot>
                         <tbody>
 
-                            <?php foreach ($arr_months[$key] as $key => $value) {
+                            <?php foreach ($arr_months[$monthKey] as $key => $value) {
                                 $vehicles = "";
                                 foreach ($this->db_handler->load_vehicles_by_mission_id($value['mission_id']) as $vehicle) {
                                     if ($vehicles) {
@@ -171,11 +171,22 @@ class Einsatzverwaltung
                                 if (!$vehicles) {
                                     $vehicles = "-";
                                 }
+                                switch($value['category']) {
+                                    case "BE":
+                                        $category = "<div class=\"d-inline-block mr-1\" style=\"width:22px;\"><i class=\"fas fa-fire\"></i></div>B - ";
+                                        break;
+                                    case "TH":
+                                        $category = "<div class=\"d-inline-block mr-1\" style=\"width:22px;\"><i class=\"fas fa-tools\"></i></div>TH - ";
+                                        break;
+                                    case "S":
+                                        $category = "<div class=\"d-inline-block mr-1\" style=\"width:22px;\"><i class=\"fas fa-siren\"></i></div>S - ";
+                                        break;
+                                }
                             ?>
                                 <tr>
                                     <td><?php echo $value['alarm_date']; ?></td>
                                     <td><?php echo $value['alarm_time']; ?></td>
-                                    <td><?php echo $value['keyword']; ?></td>
+                                    <td><?php echo $category . $value['keyword']; ?></td>
                                     <td><?php echo $value['location']; ?></td>
                                     <!--<td><a href="<?php echo $value['linked_post_id']; ?>"><?php echo $value['description']; ?></a></td>-->
                                     <td><a href="javascript:jQuery('#missionDetails<?= $value['mission_id'] ?>').toggle();">Details</a></td>
@@ -205,6 +216,15 @@ class Einsatzverwaltung
                                                     </div>
                                                 </div>
                                             <?php
+                                            }
+                                            if($value['article_post']) {
+                                                ?>
+                                                <div class="row mt-1 mb-3">
+                                                    <div class="col">
+                                                        <a href="<?=$value['article_post'] ?>">Zur Einsatznews...</a>
+                                                    </div>
+                                                </div>
+                                                <?php
                                             }
                                             ?>
                                         </div>
@@ -417,7 +437,7 @@ EOF;
         echo        "<b>Art der Alarmierung:</b> " . $mission->art_alarmierung;
         echo    '</li>';
         echo    '<li class="alarmierung">';
-        echo        "<b>Alarmierung:</b> " . strftime("%d.%m.%Y", strtotime($mission->alarmierung_date)) . " " . strftime("%H:%M", strtotime($mission->alarmierung_time));
+        echo        "<b>Alarmierung:</b> " . strftime("%d.%m.%Y", strtotime($mission->alarm_date)) . " " . strftime("%H:%M", strtotime($mission->alarm_time));
         echo    '</li>';
         echo    '<li class="rueckkehr">';
         echo        "<b>R&uuml;ckkehr:</b> " . strftime("%d.%m.%Y", strtotime($mission->rueckkehr_date)) . " " . strftime("%H:%M", strtotime($mission->rueckkehr_time));
