@@ -2,8 +2,6 @@
 
 /**
  * Main Class
- *
- * @author Andre Becker
  */
 class Einsatzverwaltung
 {
@@ -122,7 +120,6 @@ class Einsatzverwaltung
      * Returns missions grouped by month for current year.
      *
      * @return array()
-     * @author Andre Becker
      * */
     public function print_missions_by_year($arr_months)
     {
@@ -246,7 +243,6 @@ class Einsatzverwaltung
      * Transfers the english months to german
      *
      * @return array()
-     * @author Florian Wallburg
      * */
     public function get_german_month($english_month_2number)
     {
@@ -279,7 +275,6 @@ class Einsatzverwaltung
     /**
      * Print overview of missions grouped by month
      *
-     * @author Florian Wallburg, Andre Becker
      * */
     public function print_missions_month_overview($arr_months)
     {
@@ -362,8 +357,6 @@ class Einsatzverwaltung
 
     /**
      * Add JavaScript for postinfo to the footer
-     *
-     * @author Florian Wallburg
      * */
     public function postinfo_head()
     {
@@ -401,8 +394,6 @@ EOF;
 
     /**
      * Ausgabe der Detailinformationen zu einem Einsatz
-     *
-     * @author Florian Wallburg
      * */
     public function postinfo()
     {

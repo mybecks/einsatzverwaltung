@@ -3,8 +3,6 @@ require_once(MISSIONS_PLUGIN_DIR . 'partials/page.ffbs.settings.php');
 
 /**
  * Custom Post Type for Einsatzverwaltung
- *
- * @author Andre Becker
  **/
 class EinsatzverwaltungCustomPost
 {
@@ -251,20 +249,12 @@ class EinsatzverwaltungCustomPost
             '%monthnum%',
             '%postname%'
         );
-        // echo $permalink;
-        // $regex = '/(\d{4}\_\d{2}\_\D+[a-zA-Z])/';
-        // $rewritecode = array(
-        //     '/%year%/',
-        //     '/%monthnum%/',
-        //     $regex
-        // );
 
         if ('' != $permalink && !in_array($post->post_status, array('draft', 'pending', 'auto-draft'))) {
             $unixtime = strtotime($post->post_date);
 
             $date = explode(" ", date('Y m d H i s', $unixtime));
 
-            // list($year, $month, $postname) = explode('_', $post->post_name);
             $rewritereplace = array(
                 $date[0],
                 $date[1],
@@ -272,9 +262,6 @@ class EinsatzverwaltungCustomPost
             );
 
             $permalink = str_replace($rewritecode, $rewritereplace, $permalink);
-            // $permalink = preg_replace($rewritecode, $rewritereplace, $permalink);
-
-            // wp_die($permalink);
         } else { // if they're not using the fancy permalink option
         }
         return $permalink;
@@ -303,8 +290,6 @@ class EinsatzverwaltungCustomPost
 
     /**
      * Add Custom Box to Category
-     *
-     * @author Andre Becker
      * */
     public function add_custom_box()
     {
@@ -476,9 +461,7 @@ class EinsatzverwaltungCustomPost
 
     /**
      * Save and Edit Mission Details
-     *
-     * @author Andre Becker
-     * */
+     */
     /* When the post is saved, saves our custom data */
     public function save_data($post_id)
     {
@@ -599,7 +582,6 @@ class EinsatzverwaltungCustomPost
      * Delete mission data & associated post
      *
      * @return boolean
-     * @author Andre Becker
      * */
     public function delete_mission($post_id)
     {

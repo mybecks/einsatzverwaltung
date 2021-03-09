@@ -2,7 +2,6 @@
 
 /**
  * Handler for all database related requests
- * @author Andre Becker
  */
 
 //http://wordpress.stackexchange.com/questions/73868/queries-inside-of-a-class

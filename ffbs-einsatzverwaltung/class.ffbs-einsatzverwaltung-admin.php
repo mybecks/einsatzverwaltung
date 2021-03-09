@@ -2,8 +2,6 @@
 
 /**
  * Initializing Admin Menu
- *
- * @author Andre Becker
  * */
 
 
