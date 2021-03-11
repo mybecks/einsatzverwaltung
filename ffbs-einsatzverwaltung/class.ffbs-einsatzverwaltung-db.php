@@ -391,4 +391,12 @@ class DatabaseHandler
 
         return $result;
     }
+
+    public function list_last_missions($count)
+    {
+        $query = "SELECT category, keyword, alarm_date FROM " . $this->table->missions . " WHERE YEAR (alarm_date) = YEAR(CURDATE()) ORDER BY alarm_date DESC LIMIT " . $count;
+        $missions = $this->db->get_results($query);
+
+        return $missions;
+    }
 }

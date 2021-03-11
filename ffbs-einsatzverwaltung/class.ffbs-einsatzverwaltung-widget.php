@@ -51,18 +51,19 @@ class Einsatzverwaltung_Widget extends WP_Widget
         // before and after widget arguments are defined by themes
         echo $args['before_widget'];
 
-        if (!empty($title))
+        if (!empty($title)) {
             echo $args['before_title'] . $title . ' ' . date('Y') . $args['after_title'];
+        }
 
-        global $wpdb;
+        $this->db_handler = DatabaseHandler::get_instance();
+        $missions = $this->db_handler->list_last_missions(3);
 
-        $table_missions = $wpdb->prefix . "einsaetze";
-
-        $sql = "SELECT count(id) FROM " . $table_missions . " WHERE YEAR(alarmierung_date) = Year(CURDATE())";
-        $count = $wpdb->get_var($sql);
-
-        $html = "<div class=\"center-mission-count\">" . $count . "</div>";
-
+        $html = "<ul>";
+        foreach ($missions as $mission) {
+            $date = date("d.m", strtotime($mission->alarm_date));
+            $html .= "<li>" . $date  . " " . $mission->category . " - " . $mission->keyword . "<li>";
+        }
+        $html .= "</ul>";
         echo $html;
         echo $args['after_widget'];
     }
