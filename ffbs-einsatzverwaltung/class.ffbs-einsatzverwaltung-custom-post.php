@@ -129,7 +129,7 @@ class EinsatzverwaltungCustomPost
 
     public function vehicle_page_content()
     {
-        $vehicles = $this->db_handler->load_vehicles();
+        $vehicles = $this->db_handler->load_vehicles(True);
 ?>
         <div class="wrap">
             <h2>Fahrzeugverwaltung</h2>

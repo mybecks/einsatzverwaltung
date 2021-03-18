@@ -246,9 +246,14 @@ class DatabaseHandler
      * @return array()
      * @author Andre Becker
      */
-    public function load_vehicles()
+    public function load_vehicles($all = False)
     {
         $query = "SELECT id, radio_id, description, location, status, media_link FROM " . $this->table->vehicles;
+
+        if (!$all) {
+            $query .= " WHERE status = 'S2'";
+        }
+
         $vehicles = $this->db->get_results($query);
 
         return $vehicles;
