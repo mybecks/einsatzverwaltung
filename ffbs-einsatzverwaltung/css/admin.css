@@ -38,6 +38,11 @@ progress:after {
 	display : none;
 }
 
-.pointer {
+.action:hover {
     cursor: pointer;
+    font-size: 120%;
+}
+
+#delete:hover {
+    color: red;
 }

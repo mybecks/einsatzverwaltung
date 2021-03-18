@@ -53,8 +53,10 @@ class Einsatzverwaltung
     {
         // Load JS Script for backend functions
         wp_enqueue_script('admin_scripts', plugins_url('js/functions.admin.js', __FILE__), array('jquery', 'wp-api'));
+        wp_enqueue_script('bootstrap-js', plugins_url('js/bootstrap.min.js', __FILE__));
         wp_localize_script(
             'admin_scripts',
+            'bootstrap-js',
             'wpApiSettings',
             array(
                 'root' => esc_url_raw(rest_url()),
@@ -131,7 +133,7 @@ class Einsatzverwaltung
 
             $german_month = $this->get_german_month($monthKey);
             $count = count($arr_months[$monthKey]);
-            ?>
+?>
 
             <br />
             <div>
@@ -168,7 +170,7 @@ class Einsatzverwaltung
                                 if (!$vehicles) {
                                     $vehicles = "-";
                                 }
-                                switch($value['category']) {
+                                switch ($value['category']) {
                                     case "BE":
                                         $category = "<div class=\"d-inline-block mr-1\" style=\"width:22px;\"><i class=\"fas fa-fire\"></i></div>B - ";
                                         break;
@@ -214,14 +216,14 @@ class Einsatzverwaltung
                                                 </div>
                                             <?php
                                             }
-                                            if($value['article_post']) {
-                                                ?>
+                                            if ($value['article_post']) {
+                                            ?>
                                                 <div class="row mt-1 mb-3">
                                                     <div class="col">
-                                                        <a href="<?=$value['article_post'] ?>">Zur Einsatznews...</a>
+                                                        <a href="<?= $value['article_post'] ?>">Zur Einsatznews...</a>
                                                     </div>
                                                 </div>
-                                                <?php
+                                            <?php
                                             }
                                             ?>
                                         </div>

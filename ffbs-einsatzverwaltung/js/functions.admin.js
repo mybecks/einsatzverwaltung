@@ -111,6 +111,38 @@ let validateVehicleInput = function () {
     });
 }
 
+let modifyVehicle = function () {
+    $(".tab-vehicle").on("click", "#modify", function () {
+
+        // display modal view
+        $('.modal').show();
+
+
+
+        var tr = $(this).closest("tr");
+        let radioId = tr[0].cells[0].outerText;
+        let id = radioId.replace(' ', '').replace('/', '').toLowerCase();
+
+        let url = wpApiSettings.root + 'ffbs/v1/vehicles/' + id;
+        $.ajax({
+            type: 'PUT',
+            url: url,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('X-WP-Nonce', wpApiSettings.nonce);
+            },
+            success: function (data, textStatus, XMLHttpRequest) {
+                // hide modal view
+                $('#message').html(radioId + ' successfully updated').show();
+                $('#message').fadeOut(5000);
+            },
+            error: function (MLHttpRequest, textStatus, errorThrown) {
+                console.log(MLHttpRequest.status + ' ' + MLHttpRequest.responseText);
+                $('#message').html(MLHttpRequest.status + ' ' + MLHttpRequest.responseText).show();
+            }
+        });
+    });
+};
+
 let setEndDateEqStartDate = function () {
 
     $('#alarm_date').change(function () {
@@ -168,6 +200,7 @@ jQuery(document).ready(function ($) {
     addVehicle();
     deleteVehicle();
     validateVehicleInput();
+    modifyVehicle();
 
     // Custom Post Box
     setEndDateEqStartDate();
