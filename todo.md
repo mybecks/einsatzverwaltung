@@ -13,10 +13,10 @@
 * [ ] refactor ..-admin.php to extend from WP_REST_Controller `$ffbs_rest_controler = new RestContller(); $ffbs_rest_controller->register_routes();` in `add_action('rest_api_init', array(....));`
 * [ x ] Dropdown with post from specific category in custom post
 * [ x ] refactor selector_for_dropdown function to just include once
-* [ x ] permalink: /mission/2021/02/2021_02_th-hoelle-friert-zu/ -> /einsatz/2021/02/th-hoelle-friert-zu/* [ ] disable auto-draft in custom post
+* [ x ] permalink: /mission/2021/02/2021_02_th-hoelle-friert-zu/ -> /einsatz/2021/02/th-hoelle-friert-zu/*
 * [ x ] customize article category for "link to article"
 * [ x ] Replace table in custom box with bootstrap coding
-* [ ] Widget with last x missions
+* [ x ] Widget with last x missions
 
 ## Database
 * [ x ] rename table names to `en`
@@ -45,5 +45,6 @@
 * [ ] restructure plugin
 * [ ] translate
 * [ ] check for auto-draft
+* [ ] add elementor widget for counting all missions in the current year (Elementor Creating a Widget)[https://developers.elementor.com/creating-a-new-widget/]
 
 ## Frontend

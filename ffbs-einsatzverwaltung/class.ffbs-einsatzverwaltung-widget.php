@@ -13,7 +13,7 @@ class Einsatzverwaltung_Widget extends WP_Widget
         parent::__construct(
             'einsatzverwaltung_widget', // Base ID
             'Einsatzverwaltung', // Name
-            array('description' => __('Anzahl Eins&auml;tze im Jahr', 'einsatzverwaltung_textdomain'),) // Args
+            array('description' => __('Last 3 missions in the current year', 'einsatzverwaltung_textdomain'),) // Args
         );
     }
 
