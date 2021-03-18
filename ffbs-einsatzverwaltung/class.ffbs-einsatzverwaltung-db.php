@@ -254,6 +254,8 @@ class DatabaseHandler
             $query .= " WHERE status = 'S2'";
         }
 
+        $query .= " ORDER BY status ASC";
+
         $vehicles = $this->db->get_results($query);
 
         return $vehicles;
