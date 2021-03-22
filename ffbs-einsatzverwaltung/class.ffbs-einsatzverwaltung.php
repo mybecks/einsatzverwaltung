@@ -11,7 +11,10 @@ class Einsatzverwaltung
     {
         $this->plugin_path = dirname(__FILE__);
         $this->db_handler = DatabaseHandler::get_instance();
+
         add_action('wp_enqueue_scripts', array($this, 'add_styles'));
+        add_action('wp_enqueue_scripts', array($this, 'add_scripts'));
+
         add_action('plugins_loaded', array($this, 'plugin_textdomain'));
         add_action('wp_footer', array($this, 'postinfo_head'));
 
@@ -32,6 +35,11 @@ class Einsatzverwaltung
         // Bootstrap CSS styling
         wp_register_style('bootstrap-style', plugins_url('/css/bootstrap.css', __FILE__));
         wp_enqueue_style('bootstrap-style');
+    }
+
+    public function add_scripts()
+    {
+        wp_enqueue_script('widget_script', plugins_url('js/functions.widget.js', __FILE__), array('jquery'));
     }
 
     public function add_admin_styles()

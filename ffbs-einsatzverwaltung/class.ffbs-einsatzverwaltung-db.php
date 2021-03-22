@@ -234,6 +234,17 @@ class DatabaseHandler
         return $arr_months;
     }
 
+    public function get_missions_count_by_year($year)
+    {
+        $query = "SELECT COUNT(*) as count " .
+            "FROM " . $this->table->missions .
+            " WHERE YEAR(alarm_date) = %d";
+
+        $count = $this->db->get_var($this->db->prepare($query, $year));
+        return $count;
+    }
+
+
     /**
      *
      * Vehicle Related Requests
