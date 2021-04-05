@@ -133,7 +133,14 @@ class Einsatzverwaltung_Counter_Widget extends WP_Widget
         $this->db_handler = DatabaseHandler::get_instance();
         $result = $this->db_handler->get_missions_count_by_year(date('Y'));
 
-        $html = "<span class='counter'>" . $result . "</span>";
+        $html = '<div class="elementor-counter">
+                    <div class="elementor-counter-number-wrapper">
+                        <span class="elementor-counter-number-prefix"></span>
+                        <span class="elementor-counter-number ffbs-counter">' . $result . '</span>
+                        <span class="elementor-counter-number-suffix"></span>
+                    </div>
+                    <div class="elementor-counter-title ffbs-counterText">Einsätze ' . date("Y") . '</div>
+                 </div>';
 
         echo $html;
         echo $args['after_widget'];

@@ -21,15 +21,15 @@ $.fn.isOnScreen = function () {
 
 const counter = function () {
 
-    // if ($('.counter').isOnScreen()) {
+    // if ($('.ffbs-counter').isOnScreen()) {
 
     $({ Counter: 0 }).animate({
-        Counter: $('.counter').text()
+        Counter: $('.ffbs-counter').text()
     }, {
-        duration: 1000,
+        duration: 2000,
         easing: 'swing',
         step: function () {
-            $('.counter').text(Math.ceil(this.Counter));
+            $('.ffbs-counter').text(Math.ceil(this.Counter));
         }
     });
     // }
