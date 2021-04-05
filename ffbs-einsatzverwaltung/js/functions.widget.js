@@ -18,27 +18,29 @@ $.fn.isOnScreen = function () {
     return (!(viewport.right < bounds.left || viewport.left > bounds.right || viewport.bottom < bounds.top || viewport.top > bounds.bottom));
 };
 
+let ffbsCounterExecuted = false;
+const ffbsCounter = function () {
 
-const counter = function () {
-
-    // if ($('.ffbs-counter').isOnScreen()) {
-
-    $({ Counter: 0 }).animate({
-        Counter: $('.ffbs-counter').text()
-    }, {
-        duration: 2000,
-        easing: 'swing',
-        step: function () {
-            $('.ffbs-counter').text(Math.ceil(this.Counter));
-        }
-    });
-    // }
+    if ($('.ffbs-counter').isOnScreen()) {
+        ffbsCounterExecuted = true;
+        $({Counter: 0}).animate({
+            Counter: $('.ffbs-counter').text()
+        }, {
+            duration: 2000,
+            easing: 'swing',
+            step: function () {
+                $('.ffbs-counter').text(Math.ceil(this.Counter));
+            }
+        });
+    }
 };
 
 
-
 jQuery(document).ready(function ($) {
-    // $(window).scroll(function () {
-    counter();
-    // });
+    ffbsCounter();
+    $(window).scroll(function () {
+        if (!ffbsCounterExecuted) {
+            ffbsCounter();
+        }
+    });
 });
