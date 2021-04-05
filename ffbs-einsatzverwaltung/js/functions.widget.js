@@ -21,7 +21,7 @@ $.fn.isOnScreen = function () {
 let ffbsCounterExecuted = false;
 const ffbsCounter = function () {
 
-    if ($('.ffbs-counter').isOnScreen()) {
+    if ($('.ffbs-counter') && $('.ffbs-counter').length > 0 && $('.ffbs-counter').isOnScreen()) {
         ffbsCounterExecuted = true;
         $({Counter: 0}).animate({
             Counter: $('.ffbs-counter').text()

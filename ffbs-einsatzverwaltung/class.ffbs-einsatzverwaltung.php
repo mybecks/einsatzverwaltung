@@ -197,7 +197,7 @@ class Einsatzverwaltung
                                     <td class="ffbs-hideOnMobile"><?php echo $value['alarm_date']; ?></td>
                                     <td class="ffbs-hideOnMobile"><?php echo $value['alarm_time']; ?></td>
                                     <td>
-                                        <div class="ffbs-showOnMobile mb-1"><?php echo $value['alarm_date']; ?></div>
+                                        <div class="ffbs-showOnMobile mb-1"><?php echo $value['alarm_date']; ?>, <?php echo $value['alarm_time']; ?> Uhr</div>
                                         <a href="javascript:jQuery('#missionDetails<?= $value['mission_id'] ?>').toggle();return false;"><?php echo $category . $value['keyword']; ?></a>
                                     </td>
                                     <td class="ffbs-hideOnMobile"><?php echo $value['location']; ?></td>
