@@ -160,13 +160,12 @@ class Einsatzverwaltung
                                 <th scope='col' width="100">Datum</th>
                                 <th scope='col' width="70">Zeit</th>
                                 <th scope='col'>Alarmstichwort</th>
-                                <th scope='col' width="140">Einsatzort</th>
-                                <th scope='col' width="75"></th>
+                                <th scope='col' width="150">Einsatzort</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
-                                <td colspan='5'>Anzahl der Eins&auml;tze im Monat: <b><?php echo $count; ?></b></td>
+                                <td colspan='4'>Anzahl der Eins&auml;tze im Monat: <b><?php echo $count; ?></b></td>
                             </tr>
                         </tfoot>
                         <tbody>
@@ -197,12 +196,14 @@ class Einsatzverwaltung
                                 <tr onclick="jQuery('#missionDetails<?= $value['mission_id'] ?>').toggle();return false;" style="cursor:pointer;">
                                     <td class="ffbs-hideOnMobile"><?php echo $value['alarm_date']; ?></td>
                                     <td class="ffbs-hideOnMobile"><?php echo $value['alarm_time']; ?></td>
-                                    <td><?php echo $category . $value['keyword']; ?></td>
+                                    <td>
+                                        <div class="ffbs-showOnMobile mb-1"><?php echo $value['alarm_date']; ?></div>
+                                        <a href="javascript:jQuery('#missionDetails<?= $value['mission_id'] ?>').toggle();return false;"><?php echo $category . $value['keyword']; ?></a>
+                                    </td>
                                     <td class="ffbs-hideOnMobile"><?php echo $value['location']; ?></td>
-                                    <td class="ffbs-hideOnMobile"><a href="javascript:jQuery('#missionDetails<?= $value['mission_id'] ?>').toggle();return false;">Details</a></td>
                                 </tr>
                                 <tr id="missionDetails<?= $value['mission_id'] ?>" style="display:none;">
-                                    <td colspan="5">
+                                    <td colspan="4">
                                         <div>
                                             <div class="row mt-3 mb-3">
                                                 <div class="col">

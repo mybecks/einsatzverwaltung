@@ -70,6 +70,9 @@
     .ffbs-showOnMobile {
         display: block !important;
     }
+    .ffbs-vehicle {
+        width: 90px;
+    }
 }
 
 
