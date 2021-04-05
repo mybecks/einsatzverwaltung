@@ -54,3 +54,22 @@
     font-size: 2em;
 /*line-height: 90px;*/
 }
+
+.ffbs-vehicle {
+    width: 110px;
+}
+
+.ffbs-showOnMobile {
+    display: none !important;
+}
+
+@media (max-width: 815px) {
+    .ffbs-hideOnMobile {
+        display: none;
+    }
+    .ffbs-showOnMobile {
+        display: block !important;
+    }
+}
+
+

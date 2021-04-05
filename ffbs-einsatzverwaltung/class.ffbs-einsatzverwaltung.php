@@ -102,14 +102,18 @@ class Einsatzverwaltung
         echo    "<form action=\"$permalink\" method=\"post\">";
         echo        "<table>";
         echo            "<tr>Einsatzjahr:&nbsp;</tr>";
-        echo            "<tr><select name=\"einsatzjahr\">";
+        echo            "<tr><select name=\"einsatzjahr\" onchange=\"this.form.submit()\">";
 
         foreach ($years as $year) {
-            echo "  <option value=\"" . $year . "\">" . $year . "</option>";
+            if(isset($_POST['einsatzjahr']) && $_POST['einsatzjahr'] == $year) {
+                $selected = " selected=\"selected\"";
+            } else {
+                $selected = "";
+            }
+            echo "  <option value=\"" . $year . "\"" . $selected . ">" . $year . "</option>";
         }
 
         echo                "</select>";
-        echo                "<input type=\"submit\" value=\"Anzeigen\" style=\"margin-left: 1rem;\" />";
         echo            "</tr>";
         echo        "</table>";
         echo    "</form>";
@@ -149,15 +153,15 @@ class Einsatzverwaltung
                 <h2>
                     <?php echo $german_month; ?>
                 </h2>
-                <div class='table-responsive'>
-                    <table class='table table-striped' summary='Einsatzliste im Monat $german_month' border='0'>
+                <div>
+                    <table class='table table-striped' summary='Einsatzliste im Monat <?= $german_month ?>' border='0'>
                         <thead>
-                            <tr>
-                                <th scope='col'>Datum</th>
-                                <th scope='col'>Zeit</th>
+                            <tr class="ffbs-hideOnMobile">
+                                <th scope='col' width="100">Datum</th>
+                                <th scope='col' width="70">Zeit</th>
                                 <th scope='col'>Alarmstichwort</th>
-                                <th scope='col'>Einsatzort</th>
-                                <th scope='col'>Bericht</th>
+                                <th scope='col' width="140">Einsatzort</th>
+                                <th scope='col' width="75"></th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -171,9 +175,9 @@ class Einsatzverwaltung
                                 $vehicles = "";
                                 foreach ($this->db_handler->load_vehicles_by_mission_id($value['mission_id']) as $vehicle) {
                                     if ($vehicles) {
-                                        $vehicles .= ", ";
+                                        $vehicles .= "";
                                     }
-                                    $vehicles .= $vehicle->description . " " . $vehicle->location;
+                                    $vehicles .= "<img src=\"" . $vehicle->media_link . "\" alt=\"" . $vehicle->description . " " . $vehicle->location . "\" title=\"" . $vehicle->description . " " . $vehicle->location . "\" class=\"mr-3 mt-1 mb-2 ffbs-vehicle\">";
                                 }
                                 if (!$vehicles) {
                                     $vehicles = "-";
@@ -190,18 +194,17 @@ class Einsatzverwaltung
                                         break;
                                 }
                             ?>
-                                <tr>
-                                    <td><?php echo $value['alarm_date']; ?></td>
-                                    <td><?php echo $value['alarm_time']; ?></td>
+                                <tr onclick="jQuery('#missionDetails<?= $value['mission_id'] ?>').toggle();return false;" style="cursor:pointer;">
+                                    <td class="ffbs-hideOnMobile"><?php echo $value['alarm_date']; ?></td>
+                                    <td class="ffbs-hideOnMobile"><?php echo $value['alarm_time']; ?></td>
                                     <td><?php echo $category . $value['keyword']; ?></td>
-                                    <td><?php echo $value['location']; ?></td>
-                                    <!--<td><a href="<?php echo $value['linked_post_id']; ?>"><?php echo $value['description']; ?></a></td>-->
-                                    <td><a href="javascript:jQuery('#missionDetails<?= $value['mission_id'] ?>').toggle();">Details</a></td>
+                                    <td class="ffbs-hideOnMobile"><?php echo $value['location']; ?></td>
+                                    <td class="ffbs-hideOnMobile"><a href="javascript:jQuery('#missionDetails<?= $value['mission_id'] ?>').toggle();return false;">Details</a></td>
                                 </tr>
                                 <tr id="missionDetails<?= $value['mission_id'] ?>" style="display:none;">
                                     <td colspan="5">
                                         <div>
-                                            <div class="row mt-3">
+                                            <div class="row mt-3 mb-3">
                                                 <div class="col">
                                                     <strong>Alarmierung:</strong> <?php echo $value['alarm_date']; ?>, <?php echo $value['alarm_time']; ?> Uhr
                                                 </div>
@@ -209,9 +212,9 @@ class Einsatzverwaltung
                                                     <strong>Rückkehr:</strong> <?php echo $value['return_date']; ?>, <?php echo $value['return_time']; ?> Uhr
                                                 </div>
                                             </div>
-                                            <div class="row mt-4 mb-3">
+                                            <div class="row mt-3 mb-3 ffbs-showOnMobile">
                                                 <div class="col">
-                                                    <strong>Fahrzeuge:</strong> <?= $vehicles ?>
+                                                    <strong>Einsatzort:</strong> <?php echo $value['location']; ?>
                                                 </div>
                                             </div>
                                             <?php
@@ -228,12 +231,19 @@ class Einsatzverwaltung
                                             ?>
                                                 <div class="row mt-1 mb-3">
                                                     <div class="col">
-                                                        <a href="<?= $value['article_post'] ?>">Zur Einsatznews...</a>
+                                                        <strong>Einsatz-News:</strong> <a href="<?= $value['article_post'] ?>"><?= $value['article_title'] ?></a>
                                                     </div>
                                                 </div>
                                             <?php
                                             }
                                             ?>
+                                            <div class="row mt-1 mb-3">
+                                                <div class="col">
+                                                    <strong>Fahrzeuge:</strong>
+                                                    <br/>
+                                                    <?= $vehicles ?>
+                                                </div>
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>
@@ -241,12 +251,14 @@ class Einsatzverwaltung
                         </tbody>
                     </table>
                 </div>
-                <div>
-                    B: Brandeinsatz - TH: Technischer Einsatz - S: Sonstiger Einsatz
-                </div>
             </div>
         <?php
         }
+        ?>
+        <div>
+            <i class="fas fa-fire"></i> B: Brandeinsatz - <i class="fas fa-tools"></i> TH: Technischer Einsatz - <i class="fas fa-siren"></i> S: Sonstiger Einsatz
+        </div>
+        <?php
     }
 
     /**
@@ -305,19 +317,19 @@ class Einsatzverwaltung
         ?>
         <a name="Übersicht"></a>
         <h2>Monatsübersicht für <?php echo $mission_year; ?></h2>
-        <div class='table-responsive'>
+        <div>
             <table class="table table-striped" summary="Übersicht über die Anzahl der Einsätze im Jahr <?php echo $mission_year; ?>">
                 <thead>
                     <tr>
                         <th>Monat</th>
                         <th>Einsätze</th>
-                        <!-- <th>BE/TE/SE</th> -->
-                        <th>Übersicht</th>
+                        <th class="ffbs-hideOnMobile"><i class="fas fa-fire"></i> B / <i class="fas fa-tools"></i> TH / <i class="fas fa-siren"></i> S</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tfoot>
                     <tr>
-                        <td colspan="3">Anzahl der Einsätze im Jahr: <b> <?php echo $mission_year_count; ?></b></td>
+                        <td colspan="4">Anzahl der Einsätze im Jahr: <b> <?php echo $mission_year_count; ?></b></td>
                     </tr>
                 </tfoot>
                 <tbody>
@@ -327,22 +339,19 @@ class Einsatzverwaltung
                         $count_missions_in_month = count($arr_months[$key]);
                         // END
 
-                        // START Ratio of false alarms and real missions
-                        // $count_brandeinsatz = 0;
-                        // $count_technischereinsatz = 0;
-                        // $count_sonstiges = 0;
+                        $count_brandeinsatz = 0;
+                        $count_technischereinsatz = 0;
+                        $count_sonstiges = 0;
 
-                        // foreach ($value as $mission_key => $mission_value) {
-
-
-                        //     if (false !== strpos($mission_value[0], 'BE')) {
-                        //         $count_brandeinsatz++;
-                        //     } elseif (false !== strpos($mission_value[0], 'TE')) {
-                        //         $count_technischereinsatz++;
-                        //     } else {
-                        //         $count_sonstiges++;
-                        //     }
-                        // }
+                        foreach ($value as $mission_key => $mission_value) {
+                            if ($mission_value['category'] == 'BE') {
+                                $count_brandeinsatz++;
+                            } elseif ($mission_value['category'] == 'TH') {
+                                $count_technischereinsatz++;
+                            } else {
+                                $count_sonstiges++;
+                            }
+                        }
 
                         // OUTPUT
                         $german_month = $this->get_german_month($key);
@@ -350,8 +359,8 @@ class Einsatzverwaltung
                         <tr>
                             <td><?php echo $german_month; ?></td>
                             <td><?php echo $count_missions_in_month; ?></td>
-                            <!-- <td>$count_brandeinsatz . '/' . $count_technischereinsatz . '/' . $count_sonstiges . '</td> -->
-                            <td><a href="#<?php echo $german_month; ?>">Link</a></td>
+                            <td class="ffbs-hideOnMobile"><?= $count_brandeinsatz ?>/<?= $count_technischereinsatz ?>/<?= $count_sonstiges ?></td>
+                            <td><a href="#<?php echo $german_month; ?>">Einsätze</a></td>
                         </tr>
                     <?php
                     } ?>

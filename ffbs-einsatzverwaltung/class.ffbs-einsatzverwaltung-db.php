@@ -138,7 +138,7 @@ class DatabaseHandler
      */
     public function load_vehicles_by_mission_id($mission_id)
     {
-        $query = "SELECT v.id, v.description, v.location FROM " . $this->table->vehicles .
+        $query = "SELECT v.id, v.description, v.location, v.media_link FROM " . $this->table->vehicles .
             " as v, " . $this->table->moved_out_vehicles . " as mv WHERE v.id = mv.vehicle_id AND mv.mission_id = %d
                 ORDER BY v.location DESC, v.radio_id ASC";
 
@@ -190,20 +190,12 @@ class DatabaseHandler
                     $tmp_arr = $arr_months[$key];
 
                     $post = get_post($mission->wp_posts_ID);
-                    // var_dump($mission->article_post_id);
+
                     if (0 != strlen($post->post_content) || $mission->article_post_id) {
                         $description = "Bericht";
                     } else {
                         $description = "Kurzinfo";
                     }
-
-                    // if (false !== strpos($mission->art_alarmierung, 'Brandeinsatz')) {
-                    //     $alarm_short = 'BE';
-                    // } else if (false !== strpos($mission->art_alarmierung, 'Technischer Einsatz')) {
-                    //     $alarm_short = 'TE';
-                    // } else {
-                    //     $alarm_short = 'SE';
-                    // }
 
                     $arr_content = array(
                         "keyword" => $mission->keyword,
@@ -217,6 +209,7 @@ class DatabaseHandler
                         "description" => $description,
                         "linked_post_id" => get_permalink($mission->wp_posts_ID),
                         "article_post" => $mission->article_post_id ? get_permalink($mission->article_post_id) : null,
+                        "article_title" => $mission->article_post_id ? get_the_title($mission->article_post_id) : null,
                         "mission_id" => $mission->id,
                         "post_content" => do_shortcode($post->post_content)
                     );
@@ -412,7 +405,7 @@ class DatabaseHandler
 
     public function list_last_missions($count)
     {
-        $query = "SELECT category, keyword, alarm_date FROM " . $this->table->missions . " WHERE YEAR (alarm_date) = YEAR(CURDATE()) ORDER BY alarm_date DESC LIMIT " . $count;
+        $query = "SELECT category, keyword, alarm_date, alarm_time FROM " . $this->table->missions . " WHERE YEAR (alarm_date) = YEAR(CURDATE()) ORDER BY alarm_date DESC LIMIT " . $count;
         $missions = $this->db->get_results($query);
 
         return $missions;

@@ -3,7 +3,7 @@
 Plugin Name: FFBS Einsatzverwaltung
 Plugin URI: https://github.com/mybecks/einsatzverwaltung
 Description: Einsatzverwaltung der FF Bad Schönborn
-Version: 0.2.5
+Version: 0.2.6
 Author: FF Bad Schönborn
 Author URI: ffbs.de
 License: MIT
