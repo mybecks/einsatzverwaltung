@@ -47,6 +47,7 @@ class EinsatzverwaltungAdmin
                 'description' => array(),
                 'location' => array(),
                 'mediaLink' => array(),
+                'detailsLink' => array(),
             ),
         ));
 
@@ -95,7 +96,8 @@ class EinsatzverwaltungAdmin
             'radioId' => $body['radioId'],
             'description' => $body['description'],
             'location' => $body['location'],
-            'mediaLink' => $body['mediaLink']
+            'mediaLink' => $body['mediaLink'],
+            'detailsLink' => $body['detailsLink']
         ];
 
 

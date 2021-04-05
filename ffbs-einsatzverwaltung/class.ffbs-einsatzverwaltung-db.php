@@ -138,7 +138,7 @@ class DatabaseHandler
      */
     public function load_vehicles_by_mission_id($mission_id)
     {
-        $query = "SELECT v.id, v.description, v.location, v.media_link FROM " . $this->table->vehicles .
+        $query = "SELECT v.id, v.description, v.location, v.media_link, v.details_link FROM " . $this->table->vehicles .
             " as v, " . $this->table->moved_out_vehicles . " as mv WHERE v.id = mv.vehicle_id AND mv.mission_id = %d
                 ORDER BY v.location DESC, v.radio_id ASC";
 
@@ -252,7 +252,7 @@ class DatabaseHandler
      */
     public function load_vehicles($all = False)
     {
-        $query = "SELECT id, radio_id, description, location, status, media_link FROM " . $this->table->vehicles;
+        $query = "SELECT id, radio_id, description, location, status, media_link, details_link FROM " . $this->table->vehicles;
 
         if (!$all) {
             $query .= " WHERE status = 'S2'";
@@ -324,6 +324,7 @@ class DatabaseHandler
                 'location' => $vehicle['location'],
                 // 'status' => $vehicle['status'],
                 'media_link' => $vehicle['mediaLink'],
+                'details_link' => $vehicle['detailsLink']
             ),
             array(
                 '%s',
@@ -332,6 +333,7 @@ class DatabaseHandler
                 '%s',
                 // '%s',
                 '%s',
+                '%s'
             )
         );
 

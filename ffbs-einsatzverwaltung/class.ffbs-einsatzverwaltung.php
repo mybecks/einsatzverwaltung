@@ -176,7 +176,7 @@ class Einsatzverwaltung
                                     if ($vehicles) {
                                         $vehicles .= "";
                                     }
-                                    $vehicles .= "<img src=\"" . $vehicle->media_link . "\" alt=\"" . $vehicle->description . " " . $vehicle->location . "\" title=\"" . $vehicle->description . " " . $vehicle->location . "\" class=\"mr-3 mt-1 mb-2 ffbs-vehicle\">";
+                                    $vehicles .= "<a href=\"" . $vehicle->details_link . "\" target=\"_blank\"><img src=\"" . $vehicle->media_link . "\" alt=\"" . $vehicle->description . " " . $vehicle->location . "\" title=\"" . $vehicle->description . " " . $vehicle->location . "\" class=\"mr-3 mt-1 mb-2 ffbs-vehicle\"></a>";
                                 }
                                 if (!$vehicles) {
                                     $vehicles = "-";
@@ -511,6 +511,7 @@ function plugin_activation()
         location            VARCHAR(14) NOT NULL,
         status              VARCHAR(2) DEFAULT 'S2' NOT NULL,
         media_link          VARCHAR(2083),
+        details_link          VARCHAR(2083),
         PRIMARY KEY  (id)
     )
     CHARACTER SET utf8

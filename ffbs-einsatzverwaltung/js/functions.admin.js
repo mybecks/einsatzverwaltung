@@ -8,6 +8,7 @@ let addVehicle = function () {
             radioId: $('#vehicle_radio_id').val(),
             location: $('#vehicle_location').val(),
             mediaLink: $('#vehicle_media_link').val(),
+            detailsLink: $('#vehicle_details_link').val()
         };
         let url = wpApiSettings.root + 'ffbs/v1/vehicles';
         $.ajax({
