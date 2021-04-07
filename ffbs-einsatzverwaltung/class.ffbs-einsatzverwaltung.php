@@ -237,6 +237,15 @@ class Einsatzverwaltung
                                                 </div>
                                             <?php
                                             }
+                                            if ($value['link_to_media']) {
+                                            ?>
+                                                <div class="row mt-1 mb-3">
+                                                    <div class="col">
+                                                        <strong>Weiterführender Link:</strong> <a href="<?= $value['link_to_media'] ?>" target="_blank"><?= $value['link_to_media'] ?></a>
+                                                    </div>
+                                                </div>
+                                            <?php
+                                            }
                                             ?>
                                             <div class="row mt-1 mb-3">
                                                 <div class="col">
