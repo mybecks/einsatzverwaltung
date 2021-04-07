@@ -343,7 +343,7 @@ class EinsatzverwaltungCustomPost
             $mission->destination = "";
             $mission->alarm_date = date("Y-m-d");
             $mission->alarm_time = "";
-            $mission->return_date = "";
+            $mission->return_date = date("Y-m-d");
             $mission->return_time = "";
             $mission->link_to_media = "";
             $mission->keyword = "";
