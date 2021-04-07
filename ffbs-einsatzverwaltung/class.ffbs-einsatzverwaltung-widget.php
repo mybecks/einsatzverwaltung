@@ -56,23 +56,23 @@ class Einsatzverwaltung_Widget extends WP_Widget
         }
 
         $this->db_handler = DatabaseHandler::get_instance();
-        $missions = $this->db_handler->list_last_missions(6);
+        $missions = $this->db_handler->list_last_missions(4);
 
         foreach ($missions as $mission) {
             echo "<div class='mb-4' style='color: #fff;'>";
             switch ($mission->category) {
                 case "BE":
-                    $category = "<div class=\"d-inline-block mr-1\" style=\"width:22px;\"><i class=\"fas fa-fire\"></i></div>B - ";
+                    $category = "<div class=\"d-inline-block mr-1\" style=\"width:30px;\"><i class=\"fas fa-fire\"></i></div>B - ";
                     break;
                 case "TH":
-                    $category = "<div class=\"d-inline-block mr-1\" style=\"width:22px;\"><i class=\"fas fa-tools\"></i></div>TH - ";
+                    $category = "<div class=\"d-inline-block mr-1\" style=\"width:30px;\"><i class=\"fas fa-tools\"></i></div>TH - ";
                     break;
                 case "S":
-                    $category = "<div class=\"d-inline-block mr-1\" style=\"width:22px;\"><i class=\"fas fa-siren\"></i></div>S - ";
+                    $category = "<div class=\"d-inline-block mr-1\" style=\"width:30px;\"><i class=\"fas fa-siren\"></i></div>S - ";
                     break;
             }
-            echo "<h4>" . strftime("%d.%m.%Y", strtotime($mission->alarm_date)) . ", " . strftime("%H:%M", strtotime($mission->alarm_time)) .  " Uhr</h4>";
-            echo "<h3>" . $category . $mission->keyword . "</h3>";
+            echo "<h4 class='ffbs-frontPageMissionDateTime'>" . strftime("%d.%m.%Y", strtotime($mission->alarm_date)) . ", " . strftime("%H:%M", strtotime($mission->alarm_time)) .  " Uhr</h4>";
+            echo "<h3 class='ffbs-frontPageMissionKeyword'>" . $category . $mission->keyword . "</h3>";
             echo "</div>";
         }
         echo $args['after_widget'];

@@ -324,13 +324,17 @@ class Einsatzverwaltung
                     <tr>
                         <th>Monat</th>
                         <th>Einsätze</th>
-                        <th class="ffbs-hideOnMobile"><i class="fas fa-fire"></i> B / <i class="fas fa-tools"></i> TH / <i class="fas fa-siren"></i> S</th>
-                        <th></th>
+                        <th class="ffbs-hideOnMobile" width="60"><i class="fas fa-fire"></i> B</th>
+                        <th class="ffbs-hideOnMobile" width="60"><i class="fas fa-tools"></i> TH</th>
+                        <th class="ffbs-hideOnMobile"><i class="fas fa-siren"></i> S</th>
                     </tr>
                 </thead>
                 <tfoot>
                     <tr>
-                        <td colspan="4">Anzahl der Einsätze im Jahr: <b> <?php echo $mission_year_count; ?></b></td>
+                        <td colspan="5">
+                            <p>Anzahl der Einsätze im Jahr: <b> <?php echo $mission_year_count; ?></b></p>
+                            <p><i class="fas fa-fire"></i> B: Brandeinsatz - <i class="fas fa-tools"></i> TH: Technischer Einsatz - <i class="fas fa-siren"></i> S: Sonstiger Einsatz</p>
+                        </td>
                     </tr>
                 </tfoot>
                 <tbody>
@@ -358,10 +362,11 @@ class Einsatzverwaltung
                         $german_month = $this->get_german_month($key);
                     ?>
                         <tr>
-                            <td><?php echo $german_month; ?></td>
+                            <td><a href="#<?php echo $german_month; ?>"><?php echo $german_month; ?></a></td>
                             <td><?php echo $count_missions_in_month; ?></td>
-                            <td class="ffbs-hideOnMobile"><?= $count_brandeinsatz ?>/<?= $count_technischereinsatz ?>/<?= $count_sonstiges ?></td>
-                            <td><a href="#<?php echo $german_month; ?>">Einsätze</a></td>
+                            <td class="ffbs-hideOnMobile"><?= $count_brandeinsatz ?></td>
+                            <td class="ffbs-hideOnMobile"><?= $count_technischereinsatz ?></td>
+                            <td class="ffbs-hideOnMobile"><?= $count_sonstiges ?></td>
                         </tr>
                     <?php
                     } ?>

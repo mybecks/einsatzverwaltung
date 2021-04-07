@@ -45,14 +45,14 @@
 /**
  * Widget
  */
-.center-mission-count{
-/*  margin: 0 auto;
-    width: 25px;
-    font-size: 2em; */
+.center-mission-count {
+    /*  margin: 0 auto;
+        width: 25px;
+        font-size: 2em; */
     text-align: center;
     vertical-align: middle;
     font-size: 2em;
-/*line-height: 90px;*/
+    /*line-height: 90px;*/
 }
 
 .ffbs-vehicle {
@@ -67,13 +67,25 @@
     color: #fff;
 }
 
+h4.ffbs-frontPageMissionDateTime {
+    font-size: 1.75rem;
+}
+
+h3.ffbs-frontPageMissionKeyword {
+    font-size: 2.5rem;
+    margin-bottom: 25px;
+    margin-top: 10px;
+}
+
 @media (max-width: 815px) {
     .ffbs-hideOnMobile {
         display: none;
     }
+
     .ffbs-showOnMobile {
         display: block !important;
     }
+
     .ffbs-vehicle {
         width: 90px;
     }
