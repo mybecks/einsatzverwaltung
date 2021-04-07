@@ -1,11 +1,11 @@
-var postinfo = function(){
+var postinfo = function () {
     $('.post-info').prependTo('.entry-content');
     $('.open-post-info').prependTo('.entry-content');
 
     $('.post-info').hide();
-    $('.open-post-info').click(function() {
+    $('.open-post-info').click(function () {
         var id = $(this).attr('id');
-        $('.post-info-' + id).slideToggle("medium", function() {
+        $('.post-info-' + id).slideToggle("medium", function () {
             $(this).prev().toggleClass("toggled");
         });
 
@@ -13,12 +13,6 @@ var postinfo = function(){
     });
 };
 
-var deleteVehicleHandler = function(){
-    $('.tab-images').click(function() {
-        alert('Handler for .click() called.');
-    });
-};
-
-jQuery(document).ready(function($){
+jQuery(document).ready(function ($) {
     postinfo();
 });
