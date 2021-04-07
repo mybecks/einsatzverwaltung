@@ -371,7 +371,7 @@ class Einsatzverwaltung
                         $german_month = $this->get_german_month($key);
                     ?>
                         <tr>
-                            <td><a href="#<?php echo $german_month; ?>"><?php echo $german_month; ?></a></td>
+                            <td><?php echo $german_month; ?></td>
                             <td><?php echo $count_missions_in_month; ?></td>
                             <td class="ffbs-hideOnMobile"><?= $count_brandeinsatz ?></td>
                             <td class="ffbs-hideOnMobile"><?= $count_technischereinsatz ?></td>
