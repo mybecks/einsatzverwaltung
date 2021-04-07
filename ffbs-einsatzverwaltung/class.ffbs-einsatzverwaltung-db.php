@@ -140,7 +140,7 @@ class DatabaseHandler
     {
         $query = "SELECT v.id, v.description, v.location, v.media_link, v.details_link FROM " . $this->table->vehicles .
             " as v, " . $this->table->moved_out_vehicles . " as mv WHERE v.id = mv.vehicle_id AND mv.mission_id = %d
-                ORDER BY v.location DESC, v.radio_id ASC";
+                ORDER BY v.id ASC";
 
         return $this->db->get_results($this->db->prepare($query, $mission_id));
     }
