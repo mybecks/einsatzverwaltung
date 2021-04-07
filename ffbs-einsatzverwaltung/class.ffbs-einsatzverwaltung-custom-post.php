@@ -341,7 +341,7 @@ class EinsatzverwaltungCustomPost
             $mission = new stdClass();
             $mission->id = "";
             $mission->destination = "";
-            $mission->alarm_date = "";
+            $mission->alarm_date = date("Y-m-d");
             $mission->alarm_time = "";
             $mission->return_date = "";
             $mission->return_time = "";
@@ -518,7 +518,7 @@ class EinsatzverwaltungCustomPost
         $alarm_time = $_POST['alarm_time'];
         $return_date = $_POST['return_date'];
         $return_time = $_POST['return_time'];
-        $link_zu_medien = $_POST['link_zu_medien'];
+        $link_to_media = $_POST['link_to_media'];
         $article_post_id = $_POST['article_post_id'];
         $db_vehicles = $this->db_handler->load_vehicles();
         $vehicles = array();
@@ -542,7 +542,7 @@ class EinsatzverwaltungCustomPost
                     'alarm_time' => $alarm_time,
                     'return_date' => $return_date,
                     'return_time' => $return_time,
-                    'link_to_media' => $link_zu_medien,
+                    'link_to_media' => $link_to_media,
                     'wp_posts_ID' => $post_id,
                     'article_post_id' => $article_post_id
                 ),
@@ -568,7 +568,7 @@ class EinsatzverwaltungCustomPost
                     'alarm_time' => $alarm_time,
                     'return_date' => $return_date,
                     'return_time' => $return_time,
-                    'link_to_media' => $link_zu_medien,
+                    'link_to_media' => $link_to_media,
                     'article_post_id' => $article_post_id
                 ),
                 array('id' => $mission_id)
