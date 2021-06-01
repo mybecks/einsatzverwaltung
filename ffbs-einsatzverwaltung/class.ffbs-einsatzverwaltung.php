@@ -31,10 +31,6 @@ class Einsatzverwaltung
         // Custom CSS styling
         wp_register_style('einsatzverwaltung-style', plugins_url('/css/styles.css', __FILE__));
         wp_enqueue_style('einsatzverwaltung-style');
-
-        // Bootstrap CSS styling
-        wp_register_style('bootstrap-style', plugins_url('/css/bootstrap.css', __FILE__));
-        wp_enqueue_style('bootstrap-style');
     }
 
     public function add_scripts()
