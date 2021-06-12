@@ -386,7 +386,7 @@ class Einsatzverwaltung
                 </div>
             </div>
             <div class="col-sm-12 col-md-6">
-                <h3>Einsätze nach Ort</h3>
+                <h3>Einsätze nach Einsatzort</h3>
                 <canvas id="destinationsChart" width="100%" height="100%" style="border-top: 1px solid #dee2e6; max-height: 400px;"></canvas>
                 <script>
                     const data = {
