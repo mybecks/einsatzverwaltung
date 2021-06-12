@@ -179,13 +179,13 @@ class Einsatzverwaltung
                                 }
                                 switch ($value['category']) {
                                     case "BE":
-                                        $category = "<div class=\"d-inline-block mr-1\" style=\"width:22px;\"><i class=\"fas fa-fire\"></i></div>B - ";
+                                        $category = "<div class=\"d-inline-block mr-1\" style=\"width:20px;\"><i class=\"fas fa-fire\"></i></div>B - ";
                                         break;
                                     case "TH":
-                                        $category = "<div class=\"d-inline-block mr-1\" style=\"width:22px;\"><i class=\"fas fa-tools\"></i></div>TH - ";
+                                        $category = "<div class=\"d-inline-block mr-1\" style=\"width:20px;\"><i class=\"fas fa-tools\"></i></div>TH - ";
                                         break;
                                     case "S":
-                                        $category = "<div class=\"d-inline-block mr-1\" style=\"width:22px;\"><i class=\"fas fa-siren\"></i></div>S - ";
+                                        $category = "<div class=\"d-inline-block mr-1\" style=\"width:20px;\"><i class=\"fas fa-siren\"></i></div>S - ";
                                         break;
                                 }
                             ?>
@@ -330,7 +330,7 @@ class Einsatzverwaltung
                         <th>Monat</th>
                         <th>Einsätze</th>
                         <th class="ffbs-hideOnMobile" width="60"><i class="fas fa-fire"></i> B</th>
-                        <th class="ffbs-hideOnMobile" width="60"><i class="fas fa-tools"></i> TH</th>
+                        <th class="ffbs-hideOnMobile" width="70"><i class="fas fa-tools"></i> TH</th>
                         <th class="ffbs-hideOnMobile"><i class="fas fa-siren"></i> S</th>
                     </tr>
                 </thead>
