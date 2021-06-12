@@ -227,6 +227,83 @@ class DatabaseHandler
         return $arr_months;
     }
 
+    /**
+     * Collect mission destinations by year DESC
+     *
+     * @return array()
+     * @author Stefan
+     */
+    public function get_mission_destinations_by_year($year)
+    {
+        $destinationsAggregated = array(
+            'Mingolsheim' => 0,
+            'Langenbrücken' => 0,
+            'Östringen' => 0,
+            'Kronau' => 0,
+            'Ubstadt-Weiher' => 0,
+            'Kraichtal' => 0,
+            'Sonstige' => 0,
+        );
+
+        $query = "SELECT destination, COUNT(*) as count FROM " . $this->table->missions . " WHERE YEAR(alarm_date) = %d GROUP BY destination ORDER BY count DESC";
+
+        $destinations = $this->db->get_results($this->db->prepare($query, $year));
+
+        foreach ($destinations as $destination) {
+
+            switch($destination->destination) {
+                case 'Mingolsheim':
+                    $destinationsAggregated['Mingolsheim'] += (int)$destination->count;
+                    break;
+                case 'Langenbrücken':
+                    $destinationsAggregated['Langenbrücken'] += (int)$destination->count;
+                    break;
+                case 'Östringen':
+                case 'Odenheim':
+                case 'Eichelberg':
+                case 'Tiefenbach':
+                    $destinationsAggregated['Östringen'] += (int)$destination->count;
+                    break;
+                case 'Kronau':
+                    $destinationsAggregated['Kronau'] += (int)$destination->count;
+                    break;
+                case 'Ubstadt-Weiher':
+                case 'Weiher':
+                case 'Ubstadt':
+                case 'Stettfeld':
+                case 'Zeutern':
+                    $destinationsAggregated['Ubstadt-Weiher'] += (int)$destination->count;
+                    break;
+                case 'Kraichtal':
+                case 'Bahnbrücken':
+                case 'Gochsheim':
+                case 'Landshausen':
+                case 'Menzingen':
+                case 'Münzesheim':
+                case 'Neuenbürg':
+                case 'Oberacker':
+                case 'Oberöwisheim':
+                case 'Unteröwisheim':
+                    $destinationsAggregated['Kraichtal'] += (int)$destination->count;
+                    break;
+                default:
+                    $destinationsAggregated['Sonstige'] += (int)$destination->count;
+                    break;
+            }
+
+        }
+
+        foreach($destinationsAggregated as $key => $value) {
+            if(!$value) {
+                unset($destinationsAggregated[$key]);
+            }
+        }
+
+        arsort($destinationsAggregated);
+
+        return $destinationsAggregated;
+    }
+
     public function get_missions_count_by_year($year)
     {
         $query = "SELECT COUNT(*) as count " .

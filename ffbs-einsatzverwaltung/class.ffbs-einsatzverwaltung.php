@@ -36,6 +36,7 @@ class Einsatzverwaltung
     public function add_scripts()
     {
         wp_enqueue_script('widget_script', plugins_url('js/functions.widget.js', __FILE__), array('jquery'));
+        wp_enqueue_script('chartjs_script', plugins_url('js/chart.min.js', __FILE__), array('jquery'));
     }
 
     public function add_admin_styles()
@@ -117,11 +118,13 @@ class Einsatzverwaltung
 
         if (!isset($_POST['einsatzjahr'])) {
             $missions = $this->db_handler->get_missions_by_year(CURRENT_YEAR);
+            $destinations = $this->db_handler->get_mission_destinations_by_year(CURRENT_YEAR);
         } else {
             $missions = $this->db_handler->get_missions_by_year($_POST['einsatzjahr']);
+            $destinations = $this->db_handler->get_mission_destinations_by_year($_POST['einsatzjahr']);
         }
 
-        $this->print_missions_month_overview($missions);
+        $this->print_missions_month_overview($missions, $destinations);
         $this->print_missions_by_year($missions);
     }
 
@@ -304,7 +307,7 @@ class Einsatzverwaltung
      * Print overview of missions grouped by month
      *
      * */
-    public function print_missions_month_overview($arr_months)
+    public function print_missions_month_overview($arr_months, $arr_destinations)
     {
         // START Attributes
         $mission_year = CURRENT_YEAR;
@@ -321,64 +324,185 @@ class Einsatzverwaltung
         }
 
         ?>
-        <a name="Übersicht"></a>
-        <h2>Monatsübersicht für <?php echo $mission_year; ?></h2>
-        <div>
-            <table class="table table-striped" summary="Übersicht über die Anzahl der Einsätze im Jahr <?php echo $mission_year; ?>">
-                <thead>
-                    <tr>
-                        <th>Monat</th>
-                        <th>Einsätze</th>
-                        <th class="ffbs-hideOnMobile" width="60"><i class="fas fa-fire"></i> B</th>
-                        <th class="ffbs-hideOnMobile" width="70"><i class="fas fa-tools"></i> TH</th>
-                        <th class="ffbs-hideOnMobile"><i class="fas fa-siren"></i> S</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <td colspan="5">
-                            <p>Anzahl der Einsätze im Jahr: <b> <?php echo $mission_year_count; ?></b></p>
-                            <p><i class="fas fa-fire"></i> B: Brandeinsatz - <i class="fas fa-tools"></i> TH: Technischer Einsatz - <i class="fas fa-siren"></i> S: Sonstiger Einsatz</p>
-                        </td>
-                    </tr>
-                </tfoot>
-                <tbody>
-                    <?php
-                    foreach ($arr_months as $key => $value) {
-                        // START Amount of missions in the month
-                        $count_missions_in_month = count($arr_months[$key]);
-                        // END
+        <div class="row">
+            <div class="col-sm-12 col-md-6">
+                <a name="Übersicht"></a>
+                <h3>Einsätze nach Monat</h3>
+                <div>
+                    <table class="table table-striped" summary="Übersicht über die Anzahl der Einsätze im Jahr <?php echo $mission_year; ?>">
+                        <thead>
+                        <tr>
+                            <th>Monat</th>
+                            <th>Einsätze</th>
+                            <th class="ffbs-hideOnMobile" width="60"><i class="fas fa-fire"></i> B</th>
+                            <th class="ffbs-hideOnMobile" width="70"><i class="fas fa-tools"></i> TH</th>
+                            <th class="ffbs-hideOnMobile" width="60"><i class="fas fa-siren"></i> S</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <td colspan="5">
+                                <p>Anzahl der Einsätze im Jahr: <b> <?php echo $mission_year_count; ?></b></p>
+                                <p><i class="fas fa-fire"></i> B: Brandeinsatz - <i class="fas fa-tools"></i> TH: Technischer Einsatz - <i class="fas fa-siren"></i> S: Sonstiger Einsatz</p>
+                            </td>
+                        </tr>
+                        </tfoot>
+                        <tbody>
+                        <?php
+                        foreach ($arr_months as $key => $value) {
+                            // START Amount of missions in the month
+                            $count_missions_in_month = count($arr_months[$key]);
+                            // END
 
-                        $count_brandeinsatz = 0;
-                        $count_technischereinsatz = 0;
-                        $count_sonstiges = 0;
+                            $count_brandeinsatz = 0;
+                            $count_technischereinsatz = 0;
+                            $count_sonstiges = 0;
 
-                        foreach ($value as $mission_key => $mission_value) {
-                            if ($mission_value['category'] == 'BE') {
-                                $count_brandeinsatz++;
-                            } elseif ($mission_value['category'] == 'TH') {
-                                $count_technischereinsatz++;
-                            } else {
-                                $count_sonstiges++;
+                            foreach ($value as $mission_key => $mission_value) {
+                                if ($mission_value['category'] == 'BE') {
+                                    $count_brandeinsatz++;
+                                } elseif ($mission_value['category'] == 'TH') {
+                                    $count_technischereinsatz++;
+                                } else {
+                                    $count_sonstiges++;
+                                }
+                            }
+
+                            // OUTPUT
+                            $german_month = $this->get_german_month($key);
+                            ?>
+                            <tr>
+                                <td><?php echo $german_month; ?></td>
+                                <td><?php echo $count_missions_in_month; ?></td>
+                                <td class="ffbs-hideOnMobile"><?= $count_brandeinsatz ?></td>
+                                <td class="ffbs-hideOnMobile"><?= $count_technischereinsatz ?></td>
+                                <td class="ffbs-hideOnMobile"><?= $count_sonstiges ?></td>
+                            </tr>
+                            <?php
+                        } ?>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+                <h3>Einsätze nach Ort</h3>
+                <canvas id="destinationsChart" width="100%" height="100%" style="border-top: 1px solid #dee2e6; max-height: 400px;"></canvas>
+                <script>
+                    const data = {
+                        labels: [
+                            <?php
+                            $c = 0;
+                            foreach($arr_destinations as $key => $value) {
+                                if($c) print(", ");
+                                $c++;
+                                print("'".$key."'");
+                            }
+                            ?>
+                        ],
+                        datasets: [{
+                            data: [
+                                <?php
+                                $c = 0;
+                                foreach($arr_destinations as $key => $value) {
+                                    if($c) print(", ");
+                                    $c++;
+                                    print($value);
+                                }
+                                ?>
+                            ],
+                            backgroundColor: [
+                                <?php
+                                $c = 0;
+                                foreach($arr_destinations as $key => $value) {
+                                    if($c) print(", ");
+                                    $c++;
+                                    switch($c) {
+                                        case 1:
+                                            print("'#c21832'");
+                                            break;
+                                        case 2:
+                                            print("'#21262e'");
+                                            break;
+                                        case 3:
+                                            print("'#d56966'");
+                                            break;
+                                        case 4:
+                                            print("'#595d63'");
+                                            break;
+                                        case 5:
+                                            print("'#dea49f'");
+                                            break;
+                                        case 6:
+                                            print("'#989a9e'");
+                                            break;
+                                        case 7:
+                                            print("'#dddddd'");
+                                            break;
+                                    }
+                                }
+                                ?>
+                            ],
+                            hoverOffset: 4
+                        }]
+                    };
+
+                    var ctx = document.getElementById('destinationsChart').getContext('2d');
+                    var generateLabels = function(chart) {
+
+                    }
+                    var myChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: data,
+                        options: {
+                            plugins: {
+                                legend: {
+                                    align: 'start',
+                                    labels: {
+                                        font: {
+                                            size: 16,
+                                            family: '"azo-sans-web", Sans-serif'
+                                        },
+                                        padding: 14,
+                                        color: '#212529',
+                                        boxWidth: 12,
+                                        boxHeight: 12,
+                                        usePointStyle: true,
+                                        generateLabels: function(chart) {
+                                            let data = chart.data;
+                                            if (data.labels.length && data.datasets.length) {
+                                                return data.labels.map(function(label, i) {
+                                                    let value = chart.data.datasets[0].data[i];
+                                                    return {
+                                                        text: label + " (" + value + ")",
+                                                        fillStyle: chart.data.datasets[0].backgroundColor[i],
+                                                        lineWidth: 0,
+                                                        index: i
+                                                    };
+                                                });
+                                            } else {
+                                                return [];
+                                            }
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    bodyFont: {
+                                        size: 16,
+                                        family: '"azo-sans-web", Sans-serif'
+                                    },
+                                    boxWidth: 0,
+                                    boxHeight: 0,
+                                    usePointStyle: true
+                                }
                             }
                         }
-
-                        // OUTPUT
-                        $german_month = $this->get_german_month($key);
-                    ?>
-                        <tr>
-                            <td><?php echo $german_month; ?></td>
-                            <td><?php echo $count_missions_in_month; ?></td>
-                            <td class="ffbs-hideOnMobile"><?= $count_brandeinsatz ?></td>
-                            <td class="ffbs-hideOnMobile"><?= $count_technischereinsatz ?></td>
-                            <td class="ffbs-hideOnMobile"><?= $count_sonstiges ?></td>
-                        </tr>
-                    <?php
-                    } ?>
-
-                </tbody>
-            </table>
+                    });
+                </script>
+            </div>
         </div>
+
+
 <?php
     }
     /*
