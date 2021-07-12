@@ -22,6 +22,11 @@ Wordpress Einsatz Plugin der FF Bad Schönborn
     define( 'SCRIPT_DEBUG', true );
     define( 'SAVEQUERIES', true );
     ```
+    Dump Variables:
+    ```php
+    var_dump(<Variable>);
+    wp_die();
+    ```
 
 # How to enable the plugin
 

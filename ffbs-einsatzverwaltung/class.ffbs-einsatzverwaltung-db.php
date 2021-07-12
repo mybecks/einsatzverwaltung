@@ -251,7 +251,7 @@ class DatabaseHandler
 
         foreach ($destinations as $destination) {
 
-            switch($destination->destination) {
+            switch ($destination->destination) {
                 case 'Mingolsheim':
                     $destinationsAggregated['Mingolsheim'] += (int)$destination->count;
                     break;
@@ -290,11 +290,10 @@ class DatabaseHandler
                     $destinationsAggregated['Sonstige'] += (int)$destination->count;
                     break;
             }
-
         }
 
-        foreach($destinationsAggregated as $key => $value) {
-            if(!$value) {
+        foreach ($destinationsAggregated as $key => $value) {
+            if (!$value) {
                 unset($destinationsAggregated[$key]);
             }
         }
