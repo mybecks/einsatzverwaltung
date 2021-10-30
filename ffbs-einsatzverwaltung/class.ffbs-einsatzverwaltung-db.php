@@ -242,6 +242,7 @@ class DatabaseHandler
             'Kronau' => 0,
             'Ubstadt-Weiher' => 0,
             'Kraichtal' => 0,
+            'Bruchsal' => 0,
             'Sonstige' => 0,
         );
 
@@ -285,6 +286,14 @@ class DatabaseHandler
                 case 'Oberöwisheim':
                 case 'Unteröwisheim':
                     $destinationsAggregated['Kraichtal'] += (int)$destination->count;
+                    break;
+                case 'Bruchsal':
+                case 'Büchenau':
+                case 'Heidelsheim':
+                case 'Helmsheim':
+                case 'Obergrombach':
+                case 'Untergrombach':
+                    $destinationsAggregated['Bruchsal'] += (int)$destination->count;
                     break;
                 default:
                     $destinationsAggregated['Sonstige'] += (int)$destination->count;

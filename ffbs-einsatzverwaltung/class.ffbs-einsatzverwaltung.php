@@ -425,18 +425,21 @@ class Einsatzverwaltung
                                             print("'#21262e'");
                                             break;
                                         case 3:
-                                            print("'#d56966'");
+                                            print("'#ca3d3e'");
                                             break;
                                         case 4:
                                             print("'#595d63'");
                                             break;
                                         case 5:
-                                            print("'#dea49f'");
+                                            print("'#d56966'");
                                             break;
                                         case 6:
                                             print("'#989a9e'");
                                             break;
                                         case 7:
+                                            print("'#dea49f'");
+                                            break;
+                                        case 8:
                                             print("'#dddddd'");
                                             break;
                                     }
