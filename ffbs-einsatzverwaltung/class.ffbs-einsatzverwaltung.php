@@ -222,7 +222,7 @@ class Einsatzverwaltung
                                             ?>
                                                 <div class="row mt-1 mb-3">
                                                     <div class="col">
-                                                        <?php echo $value['post_content']; ?>
+                                                        <?php echo nl2br($value['post_content']); ?>
                                                     </div>
                                                 </div>
                                             <?php
